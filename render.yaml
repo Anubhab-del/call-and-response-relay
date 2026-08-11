@@ -1,0 +1,12 @@
+# Deploy: https://render.com → New → Blueprint → this folder
+services:
+  - type: web
+    name: call-response-relay
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node relay.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"

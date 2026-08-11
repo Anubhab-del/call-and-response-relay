@@ -1,0 +1,17 @@
+{
+  "name": "call-and-response-relay",
+  "version": "1.0.0",
+  "description": "Optional WebSocket relay so Call and Response can be played together from any distance",
+  "main": "relay.js",
+  "scripts": {
+    "start": "node relay.js",
+    "relay": "node relay.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "private": true
+}
