@@ -62,8 +62,30 @@ purpose-built scene component instead of the default typesetting.
 ## Checks
 
 ```
-node tools/check.mjs        # gating, dates, offline, structure
+npm install                 # esbuild, plus playwright for the checks
+node tools/check.mjs        # runs against dist/HER.html
 ```
 
-Run it against `dist/HER.html` before shipping. It opens the built file the way
-she will: local, offline, one thumb.
+It opens the built file the way she will — `file://`, offline, 390×844, one
+thumb — and walks it on real calendar days with the clock shifted: a plain
+Tuesday, the second of September, her birthday, the third of May, the week
+before the wedding and the day before that week, the morning of the first
+class, and two in the morning. It also:
+
+- opens a letter, keeps a vow, saves the file, throws the profile away, walks
+  back in on a fresh one and puts the copy back;
+- corrupts a save and checks she is still left with a house and a copy of the
+  old one set aside;
+- runs the whole thing under `prefers-reduced-motion`;
+- switches all three motion modes and checks each one changes something;
+- serves the file over a local HTTP server and asserts the host is asked for
+  exactly one thing.
+
+Nothing in it asserts on a screenshot. It asserts on what the house says.
+
+## The vendor chunk
+
+`vendor/runtime.js` is React 19 plus Motion, as they were built into the file
+this source tree was recovered from. It is not edited by hand and it is not
+re-bundled — the seam at the end of it is where the house begins.
+`src/runtime-bindings.js` names the five things the house borrows from it.
