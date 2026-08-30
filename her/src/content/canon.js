@@ -25,13 +25,64 @@ var INVITATION_COPY = {
   ],
   button: "I am ready",
 };
+// What the house says first. One per hour band, picked by the day so the same
+// day always says the same thing and a week does not say it twice.
 var GREETINGS = {
-  latenight: ["You are up late.", "Still awake.", "It is very late where you are."],
-  early: ["You are up early.", "Morning, before it is morning."],
-  morning: ["Good morning.", "There you are.", "Morning."],
-  afternoon: ["Afternoon.", "The middle of your day.", "Hello."],
-  evening: ["Good evening.", "You made it through.", "Evening."],
-  night: ["Goodnight, nearly.", "The lamp is on.", "Come sit."],
+  latenight: [
+    "You are up late.",
+    "Still awake.",
+    "It is very late where you are.",
+    "It is tomorrow already.",
+    "Nothing gets decided well at this hour.",
+  ],
+  early: [
+    "You are up early.",
+    "Morning, before it is morning.",
+    "Before the house is up.",
+    "You are ahead of the day.",
+  ],
+  morning: ["Good morning.", "There you are.", "Morning.", "You are up, then.", "First thing."],
+  afternoon: [
+    "Afternoon.",
+    "The middle of your day.",
+    "Hello.",
+    "The long stretch.",
+    "Somewhere in the middle of it.",
+  ],
+  evening: [
+    "Good evening.",
+    "You made it through.",
+    "Evening.",
+    "That is the day done.",
+    "You are home, I hope.",
+  ],
+  night: [
+    "Goodnight, nearly.",
+    "The lamp is on.",
+    "Come sit.",
+    "Put it down soon.",
+    "Nearly the end of it.",
+  ],
+};
+
+// On the days the house already knows about, it does not open with the weather.
+// Keyed by milestone id; `any` is used when the hour has nothing of its own.
+var DAY_GREETINGS = {
+  september: {
+    latenight: ["This is roughly the hour it started."],
+    any: ["The second of September.", "It came round again."],
+  },
+  "may-third": {
+    any: ["The third of May.", "It is the third."],
+  },
+  birthday: {
+    early: ["Happy birthday. You are up early."],
+    latenight: ["Happy birthday. Go to sleep."],
+    any: ["Happy birthday."],
+  },
+  wedding: {
+    any: ["Today, then.", "It is today."],
+  },
 };
 var LOCK_MISSES = [
   "That is all right. Try again.",

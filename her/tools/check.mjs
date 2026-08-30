@@ -252,6 +252,53 @@ async function visit(iso, { entered = true, viewport = { width: 390, height: 844
   await v.close();
 }
 
+// ── sealed letters wear no counter ────────────────────────────────────────
+{
+  const v = await visit("2026-09-15T15:00:00");
+  const letters = await v.room("Letters");
+  ok("no day counter on a sealed letter", !/sealed · \d/.test(letters), (letters.match(/sealed[^A-Z]{0,24}/g) ?? []).join(" | "));
+  ok("the tenth September says only sealed", /tenth September SEALED/i.test(letters.replace(/\s+/g, " ")), letters.match(/tenth September[^]{0,40}/i)?.[0] ?? "");
+  ok("sealed letters still show their date", /September 2, 2033/.test(letters));
+  await v.close();
+}
+
+// ── a letter can always be got out of ─────────────────────────────────────
+{
+  const v = await visit("2026-09-15T15:00:00");
+  await v.page.getByText("Letters", { exact: true }).first().click();
+  await v.page.waitForTimeout(800);
+  await v.page.getByText("when you cannot sleep", { exact: false }).first().click();
+  await v.page.waitForTimeout(400);
+  const early = await v.page.locator(".reading").count();
+  await v.page.keyboard.press("Escape");
+  await v.page.waitForTimeout(700);
+  const gone = await v.page.locator(".reading").count();
+  ok("a letter opens", early === 1);
+  ok("escape closes it before the tools arrive", gone === 0);
+  await v.close();
+}
+
+// ── the once letter changes tense, and stays ──────────────────────────────
+{
+  const v = await visit("2026-09-15T15:00:00");
+  await v.page.getByText("Letters", { exact: true }).first().click();
+  await v.page.waitForTimeout(800);
+  const before = await v.page.locator(".envelope[data-once=true]").innerText();
+  ok("unopened, it says once, ever", /once, ever/i.test(before), before.replace(/\s+/g, " "));
+  await v.page.locator(".envelope[data-once=true]").click();
+  await v.page.waitForTimeout(600);
+  ok("it asks first", (await v.page.locator(".confirm").count()) === 1);
+  await v.page.getByRole("button", { name: /break the seal/i }).click();
+  await v.page.waitForTimeout(900);
+  await v.page.keyboard.press("Escape");
+  await v.page.waitForTimeout(800);
+  const after = await v.page.locator(".envelope[data-once=true]").innerText();
+  ok("opened, it says once, spent", /once, spent/i.test(after), after.replace(/\s+/g, " "));
+  const spent = await v.page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).spentOnce);
+  ok("and the house remembers it was spent", spent === true);
+  await v.close();
+}
+
 // ── a broken save leaves her the house ─────────────────────────────────────
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });

@@ -32,11 +32,13 @@ function App() {
       score.setMuted(!e.sound);
     }, [e.sound]),
     (0, React.useEffect)(() => {
-      update((e) => {
-        let t = Date.now();
-        ((e.firstOpen ||= t), (e.lastOpen = t));
-        let n = Math.floor(t / 864e5);
-        e.visits.includes(n) || (e.visits = [...e.visits.slice(-364), n]);
+      update((state) => {
+        let now = Date.now();
+        ((state.firstOpen ||= now), (state.lastOpen = now));
+        // Filed under her date, not the framework's.
+        let today = todayNumber();
+        state.visits.includes(today) ||
+          (state.visits = [...state.visits.slice(-364), today]);
       });
     }, []),
     (0, React.useEffect)(() => {

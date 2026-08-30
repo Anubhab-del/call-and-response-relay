@@ -1,6 +1,19 @@
-function greetingFor(e = new Date()) {
-  let t = GREETINGS[hourBand(e)];
-  return t[hash32(todayNumber(e) * 24 + e.getHours()) % t.length];
+// The greeting knows the hour, and on the days the house keeps, it knows the
+// date instead. Seeded by day and hour, so it holds still while she reads it
+// and is something else tomorrow.
+function greetingFor(when = new Date()) {
+  let seed = hash32(todayNumber(when) * 24 + when.getHours());
+  let band = hourBand(when);
+
+  let today = MILESTONES.find((m) => m.takeover && isOnDate(m.on, !!m.annual, when));
+  let forDay = today && DAY_GREETINGS[today.id];
+  if (forDay) {
+    let lines = forDay[band] ?? forDay.any;
+    if (lines?.length) return lines[seed % lines.length];
+  }
+
+  let lines = GREETINGS[band];
+  return lines[seed % lines.length];
 }
 function lockMiss(e) {
   return LOCK_MISSES[Math.min(e, LOCK_MISSES.length - 1)];

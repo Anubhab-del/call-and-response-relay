@@ -173,3 +173,12 @@ function daysToAnniversary(e) {
     d: START.d,
   });
 }
+
+// How far off a sealed day is, in words rather than in a number.
+// A letter that will not open for seven years should not wear a counter.
+function nearness(days) {
+  if (days <= 0) return "";
+  if (days === 1) return "tomorrow";
+  if (days <= 6) return "this week";
+  return "";
+}

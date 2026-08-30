@@ -81,13 +81,17 @@ function LettersRoom({ onOpenReply: onOpenReply }) {
                     className: "envelope-state",
                     children:
                       c && e.kind === "sealed"
-                        ? `sealed · ${o} ${o === 1 ? "day" : "days"}`
+                        ? nearness(o)
+                          ? `sealed · ${nearness(o)}`
+                          : "sealed"
                         : a
                           ? "spent"
-                          : i
-                            ? "read · open it again"
-                            : e.kind === "once"
-                              ? "once, ever"
+                          : e.kind === "once"
+                            ? i
+                              ? "once, spent"
+                              : "once, ever"
+                            : i
+                              ? "read · open it again"
                               : "unread",
                   }),
                   e.kind === "sealed" && !r
@@ -184,6 +188,17 @@ function LettersRoom({ onOpenReply: onOpenReply }) {
   });
 }
 function Reading({ letter: letter, openedAt: openedAt, onClose: onClose, onReply: onReply }) {
+  let paragraphs = letter.body.split("\n\n");
+  // The paragraphs arrive one after another, then his name. The tools wait
+  // until after that — a letter should not end in a button. Capped, because a
+  // pause she cannot get out of is not a pause.
+  let signAt = 0.5 + paragraphs.length * 0.18;
+  let toolsAt = Math.min(signAt + 1.4, 2.6);
+  (0, React.useEffect)(() => {
+    let onKey = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
   return (0, jsx.jsx)(motion.div, {
     className: "reading",
     initial: {
@@ -208,13 +223,7 @@ function Reading({ letter: letter, openedAt: openedAt, onClose: onClose, onReply
           ...fadeIn(0.1, 0.6),
           children: letter.open,
         }),
-        letter.body
-          .split(
-            `
-
-`,
-          )
-          .map((e, t) =>
+        paragraphs.map((e, t) =>
             (0, jsx.jsx)(
               motion.p,
               {
@@ -227,23 +236,19 @@ function Reading({ letter: letter, openedAt: openedAt, onClose: onClose, onReply
           ),
         (0, jsx.jsxs)(motion.p, {
           className: "reading-sign",
-          ...riseIn(
-            0.5 +
-              letter.body.split(`
-
-`).length *
-                0.18,
-          ),
+          ...riseIn(signAt),
           children: ["— ", CANON.you],
         }),
         openedAt
-          ? (0, jsx.jsxs)("p", {
+          ? (0, jsx.jsxs)(motion.p, {
               className: "reading-meta",
+              ...fadeIn(Math.min(signAt + 0.9, 2.1), 1),
               children: ["first opened ", new Date(openedAt).toLocaleDateString()],
             })
           : null,
-        (0, jsx.jsxs)("div", {
+        (0, jsx.jsxs)(motion.div, {
           className: "reading-tools",
+          ...fadeIn(toolsAt, 1.1),
           children: [
             (0, jsx.jsx)("button", {
               type: "button",
