@@ -1,0 +1,106 @@
+function greetingFor(e = new Date()) {
+  let t = GREETINGS[hourBand(e)];
+  return t[hash32(todayNumber(e) * 24 + e.getHours()) % t.length];
+}
+
+function lockMiss(e) {
+  return LOCK_MISSES[Math.min(e, LOCK_MISSES.length - 1)];
+}
+
+function normaliseWord(e) {
+  return e.trim().toLowerCase().normalize(`NFKD`).replace(/[̀-ͯ]/g, ``).replace(/\s+/g, ` `);
+}
+
+function Lock({ onUnlock: e }) {
+  let [t, n] = (0, React.useState)(``),
+    [r, i] = (0, React.useState)(0),
+    [a, o] = (0, React.useState)(``),
+    s = (0, React.useRef)(null);
+  (0, React.useEffect)(() => {
+    let e = window.visualViewport;
+    if (!e) return;
+    let t = () => {
+      let t = Math.max(0, window.innerHeight - e.height - e.offsetTop);
+      s.current?.style.setProperty(`transform`, t > 48 ? `translateY(${-t * 0.3}px)` : ``);
+    };
+    return (
+      t(),
+      e.addEventListener(`resize`, t),
+      e.addEventListener(`scroll`, t),
+      () => {
+        (e.removeEventListener(`resize`, t), e.removeEventListener(`scroll`, t));
+      }
+    );
+  }, []);
+  let c = (n) => {
+      (n.preventDefault(), tapTick());
+      let a = normaliseWord(t);
+      if (a === normaliseWord(CANON.unlockWord) || a === normaliseWord(CANON.name)) {
+        e();
+        return;
+      }
+      let s = r + 1;
+      (i(s), o(lockMiss(s - 1)));
+    },
+    l = r >= 3 ? LOCK_HINTS[Math.min(r - 3, LOCK_HINTS.length - 1)] : ``;
+  return (0, jsx.jsx)(motion.div, {
+    className: `beat`,
+    initial: {
+      opacity: 0,
+    },
+    animate: {
+      opacity: 1,
+    },
+    exit: {
+      opacity: 0,
+    },
+    transition: {
+      duration: 0.4,
+    },
+    children: (0, jsx.jsxs)(`form`, {
+      ref: s,
+      className: `lock-form`,
+      onSubmit: c,
+      children: [
+        (0, jsx.jsx)(`p`, {
+          className: `lock-kicker`,
+          children: CANON.lockKicker,
+        }),
+        (0, jsx.jsx)(`input`, {
+          autoFocus: !0,
+          autoComplete: `off`,
+          autoCapitalize: `off`,
+          autoCorrect: `off`,
+          spellCheck: !1,
+          enterKeyHint: `go`,
+          inputMode: `text`,
+          name: `key`,
+          placeholder: CANON.lockHint,
+          value: t,
+          onChange: (e) => {
+            (n(e.target.value), o(``));
+          },
+          "aria-label": `The word`,
+          "aria-describedby": `lock-message`,
+        }),
+        (0, jsx.jsx)(`button`, {
+          className: `lock-go`,
+          type: `submit`,
+          children: `Open`,
+        }),
+        (0, jsx.jsx)(`p`, {
+          className: `lock-error`,
+          id: `lock-message`,
+          role: `status`,
+          children: a,
+        }),
+        l
+          ? (0, jsx.jsx)(`p`, {
+              className: `lock-hint`,
+              children: l,
+            })
+          : null,
+      ],
+    }),
+  });
+}
