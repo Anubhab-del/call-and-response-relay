@@ -188,3 +188,9 @@ function isSmallHours(when = new Date()) {
   let h = when.getHours();
   return h >= 0 && h < 5;
 }
+
+// One way to write a date in this house: the same as the vows and the seals.
+function formatStamp(at) {
+  let d = new Date(at);
+  return formatParts({ y: d.getFullYear(), m: d.getMonth() + 1, d: d.getDate() });
+}

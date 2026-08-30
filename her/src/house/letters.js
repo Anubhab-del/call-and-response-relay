@@ -19,7 +19,10 @@ function LettersRoom({ onOpenReply: onOpenReply, openId: openId, onOpened: onOpe
         a(null),
         r(e));
     },
-    l = o.filter((e) => t.opened[e.id]).length;
+    // Not how many she has opened — that is a progress bar on a shelf of
+    // letters. How many are still shut, which is a number that only ever goes
+    // down, and one day reads: none of them are sealed any more.
+    sealedLeft = o.filter((e) => e.kind === "sealed" && !isUnsealed(e.on)).length;
   // The house can send her straight to one — the small-hours line does.
   (0, React.useEffect)(() => {
     if (!openId) return;
@@ -38,9 +41,16 @@ function LettersRoom({ onOpenReply: onOpenReply, openId: openId, onOpened: onOpe
           "Some of these open when you need them. Some will not open until a day arrives — not for you, and not for me either.",
       }),
       (0, jsx.jsxs)(motion.p, {
-        className: "room-count",
+        className: "room-fact",
         ...fadeIn(0.15, 0.6),
-        children: [l, " of ", o.length, " opened"],
+        children: [
+          "There are ",
+          o.length,
+          ". ",
+          sealedLeft > 0
+            ? `${sealedLeft} of them are still sealed.`
+            : "None of them are sealed any more.",
+        ],
       }),
       (0, jsx.jsx)("ul", {
         className: "shelf",
@@ -251,7 +261,7 @@ function Reading({ letter: letter, openedAt: openedAt, onClose: onClose, onReply
           ? (0, jsx.jsxs)(motion.p, {
               className: "reading-meta",
               ...fadeIn(Math.min(signAt + 0.9, 2.1), 1),
-              children: ["first opened ", new Date(openedAt).toLocaleDateString()],
+              children: ["first opened ", formatStamp(openedAt)],
             })
           : null,
         (0, jsx.jsxs)(motion.div, {

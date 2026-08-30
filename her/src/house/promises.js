@@ -1,7 +1,6 @@
 function PromisesRoom() {
   let e = useStore(),
-    [t, n] = (0, React.useState)(null),
-    r = PROMISES.filter((t) => e.kept[t.id]).length;
+    [t, n] = (0, React.useState)(null);
   return (0, jsx.jsxs)("div", {
     className: "promises",
     children: [
@@ -11,11 +10,7 @@ function PromisesRoom() {
         children:
           "Not wishes. Things I am on the hook for. You decide when one has been kept — I do not get to mark my own homework.",
       }),
-      (0, jsx.jsxs)(motion.p, {
-        className: "room-count",
-        ...fadeIn(0.15, 0.6),
-        children: [r, " of ", PROMISES.length, " marked kept by you"],
-      }),
+
       (0, jsx.jsx)("ul", {
         className: "vow-list",
         children: PROMISES.map((r, i) => {
@@ -86,12 +81,12 @@ function PromisesRoom() {
                                 e.kept[r.id] ? delete e.kept[r.id] : (e.kept[r.id] = Date.now());
                               }));
                           },
-                          children: a ? "kept — undo" : "he kept this",
+                          children: a ? "not yet, actually" : "he kept this",
                         }),
                         a
                           ? (0, jsx.jsxs)("p", {
                               className: "vow-kept",
-                              children: ["you marked this on ", new Date(a).toLocaleDateString()],
+                              children: ["you said so on ", formatStamp(a)],
                             })
                           : null,
                       ],

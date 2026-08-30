@@ -1515,6 +1515,16 @@ html.is-still .letterbox:after {
   margin-bottom: 18px;
   font-size: 0.58rem;
 }
+/* A count that is a sentence rather than a label — how much of the shelf is
+   still shut, which is a number that only goes down. */
+.room-fact {
+  font-family: var(--display);
+  color: var(--paper-dim);
+  margin-bottom: 20px;
+  font-size: 0.98rem;
+  font-style: italic;
+  line-height: 1.55;
+}
 .fine {
   color: var(--paper-faint);
   font-size: 0.72rem;
