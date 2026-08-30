@@ -4,22 +4,22 @@ function App() {
       let e = snapshot();
       return e.greeted
         ? CANON.unlockWord.trim() && !e.entered
-          ? `lock`
+          ? "lock"
           : e.watched
-            ? `house`
-            : `film`
-        : `invitation`;
+            ? "house"
+            : "film"
+        : "invitation";
     }),
-    [r, i] = (0, React.useState)(`void`),
+    [r, i] = (0, React.useState)("void"),
     [a, o] = (0, React.useState)({
-      close: !1,
+      close: false,
       pulse: 0,
     }),
     [s, c] = (0, React.useState)(0),
-    [l, u] = (0, React.useState)(!1),
+    [l, u] = (0, React.useState)(false),
     [d, f] = (0, React.useState)(() => !isHandheld() && window.innerWidth / window.innerHeight > 0.95),
     [p] = (0, React.useState)(() => supportsFullscreen()),
-    m = (0, React.useRef)(!1);
+    m = (0, React.useRef)(false);
   ((0, React.useEffect)(() => trackFrameHeight(), []),
     (0, React.useEffect)(() => startTilt(), []),
     (0, React.useEffect)(() => dropServiceWorker(), []),
@@ -41,60 +41,60 @@ function App() {
     (0, React.useEffect)(() => {
       let e = () => {
         m.current ||
-          ((m.current = !0),
+          ((m.current = true),
           armHaptics(),
           score.unlock().then(() => score.setMuted(!snapshot().sound)));
       };
       return (
-        window.addEventListener(`pointerdown`, e, {
-          passive: !0,
+        window.addEventListener("pointerdown", e, {
+          passive: true,
         }),
-        window.addEventListener(`keydown`, e),
+        window.addEventListener("keydown", e),
         () => {
-          (window.removeEventListener(`pointerdown`, e), window.removeEventListener(`keydown`, e));
+          (window.removeEventListener("pointerdown", e), window.removeEventListener("keydown", e));
         }
       );
     }, []),
     (0, React.useEffect)(() => {
       let e = () => f(!isHandheld() && window.innerWidth / window.innerHeight > 0.95);
       return (
-        window.addEventListener(`resize`, e),
-        window.addEventListener(`orientationchange`, e),
+        window.addEventListener("resize", e),
+        window.addEventListener("orientationchange", e),
         () => {
-          (window.removeEventListener(`resize`, e), window.removeEventListener(`orientationchange`, e));
+          (window.removeEventListener("resize", e), window.removeEventListener("orientationchange", e));
         }
       );
     }, []),
     (0, React.useEffect)(() => {
-      if (t === `house`) return;
+      if (t === "house") return;
       let e = (e) => {
-        e.target?.closest(`input, textarea, button, .chapter-sheet`) || e.preventDefault();
+        e.target?.closest("input, textarea, button, .chapter-sheet") || e.preventDefault();
       };
       return (
-        document.addEventListener(`touchmove`, e, {
-          passive: !1,
+        document.addEventListener("touchmove", e, {
+          passive: false,
         }),
-        () => document.removeEventListener(`touchmove`, e)
+        () => document.removeEventListener("touchmove", e)
       );
     }, [t]),
     (0, React.useEffect)(() => {
-      document.documentElement.classList.toggle(`in-house`, t === `house`);
+      document.documentElement.classList.toggle("in-house", t === "house");
     }, [t]),
     (0, React.useEffect)(() => {
       let e = (e) => {
-        t !== `lock` &&
-          (e.target?.closest(`input, textarea`) ||
-            ((e.key === `m` || e.key === `M`) &&
+        t !== "lock" &&
+          (e.target?.closest("input, textarea") ||
+            ((e.key === "m" || e.key === "M") &&
               update((e) => {
                 e.sound = !e.sound;
               }),
-            (e.key === `f` || e.key === `F`) &&
+            (e.key === "f" || e.key === "F") &&
               p &&
               (document.fullscreenElement
                 ? document.exitFullscreen().catch(() => {})
                 : document.documentElement.requestFullscreen().catch(() => {}))));
       };
-      return (window.addEventListener(`keydown`, e), () => window.removeEventListener(`keydown`, e));
+      return (window.addEventListener("keydown", e), () => window.removeEventListener("keydown", e));
     }, [p, t]));
   let h = (0, React.useCallback)((e) => i(e), []),
     g = (0, React.useCallback)(
@@ -107,155 +107,155 @@ function App() {
     ),
     _ = () => {
       (update((e) => {
-        e.entered = !0;
+        e.entered = true;
       }),
         score.unlock(),
-        u(!0),
+        u(true),
         window.setTimeout(() => {
-          (u(!1), n(snapshot().watched ? `house` : `film`));
+          (u(false), n(snapshot().watched ? "house" : "film"));
         }, 1700));
     },
     v = () => {
       (update((e) => {
-        e.watched = !0;
+        e.watched = true;
       }),
-        n(`house`),
-        i(`ember`));
+        n("house"),
+        i("ember"));
     },
     b = (e = 0) => {
-      (c(e), n(`film`));
+      (c(e), n("film"));
     },
     x = new Date().getHours(),
     S = 0.62 + 0.38 * Math.cos(((x - 22 + 24) % 24) * (Math.PI / 12)),
-    C = isNightHours() ? `silence` : `ember`,
-    w = t === `house` ? C : r,
+    C = isNightHours() ? "silence" : "ember",
+    w = t === "house" ? C : r,
     ee = isSeptemberSecond();
-  return (0, jsx.jsx)(`div`, {
-    className: `shell`,
+  return (0, jsx.jsx)("div", {
+    className: "shell",
     "data-mode": t,
-    "data-anniversary": ee ? `true` : void 0,
-    children: (0, jsx.jsxs)(`div`, {
-      className: `room`,
+    "data-anniversary": ee ? "true" : void 0,
+    children: (0, jsx.jsxs)("div", {
+      className: "room",
       "data-weather": w,
       children: [
-        (0, jsx.jsx)(`div`, {
-          className: `room-wall`,
-          "aria-hidden": `true`,
+        (0, jsx.jsx)("div", {
+          className: "room-wall",
+          "aria-hidden": "true",
         }),
-        (0, jsx.jsx)(`div`, {
-          className: `room-floor`,
-          "aria-hidden": `true`,
+        (0, jsx.jsx)("div", {
+          className: "room-floor",
+          "aria-hidden": "true",
         }),
-        d && t !== `house`
-          ? (0, jsx.jsx)(`div`, {
-              className: `bars`,
+        d && t !== "house"
+          ? (0, jsx.jsx)("div", {
+              className: "bars",
             })
           : null,
-        (0, jsx.jsxs)(`div`, {
-          className: t === `house` ? `house-frame` : `letterbox`,
+        (0, jsx.jsxs)("div", {
+          className: t === "house" ? "house-frame" : "letterbox",
           "data-weather": w,
-          "data-storm": a.close ? `close` : void 0,
+          "data-storm": a.close ? "close" : void 0,
           children: [
             (0, jsx.jsx)(Lightning, {
               weather: w,
               close: a.close,
               pulse: a.pulse,
-              calm: t === `house`,
+              calm: t === "house",
             }),
             (0, jsx.jsx)(Grain, {}),
-            (0, jsx.jsx)(`div`, {
-              className: `vignette`,
-              "aria-hidden": `true`,
+            (0, jsx.jsx)("div", {
+              className: "vignette",
+              "aria-hidden": "true",
             }),
-            (0, jsx.jsx)(`div`, {
-              className: `glass-film`,
-              "aria-hidden": `true`,
+            (0, jsx.jsx)("div", {
+              className: "glass-film",
+              "aria-hidden": "true",
             }),
             (0, jsx.jsx)(RainGlass, {
               weather: w,
-              calm: t === `house`,
+              calm: t === "house",
             }),
-            t === `film` ? (0, jsx.jsx)(Dust, {}) : null,
-            t === `house`
+            t === "film" ? (0, jsx.jsx)(Dust, {}) : null,
+            t === "house"
               ? (0, jsx.jsx)(Lamp, {
                   warm: S,
                 })
               : null,
-            t === `house` && e.nameWritten
-              ? (0, jsx.jsx)(`p`, {
-                  className: `name-ghost`,
-                  "aria-hidden": `true`,
+            t === "house" && e.nameWritten
+              ? (0, jsx.jsx)("p", {
+                  className: "name-ghost",
+                  "aria-hidden": "true",
                   children: CANON.name,
                 })
               : null,
-            t === `film`
-              ? (0, jsx.jsxs)(`div`, {
-                  className: `hud`,
+            t === "film"
+              ? (0, jsx.jsxs)("div", {
+                  className: "hud",
                   children: [
-                    (0, jsx.jsx)(`button`, {
-                      type: `button`,
+                    (0, jsx.jsx)("button", {
+                      type: "button",
                       onClick: () =>
                         update((e) => {
                           e.sound = !e.sound;
                         }),
-                      "aria-label": e.sound ? `Turn the sound off` : `Turn the sound on`,
-                      children: e.sound ? `sound` : `quiet`,
+                      "aria-label": e.sound ? "Turn the sound off" : "Turn the sound on",
+                      children: e.sound ? "sound" : "quiet",
                     }),
                     p
-                      ? (0, jsx.jsx)(`button`, {
-                          type: `button`,
+                      ? (0, jsx.jsx)("button", {
+                          type: "button",
                           onClick: () => {
                             document.fullscreenElement
                               ? document.exitFullscreen().catch(() => {})
                               : document.documentElement.requestFullscreen().catch(() => {});
                           },
-                          "aria-label": `Fill the screen`,
-                          children: `full`,
+                          "aria-label": "Fill the screen",
+                          children: "full",
                         })
                       : null,
                   ],
                 })
               : null,
             (0, jsx.jsxs)(AnimatePresence, {
-              mode: `wait`,
+              mode: "wait",
               children: [
-                t === `invitation`
+                t === "invitation"
                   ? (0, jsx.jsx)(
                       Invitation,
                       {
                         onReady: () => {
-                          ((m.current = !0),
+                          ((m.current = true),
                             armHaptics(),
                             score.unlock().then(() => score.setMuted(!snapshot().sound)),
                             update((e) => {
-                              e.greeted = !0;
+                              e.greeted = true;
                             }),
                             n(
                               CANON.unlockWord.trim() && !snapshot().entered
-                                ? `lock`
+                                ? "lock"
                                 : snapshot().watched
-                                  ? `house`
-                                  : `film`,
+                                  ? "house"
+                                  : "film",
                             ));
                         },
                       },
-                      `invitation`,
+                      "invitation",
                     )
                   : null,
-                t === `lock` && !l
+                t === "lock" && !l
                   ? (0, jsx.jsx)(
                       Lock,
                       {
                         onUnlock: _,
                       },
-                      `lock`,
+                      "lock",
                     )
                   : null,
                 l
                   ? (0, jsx.jsx)(
                       motion.div,
                       {
-                        className: `beat`,
+                        className: "beat",
                         initial: {
                           opacity: 0,
                         },
@@ -265,15 +265,15 @@ function App() {
                         exit: {
                           opacity: 0,
                         },
-                        children: (0, jsx.jsx)(`p`, {
-                          className: `welcome`,
+                        children: (0, jsx.jsx)("p", {
+                          className: "welcome",
                           children: CANON.welcome,
                         }),
                       },
-                      `welcome`,
+                      "welcome",
                     )
                   : null,
-                t === `film`
+                t === "film"
                   ? (0, jsx.jsx)(
                       Film,
                       {
@@ -284,16 +284,16 @@ function App() {
                         seenBefore: e.watched,
                         furthest: e.reelFurthest,
                       },
-                      `film`,
+                      "film",
                     )
                   : null,
-                t === `house`
+                t === "house"
                   ? (0, jsx.jsx)(
                       House,
                       {
                         onWatch: b,
                       },
-                      `house`,
+                      "house",
                     )
                   : null,
               ],
@@ -304,52 +304,51 @@ function App() {
     }),
   });
 }
-
 var Fuse = class extends React.Component {
   state = {
-    failed: !1,
+    failed: false,
   };
   static getDerivedStateFromError() {
     return {
-      failed: !0,
+      failed: true,
     };
   }
   componentDidCatch(e, t) {
-    console.error(`[HER]`, e, t.componentStack);
+    console.error("[HER]", e, t.componentStack);
     try {
       flushNow();
     } catch {}
   }
   render() {
     return this.state.failed
-      ? (0, jsx.jsxs)(`div`, {
-          className: `broke`,
+      ? (0, jsx.jsxs)("div", {
+          className: "broke",
           children: [
-            (0, jsx.jsx)(`p`, {
-              className: `broke-title`,
-              children: `Something in here broke.`,
+            (0, jsx.jsx)("p", {
+              className: "broke-title",
+              children: "Something in here broke.",
             }),
-            (0, jsx.jsx)(`p`, {
-              className: `broke-body`,
-              children: `Not you. Everything you have written is still saved on this phone — it was written down before this happened. Close it and open it again and it will be here.`,
+            (0, jsx.jsx)("p", {
+              className: "broke-body",
+              children:
+                "Not you. Everything you have written is still saved on this phone — it was written down before this happened. Close it and open it again and it will be here.",
             }),
-            (0, jsx.jsx)(`button`, {
-              type: `button`,
-              className: `solid`,
+            (0, jsx.jsx)("button", {
+              type: "button",
+              className: "solid",
               onClick: () => window.location.reload(),
-              children: `open it again`,
+              children: "open it again",
             }),
-            (0, jsx.jsxs)(`p`, {
-              className: `broke-sign`,
-              children: [`— `, CANON.you],
+            (0, jsx.jsxs)("p", {
+              className: "broke-sign",
+              children: ["— ", CANON.you],
             }),
           ],
         })
       : this.props.children;
   }
 };
-
-(0, ReactDOM.createRoot)(document.getElementById(`root`)).render(
+(0, ReactDOM.createRoot)(document.getElementById("root")).render(
   (0, jsx.jsx)(React.StrictMode, {
     children: (0, jsx.jsx)(Fuse, {
       children: (0, jsx.jsx)(App, {}),

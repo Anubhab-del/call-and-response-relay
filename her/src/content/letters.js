@@ -1,8 +1,8 @@
 var LETTERS = [
   {
-    id: `first`,
-    open: `open this one first`,
-    kind: `anytime`,
+    id: "first",
+    open: "open this one first",
+    kind: "anytime",
     weight: 0,
     body: `Everything in this house is true and nothing in it is a surprise.
 
@@ -13,9 +13,9 @@ There are letters here you will not need for a long time. Some of them will not 
 Take what you need. Leave the rest sealed. It keeps.`,
   },
   {
-    id: `cannot-sleep`,
-    open: `when you cannot sleep`,
-    kind: `anytime`,
+    id: "cannot-sleep",
+    open: "when you cannot sleep",
+    kind: "anytime",
     weight: 10,
     body: `Put the phone down in a minute. Not yet.
 
@@ -26,9 +26,9 @@ You do not have to solve it tonight. Nobody solves anything at this hour. The ho
 I am asleep or I am pretending to be. Either way I am on the other end of it. Close your eyes. I will be here in the morning and the morning is closer than you think.`,
   },
   {
-    id: `after-a-fight`,
-    open: `when we have just fought`,
-    kind: `anytime`,
+    id: "after-a-fight",
+    open: "when we have just fought",
+    kind: "anytime",
     weight: 11,
     body: `I am still here.
 
@@ -39,9 +39,9 @@ I would rather be wrong with you than right on my own. If I was wrong, I will sa
 Do not go to sleep thinking this is the shape of us. This is weather. The house is fine.`,
   },
   {
-    id: `bad-missing`,
-    open: `when you miss me and it is not a nice missing`,
-    kind: `anytime`,
+    id: "bad-missing",
+    open: "when you miss me and it is not a nice missing",
+    kind: "anytime",
     weight: 12,
     body: `I know the difference. The nice one is warm and you can hold it. This one has teeth.
 
@@ -52,9 +52,9 @@ It is not forever. I want to be careful here and not promise you a date. But it 
 Until then, this is real even when it hurts. Especially then.`,
   },
   {
-    id: `proud-alone`,
-    open: `when you did something well and nobody noticed`,
-    kind: `anytime`,
+    id: "proud-alone",
+    open: "when you did something well and nobody noticed",
+    kind: "anytime",
     weight: 13,
     body: `I noticed. Tell me what it was. I want the whole thing, including the boring part in the middle, including the part where you were sure it was going badly.
 
@@ -63,9 +63,9 @@ You have a habit of finishing something difficult and immediately looking around
 Stop for a minute. I am asking you to. Be pleased where I can see it.`,
   },
   {
-    id: `doubt`,
-    open: `when you doubt this`,
-    kind: `anytime`,
+    id: "doubt",
+    open: "when you doubt this",
+    kind: "anytime",
     weight: 14,
     body: `Good. Doubt it. I would rather be chosen by someone who checked.
 
@@ -76,9 +76,9 @@ That is the whole argument. It is not romantic. It is better than romantic. Roma
 If you need to ask me anything directly, ask. I will not be hurt by the question.`,
   },
   {
-    id: `cruel-day`,
-    open: `when the day was cruel to you`,
-    kind: `anytime`,
+    id: "cruel-day",
+    open: "when the day was cruel to you",
+    kind: "anytime",
     weight: 15,
     body: `You do not have to be gracious about it tonight.
 
@@ -87,9 +87,9 @@ Say the unfair thing. Say the version where you are completely right and they ar
 You are allowed to have had a bad day without it meaning something about you.`,
   },
   {
-    id: `strong-one`,
-    open: `when you are tired of being the strong one`,
-    kind: `anytime`,
+    id: "strong-one",
+    open: "when you are tired of being the strong one",
+    kind: "anytime",
     weight: 16,
     body: `Then be tired here.
 
@@ -98,9 +98,9 @@ You do not have to hold anything up in this house. Nothing in it depends on you 
 Put it down. It will still be there. I am not asking you to be strong, I am asking you to tell me the truth, which is harder and which you are better at than you think.`,
   },
   {
-    id: `ill`,
-    open: `when you are ill and I am not there`,
-    kind: `anytime`,
+    id: "ill",
+    open: "when you are ill and I am not there",
+    kind: "anytime",
     weight: 17,
     body: `This is the one I hate.
 
@@ -109,9 +109,9 @@ Eat something small. Drink water in front of me on a call so I can watch you do 
 I cannot bring you anything from here and it makes me useless in a way I have not made peace with. So let me do the only thing I can do, which is ask you every hour, and let me be annoying about it.`,
   },
   {
-    id: `beautiful`,
-    open: `when you want to hear it`,
-    kind: `anytime`,
+    id: "beautiful",
+    open: "when you want to hear it",
+    kind: "anytime",
     weight: 18,
     body: `You are beautiful. I am not going to be clever about it.
 
@@ -122,9 +122,9 @@ You are exact. You use the right word. When you are listening you actually stop,
 Yes. And beautiful.`,
   },
   {
-    id: `no-signal`,
-    open: `when the signal is gone and you cannot reach me`,
-    kind: `anytime`,
+    id: "no-signal",
+    open: "when the signal is gone and you cannot reach me",
+    kind: "anytime",
     weight: 19,
     body: `This one I wrote knowing exactly when you would read it.
 
@@ -135,9 +135,9 @@ This whole house works with no signal at all — that was the first thing I deci
 Say what you want to say into the writing room. It will keep it. Send it when the world comes back.`,
   },
   {
-    id: `happy`,
-    open: `when you are happy and want it witnessed`,
-    kind: `anytime`,
+    id: "happy",
+    open: "when you are happy and want it witnessed",
+    kind: "anytime",
     weight: 20,
     body: `Tell me. Tell me the small one, the one that is not worth a call.
 
@@ -146,9 +146,9 @@ I have noticed you save the good things up until there are enough of them to jus
 A good cup of tea qualifies. Weather qualifies. Say it out loud and let it be seen. Half of what a person is for is being the one who saw it.`,
   },
   {
-    id: `rest`,
-    open: `when you need permission to rest`,
-    kind: `anytime`,
+    id: "rest",
+    open: "when you need permission to rest",
+    kind: "anytime",
     weight: 21,
     body: `Granted. Not that it was mine to give.
 
@@ -157,9 +157,9 @@ Nothing is going to collapse. You have built the thing you are worried about wel
 Rest is not a reward for finishing. You do not have to earn a Sunday.`,
   },
   {
-    id: `angry-at-me`,
-    open: `when you are angry at me and I have not noticed`,
-    kind: `anytime`,
+    id: "angry-at-me",
+    open: "when you are angry at me and I have not noticed",
+    kind: "anytime",
     weight: 22,
     body: `Tell me. Plainly, without softening it first.
 
@@ -168,9 +168,9 @@ I would rather be told badly than not told. I would rather have an hour of you b
 I miss things. I am not proud of it. But I have never once been angry that you told me — go back through three years and find me an example. There is not one. Use that.`,
   },
   {
-    id: `why`,
-    open: `when you cannot remember why we are doing it this way`,
-    kind: `anytime`,
+    id: "why",
+    open: "when you cannot remember why we are doing it this way",
+    kind: "anytime",
     weight: 23,
     body: `Because you were worth arranging a life around, and the arrangement takes time.
 
@@ -179,9 +179,9 @@ That is it. That is the whole reason. Everything difficult about this — the di
 We are not being patient. Patience is passive. We are building something with a long lead time.`,
   },
   {
-    id: `brave`,
-    open: `before something you are dreading`,
-    kind: `anytime`,
+    id: "brave",
+    open: "before something you are dreading",
+    kind: "anytime",
     weight: 24,
     body: `You will be fine, and I know you hate being told that, so here is the useful version.
 
@@ -190,9 +190,9 @@ You have done harder things with less warning. You do not fall apart under press
 It will take less time than the dread did. It always does. Text me when it is over — one word is enough, I do not need the report.`,
   },
   {
-    id: `quit`,
-    open: `when you want to quit something`,
-    kind: `anytime`,
+    id: "quit",
+    open: "when you want to quit something",
+    kind: "anytime",
     weight: 25,
     body: `Then quit it.
 
@@ -201,9 +201,9 @@ I am serious. Not everything is a test of character. Some things are just a bad 
 One question and then I will stop: are you leaving it because it is wrong, or because today was hard? If it is today, sleep first. If it is wrong, leave, and I will not ask you to justify it to me. Not once, not later, not in an argument.`,
   },
   {
-    id: `crying`,
-    open: `when you have been crying and do not want to say why`,
-    kind: `anytime`,
+    id: "crying",
+    open: "when you have been crying and do not want to say why",
+    kind: "anytime",
     weight: 26,
     body: `Then do not say why.
 
@@ -212,10 +212,10 @@ I do not need a reason to be handed one. You are allowed to be sad without a cau
 Sit here for a minute. Nothing in this house is going to ask you a question. When you want to talk I am one message away, and if you never explain this particular hour to me, that is completely fine and I will not bring it up.`,
   },
   {
-    id: `birthday`,
-    open: `on your birthday`,
-    kind: `sealed`,
-    on: `06-13`,
+    id: "birthday",
+    open: "on your birthday",
+    kind: "sealed",
+    on: "06-13",
     weight: 40,
     body: `Happy birthday.
 
@@ -226,10 +226,10 @@ You are one year further into being the person you have been trying to become si
 I will say the rest of it out loud. This part is just so it is written down somewhere.`,
   },
   {
-    id: `year-four`,
-    open: `on the fourth September`,
-    kind: `sealed`,
-    on: `2027-09-02`,
+    id: "year-four",
+    open: "on the fourth September",
+    kind: "sealed",
+    on: "2027-09-02",
     weight: 41,
     body: `Four years.
 
@@ -240,10 +240,10 @@ So here is what I know is still true, whatever it was: I stayed. If this year wa
 Tell me what happened. I was there for it, but tell me anyway. I like hearing you say it.`,
   },
   {
-    id: `ten-years`,
-    open: `on the tenth September`,
-    kind: `sealed`,
-    on: `2033-09-02`,
+    id: "ten-years",
+    open: "on the tenth September",
+    kind: "sealed",
+    on: "2033-09-02",
     weight: 42,
     body: `Ten years.
 
@@ -254,10 +254,10 @@ I wrote this when we had been apart for almost all of it and had spent two hours
 I have loved you at a distance longer than most people manage it up close. Whatever else I turned out to be, I was steady. Hold me to it.`,
   },
   {
-    id: `first-class`,
-    open: `the day you stand in front of your first class`,
-    kind: `sealed`,
-    on: `2028-06-01`,
+    id: "first-class",
+    open: "the day you stand in front of your first class",
+    kind: "sealed",
+    on: "2028-06-01",
     weight: 43,
     body: `They have no idea what they are getting.
 
@@ -268,10 +268,10 @@ I have watched you explain things to me that I already knew, just to hear how yo
 Go on. I will be in the next room.`,
   },
   {
-    id: `wedding-week`,
-    open: `the week of the wedding`,
-    kind: `sealed`,
-    on: `2027-11-24`,
+    id: "wedding-week",
+    open: "the week of the wedding",
+    kind: "sealed",
+    on: "2027-11-24",
     weight: 44,
     body: `Almost.
 
@@ -282,9 +282,9 @@ I want to say one thing before the noise starts, while it is still just us and a
 I did not spend three years waiting for you. I spent three years with you. The wedding is not the beginning of anything. It is paperwork on something that has been true since a night in September when neither of us was being careful.`,
   },
   {
-    id: `once`,
-    open: `the one you can only open once`,
-    kind: `once`,
+    id: "once",
+    open: "the one you can only open once",
+    kind: "once",
     weight: 60,
     body: `You spent it. I would have too.
 

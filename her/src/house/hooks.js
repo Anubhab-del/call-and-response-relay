@@ -2,7 +2,6 @@ function useStore() {
   let [e, t] = (0, React.useState)(snapshot);
   return ((0, React.useEffect)(() => subscribe(t), []), e);
 }
-
 function useMinuteTick() {
   let [e, t] = (0, React.useState)(0);
   return (
@@ -12,17 +11,16 @@ function useMinuteTick() {
           document.hidden || t((e) => e + 1);
         };
       return (
-        document.addEventListener(`visibilitychange`, n),
+        document.addEventListener("visibilitychange", n),
         () => {
-          (window.clearInterval(e), document.removeEventListener(`visibilitychange`, n));
+          (window.clearInterval(e), document.removeEventListener("visibilitychange", n));
         }
       );
     }, []),
     e
   );
 }
-
-function DayRing({ fill: e, size: t = 132 }) {
+function DayRing({ fill: fill, size = 132 }) {
   let n = (0, React.useRef)(null);
   return (
     (0, React.useEffect)(() => {
@@ -30,7 +28,7 @@ function DayRing({ fill: e, size: t = 132 }) {
       if (!t) return;
       let r = 2 * Math.PI * 46;
       if (((t.style.strokeDasharray = `${r}`), isStill())) {
-        t.style.strokeDashoffset = `${r * (1 - e)}`;
+        t.style.strokeDashoffset = `${r * (1 - fill)}`;
         return;
       }
       t.style.strokeDashoffset = `${r}`;
@@ -39,29 +37,30 @@ function DayRing({ fill: e, size: t = 132 }) {
         o = (n) => {
           let s = Math.min(1, (n - i) / 1600),
             c = 1 - (1 - s) ** 3;
-          ((t.style.strokeDashoffset = `${r * (1 - e * c)}`), s < 1 && (a = requestAnimationFrame(o)));
+          ((t.style.strokeDashoffset = `${r * (1 - fill * c)}`),
+            s < 1 && (a = requestAnimationFrame(o)));
         };
       return ((a = requestAnimationFrame(o)), () => cancelAnimationFrame(a));
-    }, [e]),
-    (0, jsx.jsxs)(`svg`, {
-      className: `days-ring`,
-      viewBox: `0 0 100 100`,
-      width: t,
-      height: t,
-      "aria-hidden": `true`,
+    }, [fill]),
+    (0, jsx.jsxs)("svg", {
+      className: "days-ring",
+      viewBox: "0 0 100 100",
+      width: size,
+      height: size,
+      "aria-hidden": "true",
       children: [
-        (0, jsx.jsx)(`circle`, {
-          cx: `50`,
-          cy: `50`,
-          r: `46`,
-          className: `days-track`,
+        (0, jsx.jsx)("circle", {
+          cx: "50",
+          cy: "50",
+          r: "46",
+          className: "days-track",
         }),
-        (0, jsx.jsx)(`circle`, {
+        (0, jsx.jsx)("circle", {
           ref: n,
-          cx: `50`,
-          cy: `50`,
-          r: `46`,
-          className: `days-fill`,
+          cx: "50",
+          cy: "50",
+          r: "46",
+          className: "days-fill",
         }),
       ],
     })

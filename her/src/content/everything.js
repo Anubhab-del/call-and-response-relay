@@ -433,8 +433,7 @@ I will still be here.
 `,
   )
   .map((e) => e.trim())
-  .filter((e) => e.length > 0 && !e.startsWith(`#`));
-
+  .filter((e) => e.length > 0 && !e.startsWith("#"));
 function hash32(e) {
   let t = e + 2654435769;
   return (
@@ -443,7 +442,6 @@ function hash32(e) {
     (t ^ (t >>> 15)) >>> 0
   );
 }
-
 function shuffledOrder(e) {
   let t = Array.from(
     {
@@ -458,9 +456,7 @@ function shuffledOrder(e) {
   }
   return t;
 }
-
 var orderCache = null;
-
 function shardOrder() {
   return (
     (!orderCache || orderCache.length !== EVERYTHING.length) &&
@@ -468,30 +464,27 @@ function shardOrder() {
     orderCache
   );
 }
-
 function shardIndexFor(e) {
   let t = shardOrder();
   return t.length === 0 ? 0 : t[((e % t.length) + t.length) % t.length];
 }
-
 function shardForDay(e = new Date()) {
   let t = shardIndexFor(todayNumber(e));
   return {
     index: t,
-    text: EVERYTHING[t] ?? ``,
+    text: EVERYTHING[t] ?? "",
   };
 }
-
 function extraShard(e, t) {
   let n = shardOrder();
   if (n.length === 0)
     return {
       index: 0,
-      text: ``,
+      text: "",
     };
   let r = n[(hash32(e * 31 + t * 7919) + t) % n.length];
   return {
     index: r,
-    text: EVERYTHING[r] ?? ``,
+    text: EVERYTHING[r] ?? "",
   };
 }

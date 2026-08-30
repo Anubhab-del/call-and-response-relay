@@ -24,21 +24,19 @@ function makeImpulse(e) {
       }
     }
     let s = e.createConvolver();
-    return ((s.buffer = a), (s.normalize = !0), s);
+    return ((s.buffer = a), (s.normalize = true), s);
   } catch {
     return null;
   }
 }
-
 function midiToHz(e) {
   return 110 * 2 ** (e / 12);
 }
-
 var KEYS = [
   {
-    key: `A minor`,
+    key: "A minor",
     root: 0,
-    minor: !0,
+    minor: true,
     chords: [
       [0, 3, 7],
       [-4, 0, 3],
@@ -50,9 +48,9 @@ var KEYS = [
     colour: 0.7,
   },
   {
-    key: `F major`,
+    key: "F major",
     root: -4,
-    minor: !1,
+    minor: false,
     chords: [
       [0, 4, 7],
       [7, 11, 14],
@@ -64,9 +62,9 @@ var KEYS = [
     colour: 0.52,
   },
   {
-    key: `C major`,
+    key: "C major",
     root: 3,
-    minor: !1,
+    minor: false,
     chords: [
       [0, 4, 7],
       [4, 7, 11],
@@ -78,9 +76,9 @@ var KEYS = [
     colour: 0.78,
   },
   {
-    key: `D major`,
+    key: "D major",
     root: 5,
-    minor: !1,
+    minor: false,
     chords: [
       [0, 4, 7],
       [7, 11, 14],
@@ -92,15 +90,12 @@ var KEYS = [
     colour: 0.88,
   },
 ];
-
 function scaleFor(e) {
   return e.minor ? [0, 7, 8, 3, 2] : [0, 7, 9, 4, 2];
 }
-
 function octaveFor(e) {
   return Math.max(2, Math.min(5, e + 2));
 }
-
 function voicesFor(e, t, n = -5, r = 19) {
   return t.map((t, i) => {
     let a = e[i],
@@ -118,24 +113,23 @@ function voicesFor(e, t, n = -5, r = 19) {
     return c;
   });
 }
-
 function makePad(e, t, n, { level: r = 0.1, colour: i = 0.6, attack: a = 2.4, detune: o = 5 } = {}) {
   let s = isLean(),
     c = e.createGain();
   ((c.gain.value = 0), c.connect(t));
   let l = e.createBiquadFilter();
-  ((l.type = `lowpass`), (l.frequency.value = n * 2), (l.Q.value = 0.6), l.connect(c));
+  ((l.type = "lowpass"), (l.frequency.value = n * 2), (l.Q.value = 0.6), l.connect(c));
   let u = [],
     d = s
       ? [
-          [`triangle`, 1, 1],
-          [`sine`, 2, 0.22],
+          ["triangle", 1, 1],
+          ["sine", 2, 0.22],
         ]
       : [
-          [`triangle`, 1, 1],
-          [`sine`, 2, 0.26],
-          [`sine`, 3, 0.13],
-          [`sine`, 4.01, 0.055],
+          ["triangle", 1, 1],
+          ["sine", 2, 0.26],
+          ["sine", 3, 0.13],
+          ["sine", 4.01, 0.055],
         ];
   for (let [t, r, i] of d) {
     let a = e.createOscillator();
@@ -167,7 +161,7 @@ function makePad(e, t, n, { level: r = 0.1, colour: i = 0.6, attack: a = 2.4, de
     c.gain.setTargetAtTime(r, m, a / 3),
     l.frequency.setValueAtTime(n * 1.2, m),
     l.frequency.setTargetAtTime(n * (1.8 + i * 5), m, a / 2));
-  let h = !1;
+  let h = false;
   return {
     level(t, n = 2) {
       let r = e.currentTime;
@@ -183,7 +177,7 @@ function makePad(e, t, n, { level: r = 0.1, colour: i = 0.6, attack: a = 2.4, de
     },
     release(t = 2.2) {
       if (h) return;
-      h = !0;
+      h = true;
       let n = e.currentTime;
       (c.gain.cancelScheduledValues(n),
         c.gain.setTargetAtTime(0, n, t / 3),
@@ -202,18 +196,17 @@ function makePad(e, t, n, { level: r = 0.1, colour: i = 0.6, attack: a = 2.4, de
     },
   };
 }
-
 function playNoise(e, t, n, r = 0.05) {
   try {
     let i = e.currentTime,
       a = e.createGain();
     ((a.gain.value = 0), a.connect(t));
     let o = e.createOscillator();
-    ((o.type = `sine`), (o.frequency.value = n));
+    ((o.type = "sine"), (o.frequency.value = n));
     let s = e.createGain();
     ((s.gain.value = 1), o.connect(s), s.connect(a));
     let c = e.createOscillator();
-    ((c.type = `sine`), (c.frequency.value = n * 3));
+    ((c.type = "sine"), (c.frequency.value = n * 3));
     let l = e.createGain();
     ((l.gain.value = 0),
       c.connect(l),
@@ -234,12 +227,11 @@ function playNoise(e, t, n, r = 0.05) {
       }));
   } catch {}
 }
-
 function playTone(e, t, n, r = 0.1) {
   try {
     let i = e.currentTime,
       a = e.createOscillator();
-    ((a.type = `sine`), (a.frequency.value = n));
+    ((a.type = "sine"), (a.frequency.value = n));
     let o = e.createGain();
     ((o.gain.value = 0),
       a.connect(o),
@@ -256,11 +248,8 @@ function playTone(e, t, n, r = 0.1) {
       }));
   } catch {}
 }
-
 var BASE_GAIN = 0.5;
-
 var PAD_LEVELS = [0.26, 0.19, 0.13];
-
 var score = new (class {
   ctx = null;
   master = null;
@@ -282,17 +271,17 @@ var score = new (class {
   themeNotes = 2;
   themeGap = 9e3;
   song = null;
-  songReady = !1;
+  songReady = false;
   whisper = null;
-  whisperSpent = !1;
-  cue = ``;
-  started = !1;
-  muted = !1;
+  whisperSpent = false;
+  cue = "";
+  started = false;
+  muted = false;
   volume = 1;
   async unlock() {
     try {
       if (this.ctx) {
-        this.ctx.state === `suspended` && (await this.ctx.resume());
+        this.ctx.state === "suspended" && (await this.ctx.resume());
         return;
       }
       let e = window.AudioContext ?? window.webkitAudioContext;
@@ -326,7 +315,7 @@ var score = new (class {
         (this.dry = i),
         (this.wet = a),
         (this.punch = o),
-        (this.started = !0),
+        (this.started = true),
         this.ensureRain(0.026),
         await this.loadSong());
     } catch {}
@@ -452,14 +441,14 @@ var score = new (class {
   }
   async setCue(e) {
     if (e === this.cue || ((this.cue = e), !this.ctx)) return;
-    if (e.startsWith(`/`)) {
+    if (e.startsWith("/")) {
       let t = scoreUrl(e);
       if (t) {
         (await this.playNamed(t), this.setRain(0.03));
         return;
       }
     }
-    let t = e.startsWith(`part-`) ? Number.parseInt(e.slice(5), 10) : null;
+    let t = e.startsWith("part-") ? Number.parseInt(e.slice(5), 10) : null;
     if (t !== null && Number.isFinite(t)) {
       ((this.themeGap = 9e3),
         this.setPadLevel(1),
@@ -469,34 +458,34 @@ var score = new (class {
       return;
     }
     switch (e) {
-      case `silent`:
+      case "silent":
         (this.stopMovement(1.6), this.setRain(0.012), await this.playSong(0));
         return;
-      case `projector`:
+      case "projector":
         (this.projectorWake(), this.setRain(0.034));
         return;
-      case `title`:
+      case "title":
         (this.startMovement(0), this.setPadLevel(0.85), this.setRain(0.024), await this.playSong(0.34));
         return;
-      case `distance`:
+      case "distance":
         (this.setPadLevel(0.6), this.setRain(0.05), (this.themeGap = 6e3));
         return;
-      case `twohours`:
+      case "twohours":
         (this.setPadLevel(1.15), this.setRain(0.014), (this.themeGap = 5200));
         return;
-      case `sleep`:
+      case "sleep":
         (this.setPadLevel(0.42), this.setRain(0.056), (this.themeGap = 14e3));
         return;
-      case `dance`:
+      case "dance":
         (this.setPadLevel(0.95), this.setRain(0.022), (this.themeGap = 4200));
         return;
-      case `hold`:
+      case "hold":
         (this.setPadLevel(0.1), this.setRain(0.042), (this.themeGap = 3e4), await this.playSong(0.05));
         return;
-      case `care`:
+      case "care":
         (this.setPadLevel(0.9), this.setRain(0.026), await this.playSong(0.3));
         return;
-      case `vow`:
+      case "vow":
         (this.startMovement(3),
           this.setPadLevel(1.25),
           (this.themeNotes = 5),
@@ -505,7 +494,7 @@ var score = new (class {
           this.declareTheme(3, 0.26),
           await this.playSong(0.4));
         return;
-      case `credits`:
+      case "credits":
         (this.setPadLevel(1),
           (this.themeNotes = 5),
           (this.themeGap = 7e3),
@@ -513,10 +502,10 @@ var score = new (class {
           this.declareTheme(this.movement ?? 3, 0.2),
           await this.playSong(0.36));
         return;
-      case `coda`:
+      case "coda":
         (this.setPadLevel(0.5), this.setRain(0.04), (this.themeGap = 11e3), await this.playSong(0.2));
         return;
-      case `house`:
+      case "house":
         (this.startMovement(2),
           this.setPadLevel(0.42),
           (this.themeGap = 22e3),
@@ -524,7 +513,7 @@ var score = new (class {
           this.stopHeart(),
           await this.playSong(0.1));
         return;
-      case `letter`:
+      case "letter":
         (this.setPadLevel(0.3), (this.themeGap = 26e3), this.setRain(0.02), await this.playSong(0.07));
         return;
       default:
@@ -537,14 +526,14 @@ var score = new (class {
     if (e)
       try {
         let t = new Audio(e);
-        ((t.loop = !0),
-          (t.preload = `auto`),
+        ((t.loop = true),
+          (t.preload = "auto"),
           (t.volume = 0),
           (t.muted = this.muted),
           (this.song = t),
-          (this.songReady = !0));
+          (this.songReady = true));
       } catch {
-        this.songReady = !1;
+        this.songReady = false;
       }
   }
   async playSong(e) {
@@ -557,13 +546,13 @@ var score = new (class {
   async playNamed(e) {
     try {
       let t = new Audio(e);
-      ((t.loop = !0),
+      ((t.loop = true),
         (t.volume = 0.3 * this.volume),
         (t.muted = this.muted),
         await t.play(),
         this.stopSongOnly(),
         (this.song = t),
-        (this.songReady = !0));
+        (this.songReady = true));
     } catch {}
   }
   fadeAudio(e, t, n) {
@@ -600,11 +589,11 @@ var score = new (class {
           }
         }
         let r = t.createBufferSource();
-        ((r.buffer = n), (r.loop = !0));
+        ((r.buffer = n), (r.loop = true));
         let i = t.createBiquadFilter();
-        ((i.type = `highpass`), (i.frequency.value = 520));
+        ((i.type = "highpass"), (i.frequency.value = 520));
         let a = t.createBiquadFilter();
-        ((a.type = `bandpass`), (a.frequency.value = 2400), (a.Q.value = 0.55));
+        ((a.type = "bandpass"), (a.frequency.value = 2400), (a.Q.value = 0.55));
         let o = t.createDelay(0.2);
         o.delayTime.value = 0.062;
         let s = t.createGain();
@@ -654,7 +643,7 @@ var score = new (class {
         let c = t.createBufferSource();
         c.buffer = a;
         let l = t.createBiquadFilter();
-        ((l.type = `lowpass`), (l.frequency.value = 220 + e * 1400));
+        ((l.type = "lowpass"), (l.frequency.value = 220 + e * 1400));
         let u = t.createGain();
         ((u.gain.value = 0),
           c.connect(l),
@@ -678,7 +667,7 @@ var score = new (class {
         )
           return;
         let f = t.createOscillator();
-        ((f.type = `sine`), (f.frequency.value = 36 + e * 28));
+        ((f.type = "sine"), (f.frequency.value = 36 + e * 28));
         let p = t.createGain();
         ((p.gain.value = 0),
           f.connect(p),
@@ -708,7 +697,7 @@ var score = new (class {
         }
         let r = e.createBufferSource(),
           i = e.createBiquadFilter();
-        ((i.type = `lowpass`),
+        ((i.type = "lowpass"),
           (i.frequency.value = 680),
           (r.buffer = t),
           r.connect(i),
@@ -727,7 +716,7 @@ var score = new (class {
     if (!(!e || !this.dry || isLean() || this.heart))
       try {
         let t = e.createOscillator();
-        ((t.type = `sine`), (t.frequency.value = 44));
+        ((t.type = "sine"), (t.frequency.value = 44));
         let n = e.createGain();
         ((n.gain.value = 0), t.connect(n), n.connect(this.dry), t.start());
         let r = () => {
@@ -766,7 +755,7 @@ var score = new (class {
   }
   whisperName() {
     if (this.whisperSpent) return;
-    this.whisperSpent = !0;
+    this.whisperSpent = true;
     let e = firstAvailable(NAME_SOURCES);
     if (e)
       try {
@@ -775,7 +764,7 @@ var score = new (class {
           (t.muted = this.muted),
           (this.whisper = t),
           t.play().catch(() => {}),
-          t.addEventListener(`ended`, () => {
+          t.addEventListener("ended", () => {
             this.whisper = null;
           }),
           this.duckFor(2.4, 0.5));
@@ -784,7 +773,7 @@ var score = new (class {
   stopSongOnly() {
     if (this.song) {
       try {
-        (this.song.pause(), (this.song.src = ``));
+        (this.song.pause(), (this.song.src = ""));
       } catch {}
       this.song = null;
     }
@@ -800,7 +789,7 @@ var score = new (class {
         this.song &&
           this.song.paused &&
           !this.muted &&
-          this.cue !== `silent` &&
+          this.cue !== "silent" &&
           this.song.play().catch(() => {}));
     } catch {}
   }
@@ -822,17 +811,16 @@ var score = new (class {
     try {
       this.verb?.disconnect();
     } catch {}
-    ((this.verb = null), (this.started = !1));
+    ((this.verb = null), (this.started = false));
   }
 })();
-
-typeof document < `u` &&
-  (document.addEventListener(`visibilitychange`, () => {
+typeof document !== "undefined" &&
+  (document.addEventListener("visibilitychange", () => {
     document.hidden ? score.suspend() : score.resume();
   }),
-  window.addEventListener(`her:cue`, (e) => {
+  window.addEventListener("her:cue", (e) => {
     score.setCue(String(e.detail));
   }),
-  window.addEventListener(`her:thunder`, (e) => {
+  window.addEventListener("her:thunder", (e) => {
     score.thunder(Number(e.detail) || 0.6);
   }));

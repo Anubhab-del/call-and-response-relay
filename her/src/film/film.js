@@ -18,21 +18,20 @@ function useCountUp(e, t) {
     n
   );
 }
-
 function Film({
-  startAt: e = 0,
-  onWeather: t,
-  onStorm: n,
-  onEnterHouse: r,
-  seenBefore: i,
-  furthest: a,
+  startAt = 0,
+  onWeather: onWeather,
+  onStorm: onStorm,
+  onEnterHouse: onEnterHouse,
+  seenBefore: seenBefore,
+  furthest: furthest,
 }) {
   let o = (0, React.useMemo)(() => buildReel(), []),
     s = (0, React.useMemo)(() => chapterMarks(o), [o]),
     c = (0, React.useMemo)(() => new Map(s.map((e) => [e.n, e.at])), [s]),
-    [l, u] = (0, React.useState)(() => Math.min(Math.max(0, e), o.length - 1)),
-    [d, f] = (0, React.useState)(!1),
-    p = (0, React.useRef)(!1),
+    [l, u] = (0, React.useState)(() => Math.min(Math.max(0, startAt), o.length - 1)),
+    [d, f] = (0, React.useState)(false),
+    p = (0, React.useRef)(false),
     m = (0, React.useRef)({
       x: 0,
       y: 0,
@@ -44,25 +43,25 @@ function Film({
     v = stormPulseFor(h, l),
     b = lastChapterBefore(o, l);
   ((0, React.useEffect)(() => {
-    (t(g), n(_, v));
-  }, [g, _, v, t, n]),
+    (onWeather(g), onStorm(_, v));
+  }, [g, _, v, onWeather, onStorm]),
     (0, React.useEffect)(() => {
-      (score.setCue(cueFor(h)), h.type === `nameFlash` && score.whisperName());
+      (score.setCue(cueFor(h)), h.type === "nameFlash" && score.whisperName());
     }, [h]),
     (0, React.useEffect)(() => {
       update((e) => {
         ((e.reelAt = l),
           l > e.reelFurthest && (e.reelFurthest = l),
-          l >= o.length - 1 && (e.watched = !0));
+          l >= o.length - 1 && (e.watched = true));
       });
     }, [l, o.length]));
   let x = (0, React.useCallback)(
       (e) => {
         p.current ||
-          ((p.current = !0),
+          ((p.current = true),
           u(Math.max(0, Math.min(o.length - 1, e))),
           window.setTimeout(() => {
-            p.current = !1;
+            p.current = false;
           }, 200));
       },
       [o.length],
@@ -76,8 +75,8 @@ function Film({
   }, [h, l, o.length, d]),
     (0, React.useEffect)(
       () => (
-        document.documentElement.classList.toggle(`reading-contents`, d),
-        () => document.documentElement.classList.remove(`reading-contents`)
+        document.documentElement.classList.toggle("reading-contents", d),
+        () => document.documentElement.classList.remove("reading-contents")
       ),
       [d],
     ),
@@ -92,28 +91,28 @@ function Film({
     }, []),
     (0, React.useEffect)(() => {
       let e = (e) => {
-        if (e.key === `Escape`) {
-          f(!1);
+        if (e.key === "Escape") {
+          f(false);
           return;
         }
-        if (e.key === `c` || e.key === `C`) {
+        if (e.key === "c" || e.key === "C") {
           f((e) => !e);
           return;
         }
         if (!d) {
-          if (e.key === `ArrowLeft`) {
+          if (e.key === "ArrowLeft") {
             (e.preventDefault(), C());
             return;
           }
-          (e.key === ` ` || e.key === `Enter` || e.key === `ArrowRight`) &&
-            (e.preventDefault(), h.type === `doorway` ? r() : S());
+          (e.key === " " || e.key === "Enter" || e.key === "ArrowRight") &&
+            (e.preventDefault(), h.type === "doorway" ? onEnterHouse() : S());
         }
       };
-      return (window.addEventListener(`keydown`, e), () => window.removeEventListener(`keydown`, e));
-    }, [S, C, h.type, r, d]));
+      return (window.addEventListener("keydown", e), () => window.removeEventListener("keydown", e));
+    }, [S, C, h.type, onEnterHouse, d]));
   let w = (l + 1) / o.length;
-  return (0, jsx.jsxs)(`div`, {
-    className: `film`,
+  return (0, jsx.jsxs)("div", {
+    className: "film",
     onPointerDown: (e) => {
       m.current = {
         x: e.clientX,
@@ -122,10 +121,10 @@ function Film({
       };
     },
     onPointerUp: (e) => {
-      if (e.target.closest(`.hud, .contents, button, a, input`)) return;
+      if (e.target.closest(".hud, .contents, button, a, input")) return;
       let t = e.clientX - m.current.x,
         n = e.clientY - m.current.y;
-      if (Math.hypot(t, n) > 18 || performance.now() - m.current.t > 700 || h.type === `doorway`)
+      if (Math.hypot(t, n) > 18 || performance.now() - m.current.t > 700 || h.type === "doorway")
         return;
       tapTick();
       let r = e.currentTarget.getBoundingClientRect();
@@ -133,13 +132,13 @@ function Film({
     },
     children: [
       (0, jsx.jsxs)(AnimatePresence, {
-        mode: `sync`,
+        mode: "sync",
         children: [
-          h.type === `projector` ? (0, jsx.jsx)(ProjectorBeat, {}, beatKey(h, l)) : null,
-          h.type === `title` ? (0, jsx.jsx)(TitleBeat, {}, beatKey(h, l)) : null,
-          h.type === `overture` ? (0, jsx.jsx)(OvertureBeat, {}, beatKey(h, l)) : null,
-          h.type === `threshold` ? (0, jsx.jsx)(ThresholdBeat, {}, beatKey(h, l)) : null,
-          h.type === `part`
+          h.type === "projector" ? (0, jsx.jsx)(ProjectorBeat, {}, beatKey(h, l)) : null,
+          h.type === "title" ? (0, jsx.jsx)(TitleBeat, {}, beatKey(h, l)) : null,
+          h.type === "overture" ? (0, jsx.jsx)(OvertureBeat, {}, beatKey(h, l)) : null,
+          h.type === "threshold" ? (0, jsx.jsx)(ThresholdBeat, {}, beatKey(h, l)) : null,
+          h.type === "part"
             ? (0, jsx.jsx)(
                 PartBeat,
                 {
@@ -148,7 +147,7 @@ function Film({
                 beatKey(h, l),
               )
             : null,
-          h.type === `chapter`
+          h.type === "chapter"
             ? (0, jsx.jsx)(
                 ChapterBeat,
                 {
@@ -157,32 +156,32 @@ function Film({
                 beatKey(h, l),
               )
             : null,
-          h.type === `scene` && h.scene === `distance`
+          h.type === "scene" && h.scene === "distance"
             ? (0, jsx.jsx)(DistanceScene, {}, beatKey(h, l))
             : null,
-          h.type === `scene` && h.scene === `sleep`
+          h.type === "scene" && h.scene === "sleep"
             ? (0, jsx.jsx)(SleepScene, {}, beatKey(h, l))
             : null,
-          h.type === `scene` && h.scene === `twohours`
+          h.type === "scene" && h.scene === "twohours"
             ? (0, jsx.jsx)(TwoHoursScene, {}, beatKey(h, l))
             : null,
-          h.type === `scene` && h.scene === `dance`
+          h.type === "scene" && h.scene === "dance"
             ? (0, jsx.jsx)(DanceScene, {}, beatKey(h, l))
             : null,
-          h.type === `scene` && h.scene === `hold` ? (0, jsx.jsx)(HoldScene, {}, beatKey(h, l)) : null,
-          h.type === `care` ? (0, jsx.jsx)(CareBeat, {}, beatKey(h, l)) : null,
-          h.type === `vow` ? (0, jsx.jsx)(VowBeat, {}, beatKey(h, l)) : null,
-          h.type === `credits` ? (0, jsx.jsx)(CreditsBeat, {}, beatKey(h, l)) : null,
-          h.type === `after` ? (0, jsx.jsx)(AfterBeat, {}, beatKey(h, l)) : null,
-          h.type === `codaStill` ? (0, jsx.jsx)(CodaStillBeat, {}, beatKey(h, l)) : null,
-          h.type === `codaLine` ? (0, jsx.jsx)(CodaLineBeat, {}, beatKey(h, l)) : null,
-          h.type === `last` ? (0, jsx.jsx)(LastBeat, {}, beatKey(h, l)) : null,
-          h.type === `nameFlash` ? (0, jsx.jsx)(NameFlashBeat, {}, beatKey(h, l)) : null,
-          h.type === `doorway`
+          h.type === "scene" && h.scene === "hold" ? (0, jsx.jsx)(HoldScene, {}, beatKey(h, l)) : null,
+          h.type === "care" ? (0, jsx.jsx)(CareBeat, {}, beatKey(h, l)) : null,
+          h.type === "vow" ? (0, jsx.jsx)(VowBeat, {}, beatKey(h, l)) : null,
+          h.type === "credits" ? (0, jsx.jsx)(CreditsBeat, {}, beatKey(h, l)) : null,
+          h.type === "after" ? (0, jsx.jsx)(AfterBeat, {}, beatKey(h, l)) : null,
+          h.type === "codaStill" ? (0, jsx.jsx)(CodaStillBeat, {}, beatKey(h, l)) : null,
+          h.type === "codaLine" ? (0, jsx.jsx)(CodaLineBeat, {}, beatKey(h, l)) : null,
+          h.type === "last" ? (0, jsx.jsx)(LastBeat, {}, beatKey(h, l)) : null,
+          h.type === "nameFlash" ? (0, jsx.jsx)(NameFlashBeat, {}, beatKey(h, l)) : null,
+          h.type === "doorway"
             ? (0, jsx.jsx)(
                 DoorwayBeat,
                 {
-                  onEnter: r,
+                  onEnter: onEnterHouse,
                 },
                 beatKey(h, l),
               )
@@ -193,45 +192,45 @@ function Film({
         transit: transitFor(h),
         at: l,
       }),
-      (0, jsx.jsx)(`div`, {
-        className: `ribbon`,
-        "aria-hidden": `true`,
-        children: (0, jsx.jsx)(`span`, {
-          className: `ribbon-fill`,
+      (0, jsx.jsx)("div", {
+        className: "ribbon",
+        "aria-hidden": "true",
+        children: (0, jsx.jsx)("span", {
+          className: "ribbon-fill",
           style: {
             transform: `scaleX(${w})`,
           },
         }),
       }),
       b > 0 && !d
-        ? (0, jsx.jsxs)(`p`, {
-            className: `where`,
-            "aria-live": `off`,
+        ? (0, jsx.jsxs)("p", {
+            className: "where",
+            "aria-live": "off",
             children: [
               roman(b),
-              ` `,
-              (0, jsx.jsxs)(`span`, {
-                children: [`/ `, roman(CHAPTER_COUNT)],
+              " ",
+              (0, jsx.jsxs)("span", {
+                children: ["/ ", roman(CHAPTER_COUNT)],
               }),
             ],
           })
         : null,
-      i || l > 2
-        ? (0, jsx.jsxs)(`div`, {
-            className: `film-tools`,
+      seenBefore || l > 2
+        ? (0, jsx.jsxs)("div", {
+            className: "film-tools",
             children: [
-              (0, jsx.jsx)(`button`, {
-                type: `button`,
-                className: `ghost`,
+              (0, jsx.jsx)("button", {
+                type: "button",
+                className: "ghost",
                 onClick: () => f((e) => !e),
                 "aria-expanded": d,
-                children: `contents`,
+                children: "contents",
               }),
-              (0, jsx.jsx)(`button`, {
-                type: `button`,
-                className: `ghost`,
-                onClick: r,
-                children: `the house`,
+              (0, jsx.jsx)("button", {
+                type: "button",
+                className: "ghost",
+                onClick: onEnterHouse,
+                children: "the house",
               }),
             ],
           })
@@ -240,12 +239,12 @@ function Film({
         children: d
           ? (0, jsx.jsx)(Contents, {
               index: l,
-              furthest: a,
+              furthest: furthest,
               positions: c,
               onGo: (e) => {
-                (x(e), f(!1));
+                (x(e), f(false));
               },
-              onClose: () => f(!1),
+              onClose: () => f(false),
             })
           : null,
       }),

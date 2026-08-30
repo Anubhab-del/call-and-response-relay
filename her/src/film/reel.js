@@ -1,22 +1,22 @@
 function buildReel() {
   let e = [
     {
-      type: `projector`,
+      type: "projector",
     },
     {
-      type: `title`,
+      type: "title",
     },
     {
-      type: `overture`,
+      type: "overture",
     },
     {
-      type: `threshold`,
+      type: "threshold",
     },
   ];
   return (
     PARTS.forEach((t) => {
       e.push({
-        type: `part`,
+        type: "part",
         part: t.index,
       });
       for (let n of CHAPTERS)
@@ -24,216 +24,205 @@ function buildReel() {
           e.push(
             n.scene
               ? {
-                  type: `scene`,
+                  type: "scene",
                   n: n.n,
                   scene: n.scene,
                 }
               : {
-                  type: `chapter`,
+                  type: "chapter",
                   n: n.n,
                 },
           );
     }),
     e.push(
       {
-        type: `care`,
+        type: "care",
       },
       {
-        type: `vow`,
+        type: "vow",
       },
       {
-        type: `credits`,
+        type: "credits",
       },
       {
-        type: `after`,
+        type: "after",
       },
       {
-        type: `codaStill`,
+        type: "codaStill",
       },
       {
-        type: `codaLine`,
+        type: "codaLine",
       },
       {
-        type: `last`,
+        type: "last",
       },
       {
-        type: `nameFlash`,
+        type: "nameFlash",
       },
       {
-        type: `doorway`,
+        type: "doorway",
       },
     ),
     e
   );
 }
-
 function beatKey(e, t) {
-  return e.type === `chapter` || e.type === `scene`
+  return e.type === "chapter" || e.type === "scene"
     ? `ch-${e.n}`
-    : e.type === `part`
+    : e.type === "part"
       ? `part-${e.part}`
       : `${e.type}-${t}`;
 }
-
 function chapterAt(e) {
   return CHAPTERS[e - 1];
 }
-
 function weatherFor(e) {
   switch (e.type) {
-    case `part`:
-      return PARTS[e.part]?.weather ?? `void`;
-    case `chapter`:
-      return PARTS[chapterAt(e.n)?.part ?? 0]?.weather ?? `void`;
-    case `scene`:
-      return e.scene === `twohours`
-        ? `still`
-        : e.scene === `dance`
-          ? `hers`
-          : e.scene === `distance`
-            ? `dusk`
-            : (e.scene, `silence`);
-    case `threshold`:
-      return `silence`;
-    case `title`:
-    case `overture`:
-    case `credits`:
-      return `tungsten`;
-    case `care`:
-    case `vow`:
-      return `reply`;
-    case `after`:
-    case `codaStill`:
-    case `codaLine`:
-    case `last`:
-      return `still`;
-    case `nameFlash`:
-      return `hers`;
-    case `doorway`:
-      return `ember`;
+    case "part":
+      return PARTS[e.part]?.weather ?? "void";
+    case "chapter":
+      return PARTS[chapterAt(e.n)?.part ?? 0]?.weather ?? "void";
+    case "scene":
+      return e.scene === "twohours"
+        ? "still"
+        : e.scene === "dance"
+          ? "hers"
+          : e.scene === "distance"
+            ? "dusk"
+            : (e.scene, "silence");
+    case "threshold":
+      return "silence";
+    case "title":
+    case "overture":
+    case "credits":
+      return "tungsten";
+    case "care":
+    case "vow":
+      return "reply";
+    case "after":
+    case "codaStill":
+    case "codaLine":
+    case "last":
+      return "still";
+    case "nameFlash":
+      return "hers";
+    case "doorway":
+      return "ember";
     default:
-      return `void`;
+      return "void";
   }
 }
-
 function cueFor(e) {
   switch (e.type) {
-    case `projector`:
-      return `projector`;
-    case `title`:
-    case `overture`:
-    case `threshold`:
-      return `title`;
-    case `part`:
+    case "projector":
+      return "projector";
+    case "title":
+    case "overture":
+    case "threshold":
+      return "title";
+    case "part":
       return `/score/part-${e.part + 1}.mp3`;
-    case `chapter`:
+    case "chapter":
       return `part-${chapterAt(e.n)?.part ?? 0}`;
-    case `scene`:
+    case "scene":
       return e.scene;
-    case `care`:
-      return `care`;
-    case `vow`:
-      return `vow`;
-    case `credits`:
-    case `after`:
-      return `credits`;
-    case `codaStill`:
-    case `codaLine`:
-    case `last`:
-    case `nameFlash`:
-      return `coda`;
-    case `doorway`:
-      return `house`;
+    case "care":
+      return "care";
+    case "vow":
+      return "vow";
+    case "credits":
+    case "after":
+      return "credits";
+    case "codaStill":
+    case "codaLine":
+    case "last":
+    case "nameFlash":
+      return "coda";
+    case "doorway":
+      return "house";
     default:
-      return `silent`;
+      return "silent";
   }
 }
-
 function beatDuration(e) {
   switch (e.type) {
-    case `projector`:
+    case "projector":
       return 1800;
-    case `title`:
+    case "title":
       return 4600;
-    case `overture`:
+    case "overture":
       return 3400;
-    case `threshold`:
+    case "threshold":
       return 1700;
-    case `part`:
+    case "part":
       return 3600;
-    case `chapter`: {
+    case "chapter": {
       let t = chapterAt(e.n);
       if (!t) return 3600;
-      let n = t.lines.join(` `).split(/\s+/).length;
+      let n = t.lines.join(" ").split(/\s+/).length;
       return Math.round(Math.min(9e3, Math.max(3e3, 1500 + (n / 2.6) * 1e3)));
     }
-    case `scene`:
-      return e.scene === `twohours`
+    case "scene":
+      return e.scene === "twohours"
         ? 6400
-        : e.scene === `distance`
+        : e.scene === "distance"
           ? 5400
-          : e.scene === `sleep`
+          : e.scene === "sleep"
             ? 5e3
-            : e.scene === `dance`
+            : e.scene === "dance"
               ? 4800
-              : e.scene === `hold`
+              : e.scene === "hold"
                 ? HOLD_COPY.ms
                 : 4200;
-    case `care`:
+    case "care":
       return 3800;
-    case `vow`:
+    case "vow":
       return 4600;
-    case `credits`:
+    case "credits":
       return 4400;
-    case `after`:
+    case "after":
       return 5200;
-    case `codaStill`:
+    case "codaStill":
       return 3600;
-    case `codaLine`:
+    case "codaLine":
       return 3200;
-    case `last`:
+    case "last":
       return 6e3;
-    case `nameFlash`:
+    case "nameFlash":
       return 5200;
     default:
       return 0;
   }
 }
-
 function isHeldBeat(e) {
-  return e.type === `vow` || e.type === `care`;
+  return e.type === "vow" || e.type === "care";
 }
-
 function stormPulseFor(e, t) {
-  return e.type === `vow` || e.type === `part` || (e.type === `scene` && e.scene === `twohours`)
+  return e.type === "vow" || e.type === "part" || (e.type === "scene" && e.scene === "twohours")
     ? t + 1
     : 0;
 }
-
 function showsHud(e) {
-  return e.type !== `doorway`;
+  return e.type !== "doorway";
 }
-
 function isFullBleed(e) {
   let t = chapterAt(e);
-  if (!t) return !1;
+  if (!t) return false;
   let n = PARTS[t.part];
-  return n ? (e - n.from) % 5 == 0 : !1;
+  return n ? (e - n.from) % 5 == 0 : false;
 }
-
 function lightFor(e) {
   let t = PARTS[chapterAt(e)?.part ?? 0],
     n = t?.lights ?? [];
   return n.length === 0
-    ? `window`
+    ? "window"
     : n[((Math.floor((e - (t?.from ?? 1)) / 5) % n.length) + n.length) % n.length];
 }
-
 function chapterMarks(e) {
   let t = [];
   return (
     e.forEach((e, n) => {
-      if (e.type === `chapter` || e.type === `scene`) {
+      if (e.type === "chapter" || e.type === "scene") {
         let r = chapterAt(e.n);
         r &&
           t.push({
@@ -248,12 +237,11 @@ function chapterMarks(e) {
     t
   );
 }
-
 function partMarks(e) {
   let t = [];
   return (
     e.forEach((e, n) => {
-      e.type === `part` &&
+      e.type === "part" &&
         t.push({
           part: e.part,
           at: n,
@@ -262,11 +250,10 @@ function partMarks(e) {
     t
   );
 }
-
 function lastChapterBefore(e, t) {
   for (let n = Math.min(t, e.length - 1); n >= 0; n--) {
     let t = e[n];
-    if (t.type === `chapter` || t.type === `scene`) return t.n;
+    if (t.type === "chapter" || t.type === "scene") return t.n;
   }
   return 0;
 }

@@ -1,29 +1,29 @@
-function Lightning({ weather: e, close: t = !1, pulse: n = 0, calm: r = !1 }) {
+function Lightning({ weather: weather, close = false, pulse = 0, calm = false }) {
   let i = (0, React.useRef)(null),
-    a = (0, React.useRef)(e),
-    o = (0, React.useRef)(t),
-    s = (0, React.useRef)(n),
-    c = (0, React.useRef)(r);
+    a = (0, React.useRef)(weather),
+    o = (0, React.useRef)(close),
+    s = (0, React.useRef)(pulse),
+    c = (0, React.useRef)(calm);
   return (
-    (a.current = e),
-    (o.current = t),
-    (s.current = n),
-    (c.current = r),
+    (a.current = weather),
+    (o.current = close),
+    (s.current = pulse),
+    (c.current = calm),
     (0, React.useEffect)(() => {
       let e = i.current;
       if (!e) return;
-      let t = e.getContext(`2d`, {
-        alpha: !0,
-        desynchronized: !0,
+      let t = e.getContext("2d", {
+        alpha: true,
+        desynchronized: true,
       });
       if (!t) return;
-      let n = e.closest(`.letterbox, .house-frame`),
+      let n = e.closest(".letterbox, .house-frame"),
         r = isLean(),
         l = 0,
         u = 0,
         d = 0,
         f = performance.now() + 280,
-        p = !1,
+        p = false,
         m = s.current,
         h = 0,
         g = document.hidden,
@@ -43,12 +43,12 @@ function Lightning({ weather: e, close: t = !1, pulse: n = 0, calm: r = !1 }) {
       let y = new ResizeObserver(v);
       if ((e.parentElement && y.observe(e.parentElement), isStill()))
         return (
-          n?.style.setProperty(`--flash`, `0.06`),
+          n?.style.setProperty("--flash", "0.06"),
           () => {
-            (y.disconnect(), n?.style.setProperty(`--flash`, `0`));
+            (y.disconnect(), n?.style.setProperty("--flash", "0"));
           }
         );
-      let b = (e, t = !1) => {
+      let b = (e, t = false) => {
           let n = c.current ? 0.45 : 1,
             i = strikeIntensity(a.current, o.current || t) * n;
           for (
@@ -62,7 +62,7 @@ function Lightning({ weather: e, close: t = !1, pulse: n = 0, calm: r = !1 }) {
                 i > 0.55 &&
                 Math.random() > 0.42 &&
                 _.push({
-                  bolts: makeBolt(l, u, !1, !1),
+                  bolts: makeBolt(l, u, false, false),
                   power: i * 0.48,
                   born: e + 48 + Math.random() * 70,
                   life: 80 + i * 40,
@@ -76,10 +76,10 @@ function Lightning({ weather: e, close: t = !1, pulse: n = 0, calm: r = !1 }) {
           (t.beginPath(),
             (t.strokeStyle = n),
             (t.lineWidth = r),
-            (t.shadowColor = i ? n : `transparent`),
+            (t.shadowColor = i ? n : "transparent"),
             (t.shadowBlur = i),
-            (t.lineJoin = `round`),
-            (t.lineCap = `round`));
+            (t.lineJoin = "round"),
+            (t.lineCap = "round"));
           for (let n = 0; n < e.length; n++) {
             let r = e[n];
             n === 0 ? t.moveTo(r.x, r.y) : t.lineTo(r.x, r.y);
@@ -89,13 +89,13 @@ function Lightning({ weather: e, close: t = !1, pulse: n = 0, calm: r = !1 }) {
         S = () => {
           g = document.hidden;
         };
-      document.addEventListener(`visibilitychange`, S);
+      document.addEventListener("visibilitychange", S);
       let C = (e) => {
         if (((d = requestAnimationFrame(C)), g || (r && e - h < 32))) return;
         ((h = e),
           s.current !== m &&
             ((m = s.current),
-            m > 0 && (b(e, !0), (f = e + strikeDelay(a.current, o.current) * (r ? 1.25 : 1)))),
+            m > 0 && (b(e, true), (f = e + strikeDelay(a.current, o.current) * (r ? 1.25 : 1)))),
           e >= f &&
             (b(e),
             (f = e + strikeDelay(a.current, o.current) * (r ? 1.25 : 1) * (c.current ? 1.9 : 1))),
@@ -126,44 +126,43 @@ function Lightning({ weather: e, close: t = !1, pulse: n = 0, calm: r = !1 }) {
         if (!r && i > 0.03) {
           let e = t.createLinearGradient(0, 0, 0, u * 0.55);
           (e.addColorStop(0, `rgba(214, 232, 255, ${i * 0.22})`),
-            e.addColorStop(1, `rgba(214, 232, 255, 0)`),
+            e.addColorStop(1, "rgba(214, 232, 255, 0)"),
             (t.fillStyle = e),
             t.fillRect(0, 0, l, u));
         }
-        (n?.style.setProperty(`--flash`, i.toFixed(3)),
-          o.current && !p && ((p = !0), b(e, !0)),
-          o.current || (p = !1));
+        (n?.style.setProperty("--flash", i.toFixed(3)),
+          o.current && !p && ((p = true), b(e, true)),
+          o.current || (p = false));
       };
       return (
         (d = requestAnimationFrame(C)),
         () => {
           (cancelAnimationFrame(d),
             y.disconnect(),
-            document.removeEventListener(`visibilitychange`, S),
-            n?.style.setProperty(`--flash`, `0`));
+            document.removeEventListener("visibilitychange", S),
+            n?.style.setProperty("--flash", "0"));
         }
       );
     }, []),
-    (0, jsx.jsx)(`canvas`, {
+    (0, jsx.jsx)("canvas", {
       ref: i,
-      className: `lightning`,
-      "aria-hidden": `true`,
+      className: "lightning",
+      "aria-hidden": "true",
     })
   );
 }
-
-function RainGlass({ weather: e, calm: t = !1 }) {
+function RainGlass({ weather: weather, calm = false }) {
   let n = (0, React.useRef)(null),
-    r = (0, React.useRef)(e),
-    i = (0, React.useRef)(t);
-  ((r.current = e),
-    (i.current = t),
+    r = (0, React.useRef)(weather),
+    i = (0, React.useRef)(calm);
+  ((r.current = weather),
+    (i.current = calm),
     (0, React.useEffect)(() => {
       let e = n.current;
       if (!e) return;
-      let t = e.getContext(`2d`, {
-        alpha: !0,
-        desynchronized: !0,
+      let t = e.getContext("2d", {
+        alpha: true,
+        desynchronized: true,
       });
       if (!t) return;
       let a = isLean(),
@@ -204,17 +203,17 @@ function RainGlass({ weather: e, calm: t = !1 }) {
       let h = () => {
         u = document.hidden;
       };
-      document.addEventListener(`visibilitychange`, h);
+      document.addEventListener("visibilitychange", h);
       let g = (e) => {
         if (((c = requestAnimationFrame(g)), u || (a && e - l < 33))) return;
         let n = Math.min(0.05, (e - l) / 1e3);
         l = e;
         let p = rainOpacityFor(r.current) * (i.current ? 0.6 : 1);
-        (t.clearRect(0, 0, o, s), (t.lineCap = `round`));
+        (t.clearRect(0, 0, o, s), (t.lineCap = "round"));
         for (let e of d)
           ((e.y += e.vy * n * 0.12),
             e.y > s + 20 && ((e.x = Math.random() * o), (e.y = -e.len)),
-            (t.strokeStyle = `rgba(214, 228, 242, 1)`),
+            (t.strokeStyle = "rgba(214, 228, 242, 1)"),
             (t.globalAlpha = e.alpha),
             (t.lineWidth = e.thick),
             t.beginPath(),
@@ -238,14 +237,14 @@ function RainGlass({ weather: e, calm: t = !1 }) {
           ((i.y += i.vy * n),
             (i.x += Math.sin(e * 0.004 + i.wob) * 6 * n),
             (t.globalAlpha = i.alpha * 0.35),
-            (t.strokeStyle = `rgba(226, 236, 248, 1)`),
+            (t.strokeStyle = "rgba(226, 236, 248, 1)"),
             (t.lineWidth = i.r * 0.7),
             t.beginPath(),
             t.moveTo(i.x, a - i.r * 6),
             t.lineTo(i.x, i.y),
             t.stroke(),
             (t.globalAlpha = i.alpha),
-            (t.fillStyle = `rgba(232, 240, 250, 1)`),
+            (t.fillStyle = "rgba(232, 240, 250, 1)"),
             t.beginPath(),
             t.ellipse(i.x, i.y, i.r * 0.55, i.r * 1.15, 0, 0, Math.PI * 2),
             t.fill(),
@@ -258,27 +257,26 @@ function RainGlass({ weather: e, calm: t = !1 }) {
         () => {
           (cancelAnimationFrame(c),
             m.disconnect(),
-            document.removeEventListener(`visibilitychange`, h));
+            document.removeEventListener("visibilitychange", h));
         }
       );
     }, []));
-  let a = rainOpacityFor(e);
-  return (0, jsx.jsx)(`canvas`, {
+  let a = rainOpacityFor(weather);
+  return (0, jsx.jsx)("canvas", {
     ref: n,
-    className: `rain-glass`,
-    "data-heavy": a > 0.8 ? `true` : `false`,
-    "aria-hidden": `true`,
+    className: "rain-glass",
+    "data-heavy": a > 0.8 ? "true" : "false",
+    "aria-hidden": "true",
   });
 }
-
 function Grain() {
   let e = (0, React.useRef)(null);
   return (
     (0, React.useEffect)(() => {
       let t = e.current;
       if (!t) return;
-      let n = t.getContext(`2d`, {
-        alpha: !0,
+      let n = t.getContext("2d", {
+        alpha: true,
       });
       if (!n) return;
       let r = isLean() ? 48 : 72;
@@ -302,14 +300,13 @@ function Grain() {
         () => window.clearInterval(a)
       );
     }, []),
-    (0, jsx.jsx)(`canvas`, {
+    (0, jsx.jsx)("canvas", {
       ref: e,
-      className: `grain`,
-      "aria-hidden": `true`,
+      className: "grain",
+      "aria-hidden": "true",
     })
   );
 }
-
 function Dust() {
   let e = (0, React.useRef)(null);
   return (
@@ -317,9 +314,9 @@ function Dust() {
       if (isStill() || isLean()) return;
       let t = e.current;
       if (!t) return;
-      let n = t.getContext(`2d`, {
-        alpha: !0,
-        desynchronized: !0,
+      let n = t.getContext("2d", {
+        alpha: true,
+        desynchronized: true,
       });
       if (!n) return;
       let r = 0,
@@ -366,7 +363,7 @@ function Dust() {
             a.x > 1.05 && (a.x = -0.05));
           let o = 0.6 + Math.sin(e * 0.0012 + a.ph) * 0.4;
           ((n.globalAlpha = a.a * o),
-            (n.fillStyle = `rgba(226, 238, 252, 1)`),
+            (n.fillStyle = "rgba(226, 238, 252, 1)"),
             n.beginPath(),
             n.arc(a.x * r, a.y * i, a.r, 0, Math.PI * 2),
             n.fill());
@@ -380,27 +377,26 @@ function Dust() {
         }
       );
     }, []),
-    (0, jsx.jsx)(`canvas`, {
+    (0, jsx.jsx)("canvas", {
       ref: e,
-      className: `dust`,
-      "aria-hidden": `true`,
+      className: "dust",
+      "aria-hidden": "true",
     })
   );
 }
-
-function Lamp({ warm: e = 1 }) {
-  return (0, jsx.jsxs)(`div`, {
-    className: `lamp`,
-    "aria-hidden": `true`,
+function Lamp({ warm = 1 }) {
+  return (0, jsx.jsxs)("div", {
+    className: "lamp",
+    "aria-hidden": "true",
     style: {
-      "--warm": e,
+      "--warm": warm,
     },
     children: [
-      (0, jsx.jsx)(`span`, {
-        className: `lamp-glow`,
+      (0, jsx.jsx)("span", {
+        className: "lamp-glow",
       }),
-      (0, jsx.jsx)(`span`, {
-        className: `lamp-core`,
+      (0, jsx.jsx)("span", {
+        className: "lamp-core",
       }),
     ],
   });

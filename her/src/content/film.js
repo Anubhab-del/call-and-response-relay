@@ -398,7 +398,6 @@ You are the one who gets to say when one has been kept.
 The only promise that has to be renewed daily.
 It has been. One thousand and ninety-something times.
 `;
-
 function parseFilm() {
   let e = [],
     t = [],
@@ -407,19 +406,19 @@ function parseFilm() {
 `)) {
     let i = r.trim();
     if (i) {
-      if (i.startsWith(`===`)) {
+      if (i.startsWith("===")) {
         let [r, a, o, s] = i
           .slice(3)
-          .split(`|`)
+          .split("|")
           .map((e) => e.trim());
         (e.length && (e[e.length - 1].to = t.length),
           e.push({
             index: e.length,
             years: r,
             title: a,
-            weather: o || `void`,
-            lights: (s ?? `window`)
-              .split(`,`)
+            weather: o || "void",
+            lights: (s ?? "window")
+              .split(",")
               .map((e) => e.trim())
               .filter(Boolean),
             from: t.length + 1,
@@ -428,10 +427,10 @@ function parseFilm() {
           (n = null));
         continue;
       }
-      if (i.startsWith(`---`)) {
+      if (i.startsWith("---")) {
         let r = i.slice(3).trim(),
           a,
-          o = r.indexOf(`@`);
+          o = r.indexOf("@");
         (o >= 0 && ((a = r.slice(o + 1).trim()), (r = r.slice(0, o).trim())),
           (n = {
             n: t.length + 1,
@@ -454,99 +453,82 @@ function parseFilm() {
     }
   );
 }
-
 var FILM = parseFilm();
-
 var PARTS = FILM.parts;
-
 var CHAPTERS = FILM.chapters;
-
 var ROMAN_PAIRS = [
-  [100, `C`],
-  [90, `XC`],
-  [50, `L`],
-  [40, `XL`],
-  [10, `X`],
-  [9, `IX`],
-  [5, `V`],
-  [4, `IV`],
-  [1, `I`],
+  [100, "C"],
+  [90, "XC"],
+  [50, "L"],
+  [40, "XL"],
+  [10, "X"],
+  [9, "IX"],
+  [5, "V"],
+  [4, "IV"],
+  [1, "I"],
 ];
-
 function roman(e) {
   let t = e,
-    n = ``;
+    n = "";
   for (let [e, r] of ROMAN_PAIRS) for (; t >= e; ) ((n += r), (t -= e));
   return n;
 }
-
 var DISTANCE_COPY = {
-  kicker: `Between us`,
-  line: `I have never once thought of it as far.`,
-  after: `It is a number. It is not an argument.`,
+  kicker: "Between us",
+  line: "I have never once thought of it as far.",
+  after: "It is a number. It is not an argument.",
 };
-
 var TWO_HOURS_COPY = {
-  kicker: `May 3, 2026`,
-  line: `Two hours.`,
-  after: `I have run them back so many times they have worn thin.`,
-  closing: `Everything before that was faith. Everything after is memory.`,
+  kicker: "May 3, 2026",
+  line: "Two hours.",
+  after: "I have run them back so many times they have worn thin.",
+  closing: "Everything before that was faith. Everything after is memory.",
 };
-
 var SLEEP_COPY = {
-  kicker: `While you sleep`,
+  kicker: "While you sleep",
   lines: [
-    `I check that you got home.`,
-    `I put my phone face down and it lights the ceiling anyway.`,
-    `I do this every night. You were never supposed to know.`,
+    "I check that you got home.",
+    "I put my phone face down and it lights the ceiling anyway.",
+    "I do this every night. You were never supposed to know.",
   ],
 };
-
 var DANCE_COPY = {
-  kicker: `The way you move`,
+  kicker: "The way you move",
   lines: [
-    `You learned to hold a shape until it means something.`,
-    `That is the whole thing. That is what I have been doing for three years.`,
+    "You learned to hold a shape until it means something.",
+    "That is the whole thing. That is what I have been doing for three years.",
   ],
 };
-
 var HOLD_COPY = {
   ms: 4200,
 };
-
 var CARE_COPY = {
-  line: `Tomorrow, again.`,
+  line: "Tomorrow, again.",
 };
-
 var VOW_COPY = {
-  line: `We are not going anywhere.`,
-  under: `That is not a wish. It is a report.`,
+  line: "We are not going anywhere.",
+  under: "That is not a wish. It is a report.",
 };
-
 var CREDITS_COPY = {
-  hers: `starring`,
-  yours: `kept by`,
+  hers: "starring",
+  yours: "kept by",
 };
-
 var OVERTURE_COPY = {
-  kicker: `One hundred chapters`,
-  line: `Take it in one sitting or a hundred nights. It keeps your place either way.`,
+  kicker: "One hundred chapters",
+  line: "Take it in one sitting or a hundred nights. It keeps your place either way.",
 };
-
 var AFTER_COPY = {
-  date: `September 2, 2026`,
-  line: `I am here.`,
+  date: "September 2, 2026",
+  line: "I am here.",
 };
-
 var CODA_COPY = {
-  still: `/stills/coda.svg`,
-  line: `The lamp is still on.`,
+  still: "/stills/coda.svg",
+  line: "The lamp is still on.",
   last: `Your name means memory.
 I have been trying to earn it.`,
 };
-
 var DOORWAY_COPY = {
-  line: `The picture is over.`,
-  under: `The house is not. Stay as long as you like.`,
-  button: `Come in`,
+  line: "The picture is over.",
+  under: "The house is not. Stay as long as you like.",
+  button: "Come in",
 };

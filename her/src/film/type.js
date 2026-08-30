@@ -1,17 +1,13 @@
 var EASE_FILM = [0.16, 1, 0.3, 1];
-
 var PACE = 105;
-
 var PACE_CAP = 1250;
-
 function paceFor(e, t) {
   return Math.min(t, Math.max(38, PACE_CAP / Math.max(1, e)));
 }
-
-function Lines({ text: e, delay: t = 0, className: n, pace: r = PACE }) {
+function Lines({ text: text, delay = 0, className: className, pace = PACE }) {
   if (isStill())
     return (0, jsx.jsx)(motion.p, {
-      className: n,
+      className: className,
       initial: {
         opacity: 0,
       },
@@ -20,47 +16,46 @@ function Lines({ text: e, delay: t = 0, className: n, pace: r = PACE }) {
       },
       transition: {
         duration: 0.24,
-        delay: t * 0.4,
+        delay: delay * 0.4,
       },
-      children: e,
+      children: text,
     });
-  let i = e.split(` `),
-    a = paceFor(i.length, r),
+  let i = text.split(" "),
+    a = paceFor(i.length, pace),
     o = !isLean();
-  return (0, jsx.jsx)(`p`, {
-    className: n,
+  return (0, jsx.jsx)("p", {
+    className: className,
     children: i.map((e, n) =>
       (0, jsx.jsxs)(
         motion.span,
         {
-          className: `word`,
+          className: "word",
           initial: {
             opacity: 0,
             y: 6,
-            filter: o ? `blur(5px)` : `none`,
+            filter: o ? "blur(5px)" : "none",
           },
           animate: {
             opacity: 1,
             y: 0,
-            filter: `blur(0px)`,
+            filter: "blur(0px)",
           },
           transition: {
             duration: 0.62,
-            delay: t + (n * a) / 1e3,
+            delay: delay + (n * a) / 1e3,
             ease: EASE_FILM,
           },
-          children: [e, n < i.length - 1 ? ` ` : ``],
+          children: [e, n < i.length - 1 ? " " : ""],
         },
         `${e}-${n}`,
       ),
     ),
   });
 }
-
-function Heading({ text: e, delay: t = 0, className: n, pace: r = 58 }) {
+function Heading({ text: text, delay = 0, className: className, pace = 58 }) {
   return isStill() || isLean()
     ? (0, jsx.jsx)(motion.h2, {
-        className: n,
+        className: className,
         initial: {
           opacity: 0,
           y: 8,
@@ -71,63 +66,58 @@ function Heading({ text: e, delay: t = 0, className: n, pace: r = 58 }) {
         },
         transition: {
           duration: 0.7,
-          delay: t,
+          delay: delay,
           ease: EASE_FILM,
         },
-        children: e,
+        children: text,
       })
-    : (0, jsx.jsx)(`h2`, {
-        className: n,
-        children: e.split(``).map((e, n) =>
+    : (0, jsx.jsx)("h2", {
+        className: className,
+        children: text.split("").map((e, n) =>
           (0, jsx.jsx)(
             motion.span,
             {
-              className: `glyph`,
+              className: "glyph",
               initial: {
                 opacity: 0,
-                filter: `blur(7px)`,
+                filter: "blur(7px)",
               },
               animate: {
                 opacity: 1,
-                filter: `blur(0px)`,
+                filter: "blur(0px)",
               },
               transition: {
                 duration: 0.5,
-                delay: t + (n * r) / 1e3,
+                delay: delay + (n * pace) / 1e3,
                 ease: EASE_FILM,
               },
-              children: e === ` ` ? `\xA0` : e,
+              children: e === " " ? "\xA0" : e,
             },
             n,
           ),
         ),
       });
 }
-
 function readSeconds(e, t = PACE) {
   if (isStill()) return 0.24;
-  let n = e.split(` `).length;
+  let n = e.split(" ").length;
   return (n * paceFor(n, t)) / 1e3 + 0.62;
 }
-
 var NAME_HOLD = 1500;
-
 var LAST_HOLD = 1600;
-
 var CODA_HOLD = 1400;
-
-function NameCanvas({ text: e, onDone: t }) {
+function NameCanvas({ text: text, onDone: onDone }) {
   let n = (0, React.useRef)(null);
   return (
     (0, React.useEffect)(() => {
       let r = n.current;
       if (!r) return;
-      let i = r.getContext(`2d`, {
-        alpha: !0,
+      let i = r.getContext("2d", {
+        alpha: true,
       });
       if (!i || isStill()) return;
       let a = 0,
-        o = !1,
+        o = false,
         s = 0,
         c = 0,
         l = isLean();
@@ -146,18 +136,18 @@ function NameCanvas({ text: e, onDone: t }) {
             (r.style.width = `${s}px`),
             (r.style.height = `${c}px`),
             i.setTransform(u, 0, 0, u, 0, 0));
-          let d = document.createElement(`canvas`);
+          let d = document.createElement("canvas");
           ((d.width = Math.max(1, Math.floor(s))), (d.height = Math.max(1, Math.floor(c))));
-          let f = d.getContext(`2d`, {
-            willReadFrequently: !0,
+          let f = d.getContext("2d", {
+            willReadFrequently: true,
           });
           if (!f) return;
           let p = Math.min(s * 0.9, c * 0.42);
-          ((f.font = `italic ${Math.max(44, Math.round(p / Math.max(2.3, e.length * 0.46)))}px "Cormorant Garamond", Georgia, serif`),
-            (f.textAlign = `center`),
-            (f.textBaseline = `middle`),
-            (f.fillStyle = `#fff`),
-            f.fillText(e, s / 2, c / 2));
+          ((f.font = `italic ${Math.max(44, Math.round(p / Math.max(2.3, text.length * 0.46)))}px "Cormorant Garamond", Georgia, serif`),
+            (f.textAlign = "center"),
+            (f.textBaseline = "middle"),
+            (f.fillStyle = "#fff"),
+            f.fillText(text, s / 2, c / 2));
           let m = f.getImageData(0, 0, d.width, d.height).data,
             h = [];
           for (let e = 0; e < d.height; e += 3)
@@ -184,7 +174,7 @@ function NameCanvas({ text: e, onDone: t }) {
               wob: Math.random() * Math.PI * 2,
             })),
             b = performance.now(),
-            x = !1,
+            x = false,
             S = (e) => {
               if (((a = requestAnimationFrame(S)), document.hidden)) return;
               let n = e - b;
@@ -213,12 +203,12 @@ function NameCanvas({ text: e, onDone: t }) {
                 o <= 0.01 ||
                   (l ||
                     ((i.globalAlpha = Math.min(1, o * 0.22)),
-                    (i.fillStyle = `rgba(186, 214, 255, 1)`),
+                    (i.fillStyle = "rgba(186, 214, 255, 1)"),
                     i.beginPath(),
                     i.ellipse(r, a, t.r * 1.9, t.r * 2.3, 0, 0, Math.PI * 2),
                     i.fill()),
                   (i.globalAlpha = Math.min(1, o)),
-                  (i.fillStyle = `rgba(240, 249, 255, 1)`),
+                  (i.fillStyle = "rgba(240, 249, 255, 1)"),
                   i.beginPath(),
                   i.ellipse(r, a, t.r * 0.66, t.r * 1.2, 0, 0, Math.PI * 2),
                   i.fill());
@@ -227,24 +217,24 @@ function NameCanvas({ text: e, onDone: t }) {
                 let e = Math.min(1, (n - NAME_HOLD * 0.6) / 600) * (n > 3100 ? 0.3 : 1),
                   t = i.createRadialGradient(s / 2, c / 2, 0, s / 2, c / 2, Math.max(s, c) * 0.34);
                 (t.addColorStop(0, `rgba(190, 218, 255, ${0.1 * e})`),
-                  t.addColorStop(1, `rgba(190, 218, 255, 0)`),
+                  t.addColorStop(1, "rgba(190, 218, 255, 0)"),
                   (i.globalAlpha = 1),
                   (i.fillStyle = t),
                   i.fillRect(0, 0, s, c));
               }
-              ((i.globalAlpha = 1), !x && n > 4500 && ((x = !0), t?.()));
+              ((i.globalAlpha = 1), !x && n > 4500 && ((x = true), onDone?.()));
             };
           a = requestAnimationFrame(S);
         })(),
         () => {
-          ((o = !0), cancelAnimationFrame(a));
+          ((o = true), cancelAnimationFrame(a));
         }
       );
-    }, [e, t]),
-    (0, jsx.jsx)(`canvas`, {
+    }, [text, onDone]),
+    (0, jsx.jsx)("canvas", {
       ref: n,
-      className: `rain-name`,
-      "aria-hidden": `true`,
+      className: "rain-name",
+      "aria-hidden": "true",
     })
   );
 }

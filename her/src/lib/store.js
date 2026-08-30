@@ -1,47 +1,40 @@
-var STORE_KEY = `her.v1`;
-
+var STORE_KEY = "her.v1";
 var SCHEMA = 1;
-
 var EMPTY_STATE = {
   schema: SCHEMA,
-  greeted: !1,
-  entered: !1,
-  watched: !1,
+  greeted: false,
+  entered: false,
+  watched: false,
   reelAt: 0,
   reelFurthest: 0,
   opened: {},
-  spentOnce: !1,
+  spentOnce: false,
   kept: {},
   collected: {},
   pulls: {},
   replies: [],
   words: {},
   visits: [],
-  sound: !0,
-  motion: `full`,
+  sound: true,
+  motion: "full",
   inbox: [],
-  nameWritten: !1,
+  nameWritten: false,
   firstOpen: 0,
   lastOpen: 0,
 };
-
-var storageBroken = !1;
-
+var storageBroken = false;
 function probeStorage() {
   try {
-    let e = `__her_probe__`;
-    return (localStorage.setItem(e, `1`), localStorage.removeItem(e), !0);
+    let e = "__her_probe__";
+    return (localStorage.setItem(e, "1"), localStorage.removeItem(e), true);
   } catch {
-    return !1;
+    return false;
   }
 }
-
-var storageWorks = typeof window < `u` && probeStorage();
-
-storageWorks || (storageBroken = !0);
-
+var storageWorks = typeof window !== "undefined" && probeStorage();
+storageWorks || (storageBroken = true);
 function normaliseState(e) {
-  if (!e || typeof e != `object`)
+  if (!e || typeof e != "object")
     return {
       ...EMPTY_STATE,
     };
@@ -67,16 +60,13 @@ function normaliseState(e) {
     },
     replies: Array.isArray(t.replies) ? t.replies.filter(isNote) : [],
     inbox: Array.isArray(t.inbox) ? t.inbox.filter(isNote) : [],
-    visits: Array.isArray(t.visits) ? t.visits.filter((e) => typeof e == `number`) : [],
+    visits: Array.isArray(t.visits) ? t.visits.filter((e) => typeof e == "number") : [],
   };
 }
-
 function isNote(e) {
-  return !!e && typeof e.text == `string` && typeof e.id == `string`;
+  return !!e && typeof e.text == "string" && typeof e.id == "string";
 }
-
 var current = readState();
-
 function readState() {
   if (!storageWorks)
     return {
@@ -100,9 +90,7 @@ function readState() {
     };
   }
 }
-
 var listeners = new Set();
-
 function subscribe(e) {
   return (
     listeners.add(e),
@@ -111,25 +99,20 @@ function subscribe(e) {
     }
   );
 }
-
 function snapshot() {
   return current;
 }
-
 var raf =
-  typeof requestAnimationFrame == `function`
+  typeof requestAnimationFrame == "function"
     ? (e) => requestAnimationFrame(e)
     : (e) => setTimeout(e, 16);
-
 var cancelRaf =
-  typeof cancelAnimationFrame == `function` ? (e) => cancelAnimationFrame(e) : (e) => clearTimeout(e);
-
+  typeof cancelAnimationFrame == "function" ? (e) => cancelAnimationFrame(e) : (e) => clearTimeout(e);
 var flushHandle = 0;
-
 function persist() {
   if (storageWorks)
     try {
-      (localStorage.setItem(STORE_KEY, JSON.stringify(current)), (storageBroken = !1));
+      (localStorage.setItem(STORE_KEY, JSON.stringify(current)), (storageBroken = false));
     } catch {
       try {
         let e = {
@@ -137,13 +120,12 @@ function persist() {
           collected: {},
           visits: current.visits.slice(-90),
         };
-        (localStorage.setItem(STORE_KEY, JSON.stringify(e)), (current = e), (storageBroken = !1));
+        (localStorage.setItem(STORE_KEY, JSON.stringify(e)), (current = e), (storageBroken = false));
       } catch {
-        storageBroken = !0;
+        storageBroken = true;
       }
     }
 }
-
 function update(e) {
   (e(current),
     (current = {
@@ -172,25 +154,22 @@ function update(e) {
     ((flushHandle = 0), persist());
   });
 }
-
 function flushNow() {
   (flushHandle && cancelRaf(flushHandle), (flushHandle = 0), persist());
 }
-
-typeof window < `u` &&
-  (window.addEventListener(`pagehide`, flushNow),
-  window.addEventListener(`beforeunload`, flushNow),
-  document.addEventListener(`visibilitychange`, () => {
+typeof window !== "undefined" &&
+  (window.addEventListener("pagehide", flushNow),
+  window.addEventListener("beforeunload", flushNow),
+  document.addEventListener("visibilitychange", () => {
     document.hidden && flushNow();
   }),
-  window.addEventListener(`storage`, (e) => {
+  window.addEventListener("storage", (e) => {
     if (!(e.key !== STORE_KEY || !e.newValue))
       try {
         current = normaliseState(JSON.parse(e.newValue));
         for (let e of listeners) e(current);
       } catch {}
   }));
-
 function exportState() {
   return JSON.stringify(
     {
@@ -202,7 +181,6 @@ function exportState() {
     2,
   );
 }
-
 function importState(e) {
   try {
     let t = JSON.parse(e),
@@ -232,19 +210,18 @@ function importState(e) {
           (e.watched = e.watched || n.watched));
       }),
       {
-        ok: !0,
+        ok: true,
         added: r,
       }
     );
   } catch {
     return {
-      ok: !1,
+      ok: false,
       added: 0,
-      reason: `That file is not from here.`,
+      reason: "That file is not from here.",
     };
   }
 }
-
 function newId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }

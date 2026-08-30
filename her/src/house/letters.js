@@ -1,10 +1,10 @@
-function LettersRoom({ onOpenReply: e }) {
+function LettersRoom({ onOpenReply: onOpenReply }) {
   let t = useStore(),
     [n, r] = (0, React.useState)(null),
     [i, a] = (0, React.useState)(null),
     o = (0, React.useMemo)(() => [...LETTERS].sort((e, t) => (e.weight ?? 50) - (t.weight ?? 50)), []),
     s = (e) => {
-      if (e.kind === `once` && !t.opened[e.id]) {
+      if (e.kind === "once" && !t.opened[e.id]) {
         a(e);
         return;
       }
@@ -12,35 +12,36 @@ function LettersRoom({ onOpenReply: e }) {
     },
     c = (e) => {
       (tapKept(),
-        score.setCue(`letter`),
+        score.setCue("letter"),
         update((t) => {
-          (t.opened[e.id] || (t.opened[e.id] = Date.now()), e.kind === `once` && (t.spentOnce = !0));
+          (t.opened[e.id] || (t.opened[e.id] = Date.now()), e.kind === "once" && (t.spentOnce = true));
         }),
         a(null),
         r(e));
     },
     l = o.filter((e) => t.opened[e.id]).length;
-  return (0, jsx.jsxs)(`div`, {
-    className: `letters`,
+  return (0, jsx.jsxs)("div", {
+    className: "letters",
     children: [
       (0, jsx.jsx)(motion.p, {
-        className: `room-lede`,
+        className: "room-lede",
         ...fadeIn(0, 0.6),
-        children: `Some of these open when you need them. Some will not open until a day arrives — not for you, and not for me either.`,
+        children:
+          "Some of these open when you need them. Some will not open until a day arrives — not for you, and not for me either.",
       }),
       (0, jsx.jsxs)(motion.p, {
-        className: `room-count`,
+        className: "room-count",
         ...fadeIn(0.15, 0.6),
-        children: [l, ` of `, o.length, ` opened`],
+        children: [l, " of ", o.length, " opened"],
       }),
-      (0, jsx.jsx)(`ul`, {
-        className: `shelf`,
+      (0, jsx.jsx)("ul", {
+        className: "shelf",
         children: o.map((e, n) => {
           let r = isUnsealed(e.on),
             i = !!t.opened[e.id],
-            a = e.kind === `once` && t.spentOnce && !i,
+            a = e.kind === "once" && t.spentOnce && !i,
             o = daysUntil(e.on),
-            c = (e.kind === `sealed` && !r) || a;
+            c = (e.kind === "sealed" && !r) || a;
           return (0, jsx.jsx)(
             motion.li,
             {
@@ -57,45 +58,45 @@ function LettersRoom({ onOpenReply: e }) {
                 delay: Math.min(0.5, n * 0.035),
                 ease: [0.16, 1, 0.3, 1],
               },
-              children: (0, jsx.jsxs)(`button`, {
-                type: `button`,
-                className: `envelope`,
-                "data-locked": c ? `true` : void 0,
-                "data-opened": i ? `true` : void 0,
-                "data-once": e.kind === `once` ? `true` : void 0,
+              children: (0, jsx.jsxs)("button", {
+                type: "button",
+                className: "envelope",
+                "data-locked": c ? "true" : void 0,
+                "data-opened": i ? "true" : void 0,
+                "data-once": e.kind === "once" ? "true" : void 0,
                 onClick: () => {
                   (tapTick(), !c && s(e));
                 },
                 "aria-disabled": c,
                 children: [
-                  (0, jsx.jsx)(`span`, {
-                    className: `envelope-flap`,
-                    "aria-hidden": `true`,
+                  (0, jsx.jsx)("span", {
+                    className: "envelope-flap",
+                    "aria-hidden": "true",
                   }),
-                  (0, jsx.jsx)(`span`, {
-                    className: `envelope-open`,
+                  (0, jsx.jsx)("span", {
+                    className: "envelope-open",
                     children: e.open,
                   }),
-                  (0, jsx.jsx)(`span`, {
-                    className: `envelope-state`,
+                  (0, jsx.jsx)("span", {
+                    className: "envelope-state",
                     children:
-                      c && e.kind === `sealed`
-                        ? `sealed · ${o} ${o === 1 ? `day` : `days`}`
+                      c && e.kind === "sealed"
+                        ? `sealed · ${o} ${o === 1 ? "day" : "days"}`
                         : a
-                          ? `spent`
+                          ? "spent"
                           : i
-                            ? `read · open it again`
-                            : e.kind === `once`
-                              ? `once, ever`
-                              : `unread`,
+                            ? "read · open it again"
+                            : e.kind === "once"
+                              ? "once, ever"
+                              : "unread",
                   }),
-                  e.kind === `sealed` && !r
-                    ? (0, jsx.jsx)(`span`, {
-                        className: `envelope-date`,
+                  e.kind === "sealed" && !r
+                    ? (0, jsx.jsx)("span", {
+                        className: "envelope-date",
                         children:
                           e.on && e.on.length === 5
-                            ? formatParts(nextOccurrence(e.on, !0))
-                            : formatCivil(e.on ?? ``),
+                            ? formatParts(nextOccurrence(e.on, true))
+                            : formatCivil(e.on ?? ""),
                       })
                     : null,
                 ],
@@ -108,7 +109,7 @@ function LettersRoom({ onOpenReply: e }) {
       (0, jsx.jsx)(AnimatePresence, {
         children: i
           ? (0, jsx.jsx)(motion.div, {
-              className: `scrim`,
+              className: "scrim",
               initial: {
                 opacity: 0,
               },
@@ -120,7 +121,7 @@ function LettersRoom({ onOpenReply: e }) {
               },
               onClick: () => a(null),
               children: (0, jsx.jsxs)(motion.div, {
-                className: `confirm`,
+                className: "confirm",
                 onClick: (e) => e.stopPropagation(),
                 initial: {
                   opacity: 0,
@@ -135,28 +136,29 @@ function LettersRoom({ onOpenReply: e }) {
                   y: 18,
                 },
                 children: [
-                  (0, jsx.jsx)(`p`, {
-                    className: `confirm-title`,
-                    children: `This one opens once.`,
+                  (0, jsx.jsx)("p", {
+                    className: "confirm-title",
+                    children: "This one opens once.",
                   }),
-                  (0, jsx.jsx)(`p`, {
-                    className: `confirm-body`,
-                    children: `After this it stays open for you to read again, but it will never be unread. There is no way to put it back. You do not have to do it today.`,
+                  (0, jsx.jsx)("p", {
+                    className: "confirm-body",
+                    children:
+                      "After this it stays open for you to read again, but it will never be unread. There is no way to put it back. You do not have to do it today.",
                   }),
-                  (0, jsx.jsxs)(`div`, {
-                    className: `confirm-row`,
+                  (0, jsx.jsxs)("div", {
+                    className: "confirm-row",
                     children: [
-                      (0, jsx.jsx)(`button`, {
-                        type: `button`,
-                        className: `ghost`,
+                      (0, jsx.jsx)("button", {
+                        type: "button",
+                        className: "ghost",
                         onClick: () => a(null),
-                        children: `not yet`,
+                        children: "not yet",
                       }),
-                      (0, jsx.jsx)(`button`, {
-                        type: `button`,
-                        className: `solid`,
+                      (0, jsx.jsx)("button", {
+                        type: "button",
+                        className: "solid",
                         onClick: () => c(i),
-                        children: `break the seal`,
+                        children: "break the seal",
                       }),
                     ],
                   }),
@@ -173,7 +175,7 @@ function LettersRoom({ onOpenReply: e }) {
               onClose: () => r(null),
               onReply: () => {
                 let t = n;
-                (r(null), e(t.id, t.open));
+                (r(null), onOpenReply(t.id, t.open));
               },
             })
           : null,
@@ -181,10 +183,9 @@ function LettersRoom({ onOpenReply: e }) {
     ],
   });
 }
-
-function Reading({ letter: e, openedAt: t, onClose: n, onReply: r }) {
+function Reading({ letter: letter, openedAt: openedAt, onClose: onClose, onReply: onReply }) {
   return (0, jsx.jsx)(motion.div, {
-    className: `reading`,
+    className: "reading",
     initial: {
       opacity: 0,
     },
@@ -197,17 +198,17 @@ function Reading({ letter: e, openedAt: t, onClose: n, onReply: r }) {
     transition: {
       duration: 0.4,
     },
-    role: `dialog`,
-    "aria-label": e.open,
-    children: (0, jsx.jsxs)(`div`, {
-      className: `reading-inner`,
+    role: "dialog",
+    "aria-label": letter.open,
+    children: (0, jsx.jsxs)("div", {
+      className: "reading-inner",
       children: [
         (0, jsx.jsx)(motion.p, {
-          className: `reading-open`,
+          className: "reading-open",
           ...fadeIn(0.1, 0.6),
-          children: e.open,
+          children: letter.open,
         }),
-        e.body
+        letter.body
           .split(
             `
 
@@ -217,7 +218,7 @@ function Reading({ letter: e, openedAt: t, onClose: n, onReply: r }) {
             (0, jsx.jsx)(
               motion.p,
               {
-                className: `reading-para`,
+                className: "reading-para",
                 ...fadeIn(0.3 + t * 0.18, 0.7),
                 children: e,
               },
@@ -225,36 +226,36 @@ function Reading({ letter: e, openedAt: t, onClose: n, onReply: r }) {
             ),
           ),
         (0, jsx.jsxs)(motion.p, {
-          className: `reading-sign`,
+          className: "reading-sign",
           ...riseIn(
             0.5 +
-              e.body.split(`
+              letter.body.split(`
 
 `).length *
                 0.18,
           ),
-          children: [`— `, CANON.you],
+          children: ["— ", CANON.you],
         }),
-        t
-          ? (0, jsx.jsxs)(`p`, {
-              className: `reading-meta`,
-              children: [`first opened `, new Date(t).toLocaleDateString()],
+        openedAt
+          ? (0, jsx.jsxs)("p", {
+              className: "reading-meta",
+              children: ["first opened ", new Date(openedAt).toLocaleDateString()],
             })
           : null,
-        (0, jsx.jsxs)(`div`, {
-          className: `reading-tools`,
+        (0, jsx.jsxs)("div", {
+          className: "reading-tools",
           children: [
-            (0, jsx.jsx)(`button`, {
-              type: `button`,
-              className: `ghost`,
-              onClick: r,
-              children: `answer this`,
+            (0, jsx.jsx)("button", {
+              type: "button",
+              className: "ghost",
+              onClick: onReply,
+              children: "answer this",
             }),
-            (0, jsx.jsx)(`button`, {
-              type: `button`,
-              className: `solid`,
-              onClick: n,
-              children: `close it`,
+            (0, jsx.jsx)("button", {
+              type: "button",
+              className: "solid",
+              onClick: onClose,
+              children: "close it",
             }),
           ],
         }),
