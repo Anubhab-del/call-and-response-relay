@@ -40,7 +40,7 @@ var ROOMS = [
     sub: "Sound, motion, backups",
   },
 ];
-function Landing({ onGo: onGo }) {
+function Landing({ onGo: onGo, onOpenLetter: onOpenLetter }) {
   useMinuteTick();
   let t = useStore(),
     n = daysTogether(),
@@ -49,7 +49,13 @@ function Landing({ onGo: onGo }) {
     a = isSeptemberSecond(),
     o = MILESTONES.find((e) => e.takeover && isOnDate(e.on, !!e.annual)),
     s = ANNIVERSARIES.find((e) => e.at === n),
-    c = t.inbox.length;
+    c = t.inbox.length,
+    // At two in the morning there is a letter for exactly this, and it should
+    // not be four taps away. Only in the small hours, and not again for a few
+    // hours after she has read it.
+    sleepless =
+      isSmallHours() &&
+      Date.now() - (t.opened["cannot-sleep"] ?? 0) > 6 * 60 * 60 * 1000;
   return (0, jsx.jsxs)("div", {
     className: "landing",
     children: [
@@ -63,6 +69,15 @@ function Landing({ onGo: onGo }) {
             className: "streak",
             ...fadeIn(0.25, 0.7),
             children: returnLine(),
+          })
+        : null,
+      sleepless
+        ? (0, jsx.jsx)(motion.button, {
+            type: "button",
+            className: "small-hours",
+            onClick: () => onOpenLetter("cannot-sleep"),
+            ...fadeIn(0.35, 0.9),
+            children: "There is a letter for this hour.",
           })
         : null,
       (0, jsx.jsxs)(motion.div, {

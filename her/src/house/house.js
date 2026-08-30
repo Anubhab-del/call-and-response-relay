@@ -13,7 +13,8 @@ var ROOM_TITLES = {
 function House({ onWatch: onWatch }) {
   let t = useStore(),
     [n, r] = (0, React.useState)("landing"),
-    [i, a] = (0, React.useState)(null);
+    [i, a] = (0, React.useState)(null),
+    [openLetter, setOpenLetter] = (0, React.useState)(null);
   ((0, React.useEffect)(() => {
     score.setCue(n === "letters" ? "letter" : "house");
   }, [n]),
@@ -113,10 +114,15 @@ function House({ onWatch: onWatch }) {
               n === "landing"
                 ? (0, jsx.jsx)(Landing, {
                     onGo: o,
+                    onOpenLetter: (id) => {
+                      (setOpenLetter(id), o("letters"));
+                    },
                   })
                 : null,
               n === "letters"
                 ? (0, jsx.jsx)(LettersRoom, {
+                    openId: openLetter,
+                    onOpened: () => setOpenLetter(null),
                     onOpenReply: (e, t) => {
                       (a({
                         id: e,

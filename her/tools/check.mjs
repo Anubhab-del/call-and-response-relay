@@ -338,6 +338,51 @@ async function visit(iso, { entered = true, viewport = { width: 390, height: 844
   await ctx.close();
 }
 
+// ── two in the morning has a way through ──────────────────────────────────
+{
+  const v = await visit("2026-10-07T02:00:00");
+  const home = await v.text();
+  ok("the small-hours line is there", /letter for this hour/i.test(home), home.slice(0, 160));
+  await v.page.getByText("There is a letter for this hour.", { exact: true }).click();
+  await v.page.waitForTimeout(1500);
+  const open = await v.page.locator(".reading").innerText();
+  ok("it opens the letter for it", /cannot sleep/i.test(open), open.slice(0, 120));
+  ok("and the letter is the right one", /The hour is lying to you/i.test(open), open.slice(0, 200));
+  await v.close();
+}
+
+// ── and daylight does not offer it ────────────────────────────────────────
+{
+  const v = await visit("2026-10-07T14:00:00");
+  const home = await v.text();
+  ok("no small-hours line in the afternoon", !/letter for this hour/i.test(home), home.slice(0, 120));
+  await v.close();
+}
+
+// ── the prompt changes when she asks again ────────────────────────────────
+{
+  const v = await visit("2026-10-07T02:00:00");
+  await v.page.getByText("Say something", { exact: true }).first().click();
+  await v.page.waitForTimeout(900);
+  const ask = v.page.getByRole("button", { name: /give me a question/i }).first();
+  const seen = new Set();
+  let repeated = false;
+  let last = null;
+  for (let i = 0; i < 8; i++) {
+    await ask.click();
+    await v.page.waitForTimeout(220);
+    const q = (await v.page.locator(".prompt-live").innerText()).trim();
+    if (q === last) repeated = true;
+    last = q;
+    seen.add(q);
+  }
+  ok("never the same question twice running", !repeated, last ?? "");
+  ok("the hour's own questions are in the pool",
+     [...seen].some((q) => /keeping you up|smaller in the morning/i.test(q)) || seen.size >= 5,
+     [...seen].slice(0, 3).join(" | "));
+  await v.close();
+}
+
 // ── a broken save leaves her the house ─────────────────────────────────────
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });

@@ -1,4 +1,4 @@
-function LettersRoom({ onOpenReply: onOpenReply }) {
+function LettersRoom({ onOpenReply: onOpenReply, openId: openId, onOpened: onOpened }) {
   let t = useStore(),
     [n, r] = (0, React.useState)(null),
     [i, a] = (0, React.useState)(null),
@@ -20,6 +20,14 @@ function LettersRoom({ onOpenReply: onOpenReply }) {
         r(e));
     },
     l = o.filter((e) => t.opened[e.id]).length;
+  // The house can send her straight to one — the small-hours line does.
+  (0, React.useEffect)(() => {
+    if (!openId) return;
+    let letter = o.find((x) => x.id === openId);
+    onOpened?.();
+    if (!letter || letter.kind === "once" || !isUnsealed(letter.on)) return;
+    c(letter);
+  }, [openId]);
   return (0, jsx.jsxs)("div", {
     className: "letters",
     children: [

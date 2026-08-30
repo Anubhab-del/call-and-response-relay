@@ -1331,6 +1331,25 @@ html.is-still .letterbox:after {
   font-size: clamp(1.5rem, 6.5vw, 2.4rem);
   font-style: italic;
 }
+/* The small-hours line. A sentence she can press, not a button. */
+.small-hours {
+  font-family: var(--display);
+  color: #d8b877b3;
+  text-align: left;
+  border-bottom: 1px solid #d8b8773d;
+  margin: 2px 0 4px;
+  padding: 0 0 2px;
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.5;
+  transition: color 0.35s ease, border-color 0.35s ease;
+}
+.small-hours:hover,
+.small-hours:focus-visible {
+  color: var(--lamp);
+  border-color: #d8b87794;
+}
+
 .day-count {
   place-items: center;
   display: grid;

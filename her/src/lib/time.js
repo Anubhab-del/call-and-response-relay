@@ -182,3 +182,9 @@ function nearness(days) {
   if (days <= 6) return "this week";
   return "";
 }
+
+// Not "late". The hours where being awake is not a choice she made.
+function isSmallHours(when = new Date()) {
+  let h = when.getHours();
+  return h >= 0 && h < 5;
+}

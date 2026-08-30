@@ -182,7 +182,7 @@ function SayRoom({ answering: answering, onClearAnswering: onClearAnswering }) {
                 type: "button",
                 className: "ghost",
                 onClick: () => {
-                  (tapTick(), o(PROMPTS[Math.floor(Math.random() * PROMPTS.length)]));
+                  (tapTick(), o(nextPrompt(a)));
                 },
                 children: "give me a question",
               }),
