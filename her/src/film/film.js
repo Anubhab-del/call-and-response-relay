@@ -230,12 +230,17 @@ function Film({
                 "aria-expanded": d,
                 children: "contents",
               }),
-              (0, jsx.jsx)("button", {
-                type: "button",
-                className: "ghost",
-                onClick: onEnterHouse,
-                children: "the house",
-              }),
+              // The first time through, the doorway at the end is how the
+              // picture becomes the house. No side door on the frame — there
+              // is one at the foot of the contents, for anyone who needs it.
+              seenBefore
+                ? (0, jsx.jsx)("button", {
+                    type: "button",
+                    className: "ghost",
+                    onClick: onEnterHouse,
+                    children: "the house",
+                  })
+                : null,
             ],
           })
         : null,
@@ -245,6 +250,7 @@ function Film({
               index: l,
               furthest: furthest,
               positions: c,
+              onLeave: onEnterHouse,
               onGo: (e) => {
                 (x(e), f(false));
               },

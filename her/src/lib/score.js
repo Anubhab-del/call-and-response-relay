@@ -293,7 +293,9 @@ var score = new (class {
         a = t.createGain(),
         o = t.createGain();
       if (
-        ((n.gain.value = this.muted ? 0 : BASE_GAIN * this.volume),
+        // The first sound of the evening arrives; it does not switch on.
+        // Silent at the moment of the tap, up to level over a slow count.
+        ((n.gain.value = 0),
         (r.gain.value = 1),
         (i.gain.value = 0.82),
         (a.gain.value = 0.34),
@@ -316,6 +318,9 @@ var score = new (class {
         (this.wet = a),
         (this.punch = o),
         (this.started = true),
+        n.gain.setValueAtTime(0, t.currentTime),
+        this.muted ||
+          n.gain.linearRampToValueAtTime(BASE_GAIN * this.volume, t.currentTime + 2.4),
         this.ensureRain(0.026),
         await this.loadSong());
     } catch {}

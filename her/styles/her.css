@@ -1039,6 +1039,26 @@ html.is-still .lamp-glow {
   stroke: #aac8f021;
   stroke-width: 1px;
 }
+/* The door at the foot of the contents, past the last chapter. */
+.contents-leave {
+  font-family: var(--display);
+  color: #93a7bccc;
+  text-align: left;
+  border-top: 1px solid var(--line);
+  width: 100%;
+  padding: 16px 0 0 var(--thread-gutter, 46px);
+  font-size: 0.94rem;
+  font-style: italic;
+  line-height: 1.5;
+  position: absolute;
+  left: 0;
+  transition: color 0.35s ease;
+}
+.contents-leave:hover,
+.contents-leave:focus-visible {
+  color: var(--lamp);
+}
+
 .thread-lit {
   fill: none;
   stroke: #d8b877b3;

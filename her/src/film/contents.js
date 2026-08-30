@@ -9,6 +9,7 @@ function Contents({
   positions: positions,
   onGo: onGo,
   onClose: onClose,
+  onLeave: onLeave,
 }) {
   let a = (0, React.useRef)(null),
     o = (0, React.useRef)(null),
@@ -36,7 +37,7 @@ function Contents({
       }
       return {
         rows: e,
-        height: t + 24,
+        height: t + 92,
       };
     }, [positions]),
     c = (0, React.useMemo)(() => {
@@ -66,6 +67,18 @@ function Contents({
     !e || !t || (t.scrollTop = Math.max(0, e.offsetTop - t.clientHeight * 0.42));
   }, []);
   let l = Math.max(index, furthest);
+  // The thread draws itself when the sheet opens. She has come this far along
+  // it; the line should run to where she is rather than be waiting there.
+  let reached = Math.min(1, threadProgress(s.rows, l));
+  let [lit, setLit] = (0, React.useState)(() => (isStill() ? reached : 0));
+  (0, React.useEffect)(() => {
+    if (isStill()) {
+      setLit(reached);
+      return;
+    }
+    let frame = requestAnimationFrame(() => setLit(reached));
+    return () => cancelAnimationFrame(frame);
+  }, [reached]);
   return (0, jsx.jsxs)(motion.div, {
     className: "contents",
     initial: {
@@ -128,8 +141,7 @@ function Contents({
                   className: "thread-lit",
                   style: {
                     strokeDasharray: s.height * 2,
-                    strokeDashoffset:
-                      s.height * 2 - s.height * 2 * Math.min(1, threadProgress(s.rows, l)),
+                    strokeDashoffset: s.height * 2 - s.height * 2 * lit,
                   },
                 }),
               ],
@@ -193,6 +205,19 @@ function Contents({
                     t.n,
                   ),
             ),
+            // Past the last chapter, the door. Buried on purpose: she should
+            // have to go looking, and then find it without being told twice.
+            onLeave
+              ? (0, jsx.jsx)("button", {
+                  type: "button",
+                  className: "contents-leave",
+                  style: {
+                    top: s.height - 4,
+                  },
+                  onClick: onLeave,
+                  children: "The picture keeps your place. The house is through here.",
+                })
+              : null,
           ],
         }),
       }),

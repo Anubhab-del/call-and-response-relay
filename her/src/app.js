@@ -16,7 +16,12 @@ function App() {
       close: false,
       pulse: 0,
     }),
-    [s, c] = (0, React.useState)(0),
+    // "It keeps your place either way" is a promise the overture makes out
+    // loud, so a cold return to an unfinished picture starts where she left it.
+    [s, c] = (0, React.useState)(() => {
+      let saved = snapshot();
+      return saved.watched ? 0 : Math.max(0, saved.reelAt ?? 0);
+    }),
     [l, u] = (0, React.useState)(false),
     [d, f] = (0, React.useState)(() => !isHandheld() && window.innerWidth / window.innerHeight > 0.95),
     [p] = (0, React.useState)(() => supportsFullscreen()),

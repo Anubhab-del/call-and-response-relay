@@ -205,9 +205,17 @@ async function visit(iso, { entered = true, viewport = { width: 390, height: 844
   await page2.locator("input").first().fill("september");
   await page2.keyboard.press("Enter");
   await page2.waitForTimeout(2400);
-  const toHouse2 = page2.getByRole("button", { name: /the house/i }).first();
-  await toHouse2.waitFor({ timeout: 15000 });
-  await toHouse2.click();
+  // First watch: there is no side door on the frame. The way through is at the
+  // foot of the contents.
+  await page2.getByRole("button", { name: /^contents$/i }).first().waitFor({ timeout: 15000 });
+  ok("no side door on a first watch", (await page2.getByRole("button", { name: /^the house$/i }).count()) === 0);
+  await page2.getByRole("button", { name: /^contents$/i }).first().click();
+  await page2.waitForTimeout(900);
+  const door = page2.locator(".contents-leave");
+  await door.scrollIntoViewIfNeeded();
+  await page2.waitForTimeout(400);
+  ok("the contents has a way through", (await door.count()) === 1);
+  await door.click();
   await page2.getByText("The fuse box", { exact: true }).first().waitFor({ timeout: 15000 });
   await page2.getByText("The fuse box", { exact: true }).first().click();
   await page2.waitForTimeout(1000);
@@ -381,6 +389,31 @@ async function visit(iso, { entered = true, viewport = { width: 390, height: 844
      [...seen].some((q) => /keeping you up|smaller in the morning/i.test(q)) || seen.size >= 5,
      [...seen].slice(0, 3).join(" | "));
   await v.close();
+}
+
+// ── the picture keeps her place across a cold return ──────────────────────
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });
+  const page = await ctx.newPage();
+  await page.addInitScript(fakeClock("2026-09-15T21:00:00"));
+  await page.addInitScript(() => {
+    if (localStorage.getItem("her.v1")) return;
+    localStorage.setItem("her.v1", JSON.stringify({ schema: 1, greeted: true, entered: true,
+      watched: false, reelAt: 0, reelFurthest: 0, sound: false, motion: "still", nameWritten: true }));
+  });
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForTimeout(1400);
+  for (let i = 0; i < 12; i++) { await page.mouse.click(195, 700); await page.waitForTimeout(200); }
+  const left = await page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).reelAt);
+  ok("the picture records where she is", left >= 8, String(left));
+  const before = (await page.locator("#root").innerText()).replace(/\s+/g, " ").trim();
+  await page.reload({ waitUntil: "load" });
+  await page.waitForTimeout(1800);
+  const at = await page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).reelAt);
+  const after = (await page.locator("#root").innerText()).replace(/\s+/g, " ").trim();
+  ok("and starts there again, not at the projector", at === left, `${at} vs ${left}`);
+  ok("the same beat is on screen", after.slice(0, 60) === before.slice(0, 60), after.slice(0, 70));
+  await ctx.close();
 }
 
 // ── a broken save leaves her the house ─────────────────────────────────────
