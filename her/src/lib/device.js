@@ -64,30 +64,57 @@ function applyMotionClasses() {
     e.classList.toggle("is-lean", isLean()),
     e.classList.toggle("is-still", isStill()));
 }
+// The frame is the visual viewport, not the layout viewport: on a phone the
+// keyboard and the address bar both eat into it, and the house has to sit in
+// what is actually left.
+//
+// It is written on a frame, and only when the rounded value has really moved.
+// visualViewport fires "scroll" on every rubber-band, and rewriting a custom
+// property on each one made the letterbox shiver during a beat.
 function trackFrameHeight() {
-  let e = () => {
-    let e = window.visualViewport,
-      t = Math.round(e?.height ?? window.innerHeight),
-      n = Math.round(e?.width ?? window.innerWidth),
-      r = document.documentElement;
-    (r.style.setProperty("--frame-h", `${t}px`),
-      r.style.setProperty("--frame-w", `${n}px`),
-      applyMotionClasses());
-  };
-  return (
-    e(),
-    window.visualViewport?.addEventListener("resize", e),
-    window.visualViewport?.addEventListener("scroll", e),
-    window.addEventListener("orientationchange", e),
-    window.addEventListener("resize", e),
-    () => {
-      (window.visualViewport?.removeEventListener("resize", e),
-        window.visualViewport?.removeEventListener("scroll", e),
-        window.removeEventListener("orientationchange", e),
-        window.removeEventListener("resize", e));
+  let root = document.documentElement;
+  let lastH = 0;
+  let lastW = 0;
+  let queued = 0;
+
+  let write = () => {
+    queued = 0;
+    let view = window.visualViewport;
+    let h = Math.round(view?.height ?? window.innerHeight);
+    let w = Math.round(view?.width ?? window.innerWidth);
+    if (h === lastH && w === lastW) return;
+    if (h !== lastH) {
+      lastH = h;
+      root.style.setProperty("--frame-h", `${h}px`);
     }
-  );
+    if (w !== lastW) {
+      lastW = w;
+      root.style.setProperty("--frame-w", `${w}px`);
+      // Only a real change of shape can change whether this is a phone.
+      applyMotionClasses();
+    }
+  };
+
+  let schedule = () => {
+    if (queued) return;
+    queued = requestAnimationFrame(write);
+  };
+
+  write();
+  applyMotionClasses();
+  window.visualViewport?.addEventListener("resize", schedule);
+  window.visualViewport?.addEventListener("scroll", schedule);
+  window.addEventListener("orientationchange", schedule);
+  window.addEventListener("resize", schedule);
+  return () => {
+    if (queued) cancelAnimationFrame(queued);
+    window.visualViewport?.removeEventListener("resize", schedule);
+    window.visualViewport?.removeEventListener("scroll", schedule);
+    window.removeEventListener("orientationchange", schedule);
+    window.removeEventListener("resize", schedule);
+  };
 }
+
 async function requestWakeLock() {
   let e = navigator;
   if (!e.wakeLock) return () => {};

@@ -224,6 +224,34 @@ async function visit(iso, { entered = true, viewport = { width: 390, height: 844
   await ctx2.close();
 }
 
+// ── the picture changes weather between beats, not at them ────────────────
+{
+  const v = await visit("2026-09-15T15:00:00");
+  await v.page.getByText("The picture", { exact: true }).first().click();
+  await v.page.waitForTimeout(900);
+  const again = v.page.getByRole("button", { name: /from the start|start again|watch it/i }).first();
+  if (await again.count()) { await again.click(); await v.page.waitForTimeout(1500); }
+  const frame = async () => v.page.evaluate(() => {
+    const el = document.querySelector(".letterbox");
+    return el && { weather: el.dataset.weather, cut: el.dataset.cut, dur: getComputedStyle(el).transitionDuration };
+  });
+  const seen = [];
+  for (let i = 0; i < 10; i++) { await v.page.mouse.click(195, 700); await v.page.waitForTimeout(70); seen.push(await frame()); }
+  const cuts = seen.filter((f) => f?.cut === "true");
+  const dissolves = seen.filter((f) => f && f.cut !== "true");
+  ok("cuts land instantly", cuts.length > 0 && cuts.every((f) => f.dur.startsWith("0s")), JSON.stringify(cuts[0]));
+  ok("everything else dissolves", dissolves.length > 0 && dissolves.every((f) => f.dur.startsWith("1.9s")), JSON.stringify(dissolves[0]));
+  await v.close();
+}
+
+// ── the storm does not follow her indoors ─────────────────────────────────
+{
+  const v = await visit("2026-09-15T15:00:00");
+  const storm = await v.page.evaluate(() => document.querySelector(".house-frame")?.dataset.storm ?? null);
+  ok("the house has no storm on it", storm == null, String(storm));
+  await v.close();
+}
+
 // ── a broken save leaves her the house ─────────────────────────────────────
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });

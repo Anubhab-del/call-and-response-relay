@@ -41,10 +41,14 @@ function Film({
     g = weatherFor(h),
     _ = isHeldBeat(h),
     v = stormPulseFor(h, l),
-    b = lastChapterBefore(o, l);
+    b = lastChapterBefore(o, l),
+    // A weather change under a curtain is a cut and should land instantly.
+    // Everything else is a dissolve, and the room should change colour slowly
+    // enough that she does not catch it happening.
+    ee = transitFor(h) !== "dissolve";
   ((0, React.useEffect)(() => {
-    (onWeather(g), onStorm(_, v));
-  }, [g, _, v, onWeather, onStorm]),
+    (onWeather(g, ee), onStorm(_, v));
+  }, [g, ee, _, v, onWeather, onStorm]),
     (0, React.useEffect)(() => {
       (score.setCue(cueFor(h)), h.type === "nameFlash" && score.whisperName());
     }, [h]),

@@ -32,6 +32,9 @@ const script = dev
     ).code;
 
 let css = await read("styles", "her.css");
+if (!dev) {
+  css = (await esbuild.transform(css, { loader: "css", minify: true })).code;
+}
 const fonts = [...css.matchAll(/__FONT:([a-z0-9-]+)__/g)].map((m) => m[1]);
 for (const name of new Set(fonts)) {
   const bytes = await readFile(at("assets", "fonts", `${name}.woff2`));

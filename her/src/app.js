@@ -11,6 +11,7 @@ function App() {
         : "invitation";
     }),
     [r, i] = (0, React.useState)("void"),
+    [cut, setCut] = (0, React.useState)(false),
     [a, o] = (0, React.useState)({
       close: false,
       pulse: 0,
@@ -96,7 +97,9 @@ function App() {
       };
       return (window.addEventListener("keydown", e), () => window.removeEventListener("keydown", e));
     }, [p, t]));
-  let h = (0, React.useCallback)((e) => i(e), []),
+  let h = (0, React.useCallback)((e, underCurtain = false) => {
+      (i(e), setCut(underCurtain));
+    }, []),
     g = (0, React.useCallback)(
       (e, t) =>
         o({
@@ -120,10 +123,16 @@ function App() {
         e.watched = true;
       }),
         n("house"),
-        i("ember"));
+        i("ember"),
+        setCut(false),
+        // The storm belongs to the picture. It does not follow her indoors.
+        o({
+          close: false,
+          pulse: 0,
+        }));
     },
     b = (e = 0) => {
-      (c(e), n("film"));
+      (c(e), setCut(true), n("film"));
     },
     x = new Date().getHours(),
     S = 0.62 + 0.38 * Math.cos(((x - 22 + 24) % 24) * (Math.PI / 12)),
@@ -154,6 +163,7 @@ function App() {
         (0, jsx.jsxs)("div", {
           className: t === "house" ? "house-frame" : "letterbox",
           "data-weather": w,
+          "data-cut": t === "film" && cut ? "true" : void 0,
           "data-storm": a.close ? "close" : void 0,
           children: [
             (0, jsx.jsx)(Lightning, {
