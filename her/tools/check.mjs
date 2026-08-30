@@ -3,6 +3,8 @@
 import { chromium } from "playwright";
 import path from "node:path";
 import os from "node:os";
+import http from "node:http";
+import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
@@ -35,7 +37,7 @@ async function visit(iso, { entered = true, viewport = { width: 390, height: 844
   const external = [];
   page.on("pageerror", (e) => errors.push(String(e.message)));
   page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
-  page.on("request", (r) => !/^(file|data|blob):/.test(r.url()) && external.push(r.url()));
+  page.on("request", (r) => { const u = r.url(); if (u !== "file://" + FILE && !/^(data|blob):/.test(u)) external.push(u); });
   await page.addInitScript(fakeClock(iso));
   if (entered) {
     await page.addInitScript(() => {
@@ -478,6 +480,37 @@ for (const [word, label] of [["september", "the word"], ["Smruti", "her name"], 
   const scrollX = await v.page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
   ok("desktop: nothing scrolls sideways", !scrollX);
   await v.close();
+}
+
+// ── served from a static host, it still asks for nothing ──────────────────
+{
+  const body = await readFile(FILE);
+  const asked = [];
+  const server = http.createServer((req, res) => {
+    asked.push(req.url);
+    if (req.url === "/" || req.url === "/HER.html") {
+      res.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+      res.end(body);
+    } else {
+      res.writeHead(404).end("no");
+    }
+  });
+  await new Promise((r) => server.listen(0, "127.0.0.1", r));
+  const port = server.address().port;
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(String(e.message)));
+  await page.goto(`http://127.0.0.1:${port}/`, { waitUntil: "load" });
+  await page.waitForTimeout(2500);
+  const beyond = asked.filter((u) => u !== "/" && u !== "/favicon.ico");
+  ok("a static host is asked for one file", beyond.length === 0, asked.join(" "));
+  const workers = await page.evaluate(async () =>
+    (await navigator.serviceWorker?.getRegistrations?.())?.length ?? 0);
+  ok("no service worker is registered", workers === 0, String(workers));
+  ok("no errors over http", errors.length === 0, errors.join(" | "));
+  await ctx.close();
+  server.close();
 }
 
 await browser.close();

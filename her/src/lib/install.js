@@ -47,10 +47,21 @@ function isStandalone() {
 function isFileProtocol() {
   return typeof location !== "undefined" && location.protocol === "file:";
 }
+// There is no service worker. There is no sw.js in the build, and registering
+// one asked a static host for a file that was never shipped — a 404 on a page
+// whose whole promise is that it fetches nothing.
+//
+// This drops any worker an older copy left behind, so a stale cache cannot
+// keep serving her an old house, and clears its caches with it.
 function dropServiceWorker() {
-  isFileProtocol() ||
-    ("serviceWorker" in navigator &&
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch(() => {});
-      }));
+  if (isFileProtocol() || typeof navigator === "undefined") return;
+  if (!("serviceWorker" in navigator)) return;
+  navigator.serviceWorker
+    .getRegistrations?.()
+    .then((all) => all.forEach((reg) => reg.unregister().catch(() => {})))
+    .catch(() => {});
+  globalThis.caches
+    ?.keys?.()
+    .then((keys) => keys.forEach((k) => caches.delete(k).catch(() => {})))
+    .catch(() => {});
 }
