@@ -66,7 +66,7 @@ function SettingsRoom() {
             children: "Motion",
           }),
           (0, jsx.jsx)("div", {
-            className: "row",
+            className: "row choices",
             children: [
               ["full", "the whole storm"],
               ["lean", "less of it"],

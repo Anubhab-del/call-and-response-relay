@@ -416,6 +416,22 @@ async function visit(iso, { entered = true, viewport = { width: 390, height: 844
   await ctx.close();
 }
 
+// ── the door takes the word, or her name ──────────────────────────────────
+for (const [word, label] of [["september", "the word"], ["Smruti", "her name"], ["  SEPTEMBER  ", "the word, shouted, with spaces"]]) {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });
+  const page = await ctx.newPage();
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForTimeout(1300);
+  await page.getByRole("button", { name: /I am ready/i }).click();
+  await page.waitForFunction(() => document.querySelector("input") !== null, null, { timeout: 8000 });
+  await page.locator("input").first().fill(word);
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(2400);
+  const inside = await page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).entered);
+  ok(`the door opens to ${label}`, inside === true);
+  await ctx.close();
+}
+
 // ── a broken save leaves her the house ─────────────────────────────────────
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });
