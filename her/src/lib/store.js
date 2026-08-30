@@ -181,47 +181,84 @@ function exportState() {
     2,
   );
 }
-function importState(e) {
+// A restore is a merge, never a replacement. Whatever this phone already knows
+// stays known; whatever the copy knows is added. That is the promise the fuse
+// box makes out loud ("nothing replaced"), so it has to be true of every field.
+function importState(text) {
   try {
-    let t = JSON.parse(e),
-      n = normaliseState(t.store ?? t),
-      r = 0;
-    return (
-      update((e) => {
-        let t = new Set(e.replies.map((e) => e.id));
-        for (let i of n.replies) t.has(i.id) || (e.replies.push(i), (r += 1));
-        ((e.opened = {
-          ...n.opened,
-          ...e.opened,
-        }),
-          (e.kept = {
-            ...n.kept,
-            ...e.kept,
-          }),
-          (e.words = {
-            ...n.words,
-            ...e.words,
-          }),
-          (e.collected = {
-            ...n.collected,
-            ...e.collected,
-          }),
-          (e.spentOnce = e.spentOnce || n.spentOnce),
-          (e.watched = e.watched || n.watched));
-      }),
-      {
-        ok: true,
-        added: r,
+    let file = JSON.parse(text);
+    let copy = normaliseState(file.store ?? file);
+    let added = 0;
+    update((state) => {
+      // Notes and letters that arrived: merged by id, oldest kept.
+      let haveReplies = new Set(state.replies.map((r) => r.id));
+      for (let note of copy.replies) {
+        if (!haveReplies.has(note.id)) {
+          state.replies.push(note);
+          added += 1;
+        }
       }
-    );
+      let haveInbox = new Set(state.inbox.map((n) => n.id));
+      for (let note of copy.inbox) {
+        if (!haveInbox.has(note.id)) {
+          state.inbox.push(note);
+          added += 1;
+        }
+      }
+
+      // Dated marks: the earlier date is the true one.
+      state.opened = earliest(copy.opened, state.opened);
+      state.kept = earliest(copy.kept, state.kept);
+      state.collected = earliest(copy.collected, state.collected);
+
+      // A word written today is hers now; an old copy does not overwrite it.
+      state.words = { ...copy.words, ...state.words };
+
+      // Counts and reach: whichever went further.
+      state.pulls = highest(copy.pulls, state.pulls);
+      state.reelFurthest = Math.max(state.reelFurthest, copy.reelFurthest);
+      state.reelAt = Math.max(state.reelAt, copy.reelAt);
+
+      // Days she came by, from both phones.
+      state.visits = [...new Set([...state.visits, ...copy.visits])].sort((a, b) => a - b).slice(-365);
+
+      // Doors that have been through: once through, through.
+      state.spentOnce = state.spentOnce || copy.spentOnce;
+      state.watched = state.watched || copy.watched;
+      state.greeted = state.greeted || copy.greeted;
+      state.nameWritten = state.nameWritten || copy.nameWritten;
+      state.firstOpen = earliestStamp(state.firstOpen, copy.firstOpen);
+    });
+    return { ok: true, added };
   } catch {
-    return {
-      ok: false,
-      added: 0,
-      reason: "That file is not from here.",
-    };
+    return { ok: false, added: 0, reason: "That file is not from here." };
   }
 }
+
+function earliest(from, mine) {
+  let out = { ...from };
+  for (let [key, at] of Object.entries(mine)) {
+    let theirs = out[key];
+    out[key] = typeof theirs === "number" && typeof at === "number" ? Math.min(theirs, at) : at;
+  }
+  return out;
+}
+
+function highest(from, mine) {
+  let out = { ...from };
+  for (let [key, n] of Object.entries(mine)) {
+    let theirs = out[key];
+    out[key] = typeof theirs === "number" && typeof n === "number" ? Math.max(theirs, n) : n;
+  }
+  return out;
+}
+
+function earliestStamp(a, b) {
+  if (!a) return b || 0;
+  if (!b) return a;
+  return Math.min(a, b);
+}
+
 function newId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
