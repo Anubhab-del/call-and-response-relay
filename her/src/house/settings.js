@@ -65,36 +65,36 @@ function SettingsRoom() {
           (0, jsx.jsx)("h3", {
             children: "Motion",
           }),
-          (0, jsx.jsxs)("div", {
+          (0, jsx.jsx)("div", {
             className: "row",
             children: [
-              (0, jsx.jsx)("button", {
-                type: "button",
-                className: e.motion === "full" ? "solid" : "ghost",
-                onClick: () => {
-                  (setMotionPreference("full"),
-                    update((e) => {
-                      e.motion = "full";
-                    }));
+              ["full", "the whole storm"],
+              ["lean", "less of it"],
+              ["still", "keep it still"],
+            ].map(([mode, label]) =>
+              (0, jsx.jsx)(
+                "button",
+                {
+                  type: "button",
+                  className: e.motion === mode ? "solid" : "ghost",
+                  "aria-pressed": e.motion === mode,
+                  onClick: () => {
+                    (tapTick(),
+                      setMotionPreference(mode),
+                      update((state) => {
+                        state.motion = mode;
+                      }));
+                  },
+                  children: label,
                 },
-                children: "the whole storm",
-              }),
-              (0, jsx.jsx)("button", {
-                type: "button",
-                className: e.motion === "calm" ? "solid" : "ghost",
-                onClick: () => {
-                  (setMotionPreference("calm"),
-                    update((e) => {
-                      e.motion = "calm";
-                    }));
-                },
-                children: "keep it still",
-              }),
-            ],
+                mode,
+              ),
+            ),
           }),
           (0, jsx.jsx)("p", {
             className: "fine",
-            children: "Still is easier on an old phone and on a bad night.",
+            children:
+              "Less keeps the weather and drops the rest. Still is easier on an old phone and on a bad night.",
           }),
         ],
       }),

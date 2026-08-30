@@ -299,6 +299,45 @@ async function visit(iso, { entered = true, viewport = { width: 390, height: 844
   await v.close();
 }
 
+// ── the fuse box has three motion modes and they do something ─────────────
+{
+  const v = await visit("2026-09-15T15:00:00");
+  await v.page.getByText("The fuse box", { exact: true }).first().click();
+  await v.page.waitForTimeout(900);
+  const read = () => v.page.evaluate(() => ({
+    lean: document.documentElement.classList.contains("is-lean"),
+    still: document.documentElement.classList.contains("is-still"),
+    parX: getComputedStyle(document.documentElement).getPropertyValue("--par-x").trim(),
+    weave: getComputedStyle(document.querySelector(".film") ?? document.body).animationName,
+  }));
+  for (const [label, expect] of [["the whole storm", { lean: false, still: false }],
+                                 ["less of it", { lean: true, still: false }],
+                                 ["keep it still", { lean: true, still: true }]]) {
+    await v.page.getByRole("button", { name: label, exact: true }).click();
+    await v.page.waitForTimeout(500);
+    const got = await read();
+    ok(`motion "${label}" sets the right classes`, got.lean === expect.lean && got.still === expect.still,
+       JSON.stringify(got));
+    const saved = await v.page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).motion);
+    ok(`motion "${label}" is remembered`, saved === (label === "the whole storm" ? "full" : label === "less of it" ? "lean" : "still"), String(saved));
+  }
+  await v.close();
+}
+
+// ── an old save that says "calm" still means still ────────────────────────
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });
+  const page = await ctx.newPage();
+  await page.addInitScript(() => localStorage.setItem("her.v1", JSON.stringify({ schema: 1, greeted: true, entered: true, watched: true, sound: false, motion: "calm" })));
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForTimeout(1300);
+  const still = await page.evaluate(() => document.documentElement.classList.contains("is-still"));
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).motion);
+  ok("an old calm save is still", still === true);
+  ok("and is written back as still", saved === "still", String(saved));
+  await ctx.close();
+}
+
 // ── a broken save leaves her the house ─────────────────────────────────────
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });

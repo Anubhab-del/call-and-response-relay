@@ -1,6 +1,16 @@
+// Three modes, and what each one means:
+//   full   the whole storm — rain, dust, lightning, the lamp breathing, tilt
+//   lean   the weather stays, the extras go — no tilt, fewer particles,
+//          shorter transitions. For an old phone and a slow night.
+//   still  nothing moves that does not have to. Also what the system asks for
+//          when prefers-reduced-motion is set, whatever is chosen here.
+// null means: work it out from the device.
 var motionPref = null;
-function setMotionPreference(e) {
-  ((motionPref = e), applyMotionClasses());
+
+function setMotionPreference(pref) {
+  // "calm" is what the two-mode version called still. Old saves still say it.
+  motionPref = pref === "calm" ? "still" : pref;
+  applyMotionClasses();
 }
 function prefersReducedMotion() {
   return typeof window === "undefined"
@@ -25,18 +35,24 @@ function isSmallPhone() {
   return typeof window === "undefined" ? false : Math.min(window.innerWidth, window.innerHeight) <= 380;
 }
 function isLean() {
-  return typeof window === "undefined"
-    ? false
-    : motionPref === "calm"
-      ? true
-      : motionPref === "full"
-        ? isHandheld() && isLowCoreDevice()
-        : prefersReducedMotion()
-          ? true
-          : isHandheld() || prefersSaveData() || isLowCoreDevice();
+  if (typeof window === "undefined") return false;
+  if (motionPref === "still" || motionPref === "lean") return true;
+  if (prefersReducedMotion()) return true;
+  // "The whole storm" means the whole storm. If the phone cannot take it the
+  // house says so once, on the first visit, by choosing lean out loud — see
+  // shouldStartLean. It does not quietly override a button she pressed.
+  if (motionPref === "full") return false;
+  return isHandheld() || prefersSaveData() || isLowCoreDevice();
 }
+
+// What the house would pick for her on a phone it has never met.
+function shouldStartLean() {
+  if (typeof window === "undefined") return false;
+  return prefersSaveData() || (isHandheld() && isLowCoreDevice());
+}
+
 function isStill() {
-  return motionPref === "calm" || prefersReducedMotion();
+  return motionPref === "still" || prefersReducedMotion();
 }
 function cappedPixelRatio(e) {
   return typeof window === "undefined" ? 1 : Math.max(1, Math.min(e, window.devicePixelRatio || 1));
@@ -139,7 +155,8 @@ async function requestWakeLock() {
 }
 var TILT_LIMIT = 9;
 function startTilt() {
-  if (typeof window === "undefined" || isStill()) return () => {};
+  // Parallax is the first thing to go when she asks for less.
+  if (typeof window === "undefined" || isLean()) return () => {};
   let e = document.documentElement,
     t = 0,
     n = 0,

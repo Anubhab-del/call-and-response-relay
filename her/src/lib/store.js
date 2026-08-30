@@ -61,6 +61,8 @@ function normaliseState(e) {
     replies: Array.isArray(t.replies) ? t.replies.filter(isNote) : [],
     inbox: Array.isArray(t.inbox) ? t.inbox.filter(isNote) : [],
     visits: Array.isArray(t.visits) ? t.visits.filter((e) => typeof e == "number") : [],
+    // The two-mode version called still "calm".
+    motion: t.motion === "calm" ? "still" : (t.motion ?? EMPTY_STATE.motion),
   };
 }
 function isNote(e) {

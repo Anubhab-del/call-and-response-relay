@@ -21,19 +21,25 @@ function App() {
     [d, f] = (0, React.useState)(() => !isHandheld() && window.innerWidth / window.innerHeight > 0.95),
     [p] = (0, React.useState)(() => supportsFullscreen()),
     m = (0, React.useRef)(false);
-  ((0, React.useEffect)(() => trackFrameHeight(), []),
-    (0, React.useEffect)(() => startTilt(), []),
+  // The motion preference has to settle before anything asks what it is.
+  ((0, React.useEffect)(() => {
+    (setMotionPreference(e.motion), applyMotionClasses());
+  }, [e.motion]),
+    (0, React.useEffect)(() => trackFrameHeight(), []),
+    // Parallax stops the moment she asks for less of it, not on the next visit.
+    (0, React.useEffect)(() => startTilt(), [e.motion]),
     (0, React.useEffect)(() => dropServiceWorker(), []),
     (0, React.useEffect)(() => watchInstallPrompt(), []),
-    (0, React.useEffect)(() => {
-      (setMotionPreference(e.motion), applyMotionClasses());
-    }, [e.motion]),
     (0, React.useEffect)(() => {
       score.setMuted(!e.sound);
     }, [e.sound]),
     (0, React.useEffect)(() => {
       update((state) => {
         let now = Date.now();
+        // A phone the house has never met, that plainly cannot take the whole
+        // storm, starts on lean — written down, so the fuse box shows it.
+        if (!state.firstOpen && state.motion === EMPTY_STATE.motion && shouldStartLean())
+          state.motion = "lean";
         ((state.firstOpen ||= now), (state.lastOpen = now));
         // Filed under her date, not the framework's.
         let today = todayNumber();
@@ -168,13 +174,17 @@ function App() {
           "data-cut": t === "film" && cut ? "true" : void 0,
           "data-storm": a.close ? "close" : void 0,
           children: [
-            (0, jsx.jsx)(Lightning, {
-              weather: w,
-              close: a.close,
-              pulse: a.pulse,
-              calm: t === "house",
-            }),
-            (0, jsx.jsx)(Grain, {}),
+            (0, jsx.jsx)(
+              Lightning,
+              {
+                weather: w,
+                close: a.close,
+                pulse: a.pulse,
+                calm: t === "house",
+              },
+              e.motion,
+            ),
+            (0, jsx.jsx)(Grain, {}, e.motion),
             (0, jsx.jsx)("div", {
               className: "vignette",
               "aria-hidden": "true",
@@ -183,11 +193,15 @@ function App() {
               className: "glass-film",
               "aria-hidden": "true",
             }),
-            (0, jsx.jsx)(RainGlass, {
-              weather: w,
-              calm: t === "house",
-            }),
-            t === "film" ? (0, jsx.jsx)(Dust, {}) : null,
+            (0, jsx.jsx)(
+              RainGlass,
+              {
+                weather: w,
+                calm: t === "house",
+              },
+              e.motion,
+            ),
+            t === "film" ? (0, jsx.jsx)(Dust, {}, e.motion) : null,
             t === "house"
               ? (0, jsx.jsx)(Lamp, {
                   warm: S,
