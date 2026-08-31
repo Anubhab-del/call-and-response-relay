@@ -12,9 +12,21 @@ var T_FAST = {
   duration: 0.16,
   ease: EASE_STD,
 };
+// Between beats: a dissolve. It is allowed to take its time.
 function transition() {
   return isStill() ? T_FAST : isLean() ? T_MED : T_SLOW;
 }
+
+// Between rooms: a door. Waiting nearly a second to see a room she asked for
+// is the whole difference between a house and a website.
+var T_ROOM_OUT = {
+  duration: 0.16,
+  ease: EASE_STD,
+};
+var T_ROOM_IN = {
+  duration: 0.34,
+  ease: EASE_OUT,
+};
 function riseIn(e = 0) {
   return isStill()
     ? {

@@ -287,8 +287,7 @@ html.is-still .letterbox[data-cut="true"] {
 }
 .dust {
   z-index: 5;
-  mix-blend-mode: screen;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 .letterbox[data-storm="close"] .rain-glass {
   opacity: 0.34;
@@ -310,6 +309,23 @@ html.is-still .letterbox[data-cut="true"] {
   position: absolute;
   inset: -50%;
 }
+/* Hand the compositor the layers it is going to be moving anyway, so the
+   first frame of a move is not the one that stutters. */
+.beat,
+.light-leak:before,
+.light-leak:after,
+.light-leak span,
+.lamp-glow,
+.film {
+  will-change: transform, opacity;
+}
+.lightning,
+.rain-glass,
+.dust,
+.grain {
+  will-change: opacity;
+}
+
 /* Halation.
    Film stock blooms around a bright edge — light scatters back off the base
    and haloes the letter. It is the difference between type on a screen and
@@ -365,10 +381,9 @@ html.is-lean .last-line {
 .light-leak {
   pointer-events: none;
   z-index: 13;
-  mix-blend-mode: screen;
   position: absolute;
   inset: -20%;
-  opacity: 0.5;
+  opacity: 0.62;
 }
 .light-leak:before,
 .light-leak:after,
@@ -377,10 +392,9 @@ html.is-lean .last-line {
   border-radius: 50%;
   display: block;
   position: absolute;
-  filter: blur(38px);
 }
 .light-leak:before {
-  background: radial-gradient(circle, #f2d9a63d 0%, #f2d9a614 44%, #0000 72%);
+  background: radial-gradient(circle, #f2d9a63a 0%, #f2d9a622 26%, #f2d9a610 52%, #f2d9a605 74%, #0000 100%);
   width: 62%;
   height: 46%;
   top: 4%;
@@ -388,7 +402,7 @@ html.is-lean .last-line {
   animation: 71s ease-in-out infinite leak-a;
 }
 .light-leak:after {
-  background: radial-gradient(circle, #e8b9a433 0%, #d9a08f12 46%, #0000 74%);
+  background: radial-gradient(circle, #e8b9a430 0%, #e8b9a41c 28%, #d9a08f0e 54%, #d9a08f05 76%, #0000 100%);
   width: 54%;
   height: 52%;
   bottom: 2%;

@@ -24,13 +24,18 @@ function nextShot() {
 function Beat({ children: children, full = false, hold = false }) {
   let [shot] = (0, React.useState)(nextShot);
   let fade = transition();
+  // A cross-dissolve, not a crossfade: the new frame comes up quickly and the
+  // old one lingers under it. She sees an answer to her thumb in a quarter of
+  // a second, and the cut still has breath on the way out.
+  let base = fade.duration ?? 0.38;
+  let arrive = { duration: base * 0.62, ease: EASE_OUT };
+  let leave = { duration: base * 1.15, ease: EASE_STD };
   if (isStill())
     return (0, jsx.jsx)(motion.div, {
       className: full ? "beat full" : "beat",
       initial: { opacity: 0 },
-      animate: { opacity: 1 },
-      exit: { opacity: 0 },
-      transition: fade,
+      animate: { opacity: 1, transition: arrive },
+      exit: { opacity: 0, transition: leave },
       children: children,
     });
   return (0, jsx.jsx)(motion.div, {
@@ -40,13 +45,13 @@ function Beat({ children: children, full = false, hold = false }) {
       opacity: 1,
       ...shot.to,
       transition: {
-        opacity: fade,
+        opacity: arrive,
         default: { duration: hold ? 34 : 21, ease: "linear" },
       },
     },
     exit: {
       opacity: 0,
-      transition: { duration: (fade.duration ?? 0.38) * 0.9 },
+      transition: leave,
     },
     children: children,
   });

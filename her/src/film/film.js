@@ -64,9 +64,11 @@ function Film({
         p.current ||
           ((p.current = true),
           u(Math.max(0, Math.min(o.length - 1, e))),
+          // Long enough to swallow a double-fire, short enough that a
+          // deliberate second tap is never eaten.
           window.setTimeout(() => {
             p.current = false;
-          }, 200));
+          }, 90));
       },
       [o.length],
     ),

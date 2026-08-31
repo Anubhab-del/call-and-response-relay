@@ -434,6 +434,67 @@ for (const [word, label] of [["september", "the word"], ["Smruti", "her name"], 
   await ctx.close();
 }
 
+// ── the picture keeps up ──────────────────────────────────────────────────
+// Software rendering in CI is far slower than a phone with a GPU, so the bar
+// is deliberately loose. It is here to catch a layer that costs twice what it
+// should — an animated blur, a fifth blended full-frame layer — not to prove
+// sixty.
+for (const mode of ["full", "lean"]) {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, offline: true });
+  const page = await ctx.newPage();
+  await page.addInitScript(`localStorage.setItem("her.v1", JSON.stringify({ schema: 1, greeted: true,
+    entered: true, watched: false, reelAt: 12, reelFurthest: 130, sound: false, motion: "${mode}",
+    nameWritten: true, visits: [], firstOpen: 1 }))`);
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForTimeout(1400);
+  const frames = await page.evaluate(
+    () =>
+      new Promise((res) => {
+        const out = [];
+        let last = performance.now();
+        const t0 = last;
+        const step = (now) => {
+          out.push(now - last);
+          last = now;
+          if (now - t0 < 4000) requestAnimationFrame(step);
+          else res(out);
+        };
+        requestAnimationFrame(step);
+      }),
+  );
+  const sorted = [...frames].sort((a, b) => a - b);
+  const median = sorted[Math.floor(sorted.length / 2)];
+  ok(`${mode}: frames keep up`, median <= 40, `median ${median.toFixed(1)}ms over ${frames.length} frames`);
+  await ctx.close();
+}
+
+// ── no animated blur anywhere ─────────────────────────────────────────────
+{
+  const css = (await readFile(FILE, "utf8")).match(/<style[^>]*>([^]*?)<\/style>/)?.[1] ?? "";
+  // An animated filter: blur() is a full re-rasterisation every frame. It cost
+  // this page half its frame rate once; it does not come back by accident.
+  // Balance the braces rather than regexing across them, and do not let
+  // backdrop-filter (which is fine, and static) read as a hit.
+  const blurInKeyframes = (sheet) => {
+    for (const m of sheet.matchAll(/@keyframes\s+[\w-]+\s*\{/g)) {
+      let depth = 1;
+      let i = m.index + m[0].length;
+      const from = i;
+      while (depth > 0 && i < sheet.length) {
+        if (sheet[i] === "{") depth++;
+        else if (sheet[i] === "}") depth--;
+        i++;
+      }
+      if (/(^|[^-])filter:\s*blur/.test(sheet.slice(from, i))) return m[0];
+    }
+    return null;
+  };
+  const found = blurInKeyframes(css);
+  ok("no blur inside a keyframe", found === null, String(found));
+  const leakBlur = /\.light-leak[^{]*\{[^}]*[^-]filter:\s*blur/.test(css);
+  ok("the light leaks are gradients, not blurs", !leakBlur);
+}
+
 // ── a broken save leaves her the house ─────────────────────────────────────
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });

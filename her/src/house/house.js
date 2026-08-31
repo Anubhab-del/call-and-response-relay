@@ -99,17 +99,18 @@ function House({ onWatch: onWatch }) {
             className: "house-main",
             initial: {
               opacity: 0,
-              y: 10,
+              y: isStill() ? 0 : 14,
             },
             animate: {
               opacity: 1,
               y: 0,
+              transition: isStill() ? T_FAST : T_ROOM_IN,
             },
             exit: {
               opacity: 0,
-              y: -6,
+              y: isStill() ? 0 : -8,
+              transition: isStill() ? T_FAST : T_ROOM_OUT,
             },
-            transition: transition(),
             children: [
               n === "landing"
                 ? (0, jsx.jsx)(Landing, {
