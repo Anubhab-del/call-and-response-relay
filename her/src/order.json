@@ -6,6 +6,7 @@
   "lib/score.js",
   "lib/store.js",
   "lib/haptics.js",
+  "content/samehour.js",
   "lib/time.js",
   "lib/install.js",
   "film/weather.js",
@@ -34,6 +35,7 @@
   "lib/seal.js",
   "house/say.js",
   "house/settings.js",
+  "house/samehour.js",
   "house/house.js",
   "app.js"
 ]

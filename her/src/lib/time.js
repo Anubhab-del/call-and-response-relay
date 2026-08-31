@@ -194,3 +194,91 @@ function formatStamp(at) {
   let d = new Date(at);
   return formatParts({ y: d.getFullYear(), m: d.getMonth() + 1, d: d.getDate() });
 }
+
+// ── the same hour ─────────────────────────────────────────────────────────
+//
+// Nine o'clock on the second of September, worked out from the clock alone.
+// No server, no signal, no handshake: two phones in two cities agree because
+// they both know what time it is, which is the only thing about this that
+// distance was never able to reach.
+
+function sameHourStart(when = new Date()) {
+  return new Date(
+    when.getFullYear(),
+    when.getMonth(),
+    when.getDate(),
+    SAME_HOUR.hour,
+    SAME_HOUR.minute,
+    0,
+    0,
+  ).getTime();
+}
+
+function sameHourRunMs() {
+  let last = SAME_HOUR_BEATS[SAME_HOUR_BEATS.length - 1];
+  return (last.at + 30) * 1000;
+}
+
+// phase:
+//   null       not the second of September
+//   "coming"   it is the day, but not yet near
+//   "approach" the last quarter of an hour before nine
+//   "live"     it is running, and it is running on his phone too
+//   "late"     she missed the start but the night is not over
+//   "over"     the night is done
+// The night before. She cannot be sent a notification — nothing here can
+// reach her — so the only way she learns to be somewhere at nine tomorrow is
+// if the house tells her today.
+function isSameHourEve(when = new Date()) {
+  let tomorrow = new Date(when.getFullYear(), when.getMonth(), when.getDate() + 1);
+  return isSeptemberSecond(tomorrow);
+}
+
+function sameHourAt(when = new Date()) {
+  if (!isSeptemberSecond(when)) return null;
+  let start = sameHourStart(when);
+  let now = when.getTime();
+  let toStart = start - now;
+  if (toStart > SAME_HOUR.approachMinutes * 60000)
+    return { phase: "coming", start: start, toStart: toStart };
+  if (toStart > 0) return { phase: "approach", start: start, toStart: toStart };
+  let elapsed = now - start;
+  if (elapsed <= sameHourRunMs())
+    return { phase: "live", start: start, elapsed: elapsed, together: true };
+  if (elapsed <= SAME_HOUR.windowMinutes * 60000)
+    return { phase: "late", start: start, elapsed: elapsed, together: false };
+  return { phase: "over", start: start };
+}
+
+// Which beat is on screen at a given moment, and how far into it she is.
+function sameHourBeatAt(elapsedMs) {
+  let seconds = elapsedMs / 1000;
+  let index = -1;
+  for (let i = 0; i < SAME_HOUR_BEATS.length; i++) {
+    if (SAME_HOUR_BEATS[i].at <= seconds) index = i;
+    else break;
+  }
+  if (index < 0) return { index: -1, beat: null, into: 0 };
+  return { index: index, beat: SAME_HOUR_BEATS[index], into: seconds - SAME_HOUR_BEATS[index].at };
+}
+
+// Written as a word, because "the 3rd September" is not how anyone says it.
+var ORDINAL_WORDS = [
+  "",
+  "first",
+  "second",
+  "third",
+  "fourth",
+  "fifth",
+  "sixth",
+  "seventh",
+  "eighth",
+  "ninth",
+  "tenth",
+  "eleventh",
+  "twelfth",
+];
+
+function ordinalWord(n) {
+  return ORDINAL_WORDS[n] ?? `${n}th`;
+}

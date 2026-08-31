@@ -571,6 +571,110 @@ for (const mode of ["full", "lean"]) {
   await ctx.close();
 }
 
+// ── The Same Hour ─────────────────────────────────────────────────────────
+// Nine o'clock on the second of September, worked out from the clock alone.
+{
+  const hourVisit = async (iso, seed) => {
+    const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true, reducedMotion: "reduce" });
+    const page = await ctx.newPage();
+    const errors = [];
+    page.on("pageerror", (e) => errors.push(String(e.message)));
+    await page.addInitScript(fakeClock(iso));
+    await page.addInitScript(`if (!localStorage.getItem("her.v1")) localStorage.setItem("her.v1", ${JSON.stringify(JSON.stringify(seed ?? { schema: 1, greeted: true, entered: true, watched: true, sound: false, motion: "still", nameWritten: true, firstOpen: 1 }))})`);
+    await page.goto("file://" + FILE, { waitUntil: "load" });
+    await page.waitForTimeout(1700);
+    const mode = () => page.evaluate(() => document.querySelector(".shell")?.dataset.mode);
+    const text = async (sel) => (await page.locator(sel).innerText().catch(() => "")).replace(/\s+/g, " ").trim();
+    return { page, ctx, mode, text, errors, close: () => ctx.close() };
+  };
+
+  {
+    // Nothing here can send her a notification, so the night before has to.
+    const v = await hourVisit("2026-09-01T20:00:00");
+    ok("the night before tells her to be there", /Nine o.clock tomorrow night/i.test(await v.text(".hour-card")));
+    await v.close();
+  }
+  {
+    const v = await hourVisit("2026-09-02T14:00:00");
+    ok("Sept 2 afternoon: the house says tonight", /Nine o.clock. Come back then/i.test(await v.text(".hour-card")));
+    ok("and it has not started", (await v.mode()) === "house");
+    await v.close();
+  }
+  {
+    const v = await hourVisit("2026-09-02T20:52:00");
+    ok("ten to nine: the house tells her to sit down", /Sit down/i.test(await v.text(".hour-card")));
+    await v.close();
+  }
+  {
+    const v = await hourVisit("2026-09-02T21:00:04");
+    ok("nine o'clock: it takes the screen", (await v.mode()) === "hour");
+    ok("it opens on the hour", /It is nine o.clock/i.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
+    ok("and it says he is reading it too", /he is reading this now/i.test(await v.text(".hour-together")));
+    await v.close();
+  }
+  {
+    // Beat placement is by the clock, so a later moment shows a later line.
+    const v = await hourVisit("2026-09-02T21:03:22");
+    ok("three minutes in, the count", /1,096/.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
+    await v.close();
+  }
+  {
+    const v = await hourVisit("2026-09-02T21:07:12");
+    ok("seven minutes in, her name and the year", /Happy third September, Smruti/i.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
+    await v.close();
+  }
+  {
+    // The question, the answer, the seal, and the ledger.
+    const v = await hourVisit("2026-09-02T21:07:36");
+    ok("the hour ends on one question", /What was this year, in your words/i.test(await v.text(".hour-stage")));
+    await v.page.locator(".hour-field").fill("It stopped feeling temporary.");
+    await v.page.getByRole("button", { name: /keep it/i }).click();
+    await v.page.waitForTimeout(1200);
+    const kept = await v.page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).sameHour?.["2026"]);
+    ok("her answer is kept under the year", kept?.answer === "It stopped feeling temporary." && !!kept.doneAt, JSON.stringify(kept));
+    await v.page.getByRole("button", { name: /stay in the house/i }).click();
+    await v.page.waitForTimeout(1400);
+    ok("and it lets her back into the house", (await v.mode()) === "house");
+    await v.page.reload({ waitUntil: "load" });
+    await v.page.waitForTimeout(1800);
+    ok("it is sealed: the same night does not run twice", (await v.mode()) === "house");
+    await v.page.getByText("Your days", { exact: true }).first().click();
+    await v.page.waitForTimeout(900);
+    ok("the September is on the shelf", /It stopped feeling temporary/i.test(await v.text(".septembers")), await v.text(".septembers"));
+    ok("no errors across the hour", v.errors.length === 0, v.errors.join(" | "));
+    await v.close();
+  }
+  {
+    const v = await hourVisit("2026-09-02T22:10:00");
+    ok("late: she is let in anyway", /a little late/i.test(await v.text(".hour-card")));
+    await v.close();
+  }
+  {
+    const v = await hourVisit("2026-09-03T10:00:00");
+    ok("the next morning it is gone", (await v.page.locator(".hour-card").count()) === 0 && (await v.mode()) === "house");
+    await v.close();
+  }
+  {
+    const v = await hourVisit("2027-09-02T21:00:04");
+    ok("next year it comes round again", (await v.mode()) === "hour");
+    await v.close();
+  }
+  {
+    // Stepping out has to be real, and coming back has to be in step.
+    const v = await hourVisit("2026-09-02T21:00:20");
+    await v.page.getByRole("button", { name: /step out/i }).click();
+    await v.page.waitForTimeout(1400);
+    ok("stepping out leaves the hour", (await v.mode()) === "house");
+    await v.page.waitForTimeout(7000);
+    ok("and it does not drag her back", (await v.mode()) === "house");
+    await v.page.getByRole("button", { name: /come back/i }).click();
+    await v.page.waitForTimeout(1200);
+    const on = await v.text(".hour-stage");
+    ok("coming back rejoins where the clock is", /looking at this too|No signal between us/i.test(on), on);
+    await v.close();
+  }
+}
+
 // ── a broken save leaves her the house ─────────────────────────────────────
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });

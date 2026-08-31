@@ -10,7 +10,7 @@ var ROOM_TITLES = {
   settings: "The fuse box",
   inbox: "What arrived",
 };
-function House({ onWatch: onWatch }) {
+function House({ onWatch: onWatch, onBeginHour: onBeginHour, steppedOut: steppedOut }) {
   let t = useStore(),
     [n, r] = (0, React.useState)("landing"),
     [i, a] = (0, React.useState)(null),
@@ -115,6 +115,8 @@ function House({ onWatch: onWatch }) {
               n === "landing"
                 ? (0, jsx.jsx)(Landing, {
                     onGo: o,
+                    onBeginHour: onBeginHour,
+                    steppedOut: steppedOut,
                     onOpenLetter: (id) => {
                       (setOpenLetter(id), o("letters"));
                     },
@@ -144,6 +146,7 @@ function House({ onWatch: onWatch }) {
                   })
                 : null,
               n === "settings" ? (0, jsx.jsx)(SettingsRoom, {}) : null,
+              n === "days" ? (0, jsx.jsx)(SameHourLedger, {}) : null,
               n === "inbox" ? (0, jsx.jsx)(InboxRoom, {}) : null,
               n === "reel"
                 ? (0, jsx.jsx)(ReelRoom, {

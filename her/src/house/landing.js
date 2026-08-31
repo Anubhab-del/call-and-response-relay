@@ -40,7 +40,7 @@ var ROOMS = [
     sub: "Sound, motion, keeping a copy",
   },
 ];
-function Landing({ onGo: onGo, onOpenLetter: onOpenLetter }) {
+function Landing({ onGo: onGo, onOpenLetter: onOpenLetter, onBeginHour: onBeginHour, steppedOut: steppedOut }) {
   useMinuteTick();
   let t = useStore(),
     n = daysTogether(),
@@ -53,6 +53,8 @@ function Landing({ onGo: onGo, onOpenLetter: onOpenLetter }) {
     // At two in the morning there is a letter for exactly this, and it should
     // not be four taps away. Only in the small hours, and not again for a few
     // hours after she has read it.
+    hour = sameHourAt(),
+    hourKept = !!t.sameHour?.[String(new Date().getFullYear())]?.doneAt,
     sleepless =
       isSmallHours() &&
       Date.now() - (t.opened["cannot-sleep"] ?? 0) > 6 * 60 * 60 * 1000;
@@ -69,6 +71,79 @@ function Landing({ onGo: onGo, onOpenLetter: onOpenLetter }) {
             className: "streak",
             ...fadeIn(0.25, 0.7),
             children: returnLine(),
+          })
+        : null,
+      isSameHourEve()
+        ? (0, jsx.jsxs)(motion.div, {
+            className: "hour-card",
+            ...riseIn(0.3),
+            children: [
+              (0, jsx.jsx)("p", { className: "hour-card-kicker", children: SAME_HOUR_EVE.kicker }),
+              (0, jsx.jsx)("p", { className: "hour-card-line", children: SAME_HOUR_EVE.line }),
+              (0, jsx.jsx)("p", { className: "hour-card-under", children: SAME_HOUR_EVE.under }),
+            ],
+          })
+        : null,
+      hour && !hourKept && (hour.phase === "coming" || hour.phase === "approach")
+        ? (0, jsx.jsxs)(motion.div, {
+            className: "hour-card",
+            "data-near": hour.phase === "approach" ? "true" : void 0,
+            ...riseIn(0.3),
+            children: [
+              (0, jsx.jsx)("p", {
+                className: "hour-card-kicker",
+                children:
+                  hour.phase === "approach" ? SAME_HOUR_APPROACH.kicker : SAME_HOUR_COMING.kicker,
+              }),
+              (0, jsx.jsx)("p", {
+                className: "hour-card-line",
+                children: hour.phase === "approach" ? SAME_HOUR_APPROACH.line : SAME_HOUR_COMING.line,
+              }),
+              hour.phase === "approach"
+                ? (0, jsx.jsx)("p", {
+                    className: "hour-card-under",
+                    children: SAME_HOUR_APPROACH.under,
+                  })
+                : null,
+            ],
+          })
+        : null,
+      hour && !hourKept && hour.phase === "live" && steppedOut
+        ? (0, jsx.jsxs)(motion.div, {
+            className: "hour-card",
+            "data-near": "true",
+            ...riseIn(0.3),
+            children: [
+              (0, jsx.jsx)("p", { className: "hour-card-kicker", children: "It is still going" }),
+              (0, jsx.jsx)("p", {
+                className: "hour-card-line",
+                children: "Come back whenever you like. It has not waited for you — it is running on the clock, so you will come in exactly where he is.",
+              }),
+              (0, jsx.jsx)("button", {
+                type: "button",
+                className: "solid",
+                onClick: () => onBeginHour?.(hour.start),
+                children: "Come back",
+              }),
+            ],
+          })
+        : null,
+      hour && !hourKept && hour.phase === "late"
+        ? (0, jsx.jsxs)(motion.div, {
+            className: "hour-card",
+            "data-near": "true",
+            ...riseIn(0.3),
+            children: [
+              (0, jsx.jsx)("p", { className: "hour-card-kicker", children: SAME_HOUR_LATE.kicker }),
+              (0, jsx.jsx)("p", { className: "hour-card-line", children: SAME_HOUR_LATE.line }),
+              (0, jsx.jsx)("p", { className: "hour-card-under", children: SAME_HOUR_LATE.under }),
+              (0, jsx.jsx)("button", {
+                type: "button",
+                className: "solid",
+                onClick: () => onBeginHour?.(Date.now()),
+                children: SAME_HOUR_LATE.button,
+              }),
+            ],
           })
         : null,
       sleepless

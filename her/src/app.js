@@ -12,6 +12,9 @@ function App() {
     }),
     [r, i] = (0, React.useState)("void"),
     [cut, setCut] = (0, React.useState)(false),
+    // The Same Hour takes the screen from whatever else is on it.
+    [hourStart, setHourStart] = (0, React.useState)(null),
+    [steppedOut, setSteppedOut] = (0, React.useState)(false),
     [a, o] = (0, React.useState)({
       close: false,
       pulse: 0,
@@ -25,7 +28,8 @@ function App() {
     [l, u] = (0, React.useState)(false),
     [d, f] = (0, React.useState)(() => !isHandheld() && window.innerWidth / window.innerHeight > 0.95),
     [p] = (0, React.useState)(() => supportsFullscreen()),
-    m = (0, React.useRef)(false);
+    m = (0, React.useRef)(false),
+    out = (0, React.useRef)(false);
   // The motion preference has to settle before anything asks what it is.
   ((0, React.useEffect)(() => {
     (setMotionPreference(e.motion), applyMotionClasses());
@@ -38,6 +42,20 @@ function App() {
     (0, React.useEffect)(() => {
       score.setMuted(!e.sound);
     }, [e.sound]),
+    // Nine o'clock on the second of September arrives on its own. Nothing has
+    // to be pressed, and nothing has to be online.
+    (0, React.useEffect)(() => {
+      let look = () => {
+        let hour = sameHourAt();
+        if (!hour || hour.phase !== "live") return;
+        if (snapshot().sameHour?.[String(new Date().getFullYear())]?.doneAt) return;
+        if (out.current) return;
+        setHourStart((was) => was ?? hour.start);
+      };
+      look();
+      let id = window.setInterval(look, 5000);
+      return () => window.clearInterval(id);
+    }, []),
     (0, React.useEffect)(() => {
       update((state) => {
         let now = Date.now();
@@ -150,11 +168,12 @@ function App() {
     x = new Date().getHours(),
     S = 0.62 + 0.38 * Math.cos(((x - 22 + 24) % 24) * (Math.PI / 12)),
     C = isNightHours() ? "silence" : "ember",
-    w = t === "house" ? C : r,
+    w = hourStart != null ? "reply" : t === "house" ? C : r,
     ee = isSeptemberSecond();
+  let inHour = hourStart != null;
   return (0, jsx.jsx)("div", {
     className: "shell",
-    "data-mode": t,
+    "data-mode": inHour ? "hour" : t,
     "data-anniversary": ee ? "true" : void 0,
     children: (0, jsx.jsxs)("div", {
       className: "room",
@@ -309,7 +328,7 @@ function App() {
                       "welcome",
                     )
                   : null,
-                t === "film"
+                t === "film" && hourStart == null
                   ? (0, jsx.jsx)(
                       Film,
                       {
@@ -323,13 +342,39 @@ function App() {
                       "film",
                     )
                   : null,
-                t === "house"
+                t === "house" && hourStart == null
                   ? (0, jsx.jsx)(
                       House,
                       {
                         onWatch: b,
+                        steppedOut: steppedOut,
+                        onBeginHour: (at) => {
+                          ((out.current = false), setSteppedOut(false), setHourStart(at));
+                        },
                       },
                       "house",
+                    )
+                  : null,
+                hourStart != null
+                  ? (0, jsx.jsx)(
+                      SameHour,
+                      {
+                        startedAt: hourStart,
+                        together: sameHourAt()?.phase === "live",
+                        onLeave: () => {
+                          ((out.current = true), setSteppedOut(true), setHourStart(null));
+                        },
+                        onDone: () => {
+                          ((out.current = false),
+                            setSteppedOut(false),
+                            setHourStart(null),
+                            update((state) => {
+                              state.watched = true;
+                            }),
+                            n("house"));
+                        },
+                      },
+                      "hour",
                     )
                   : null,
               ],

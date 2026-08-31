@@ -326,6 +326,229 @@ html.is-still .letterbox[data-cut="true"] {
   will-change: opacity;
 }
 
+/* The hour has its own ground: the warmest the house ever gets. The weather
+   washes are written for the letterbox, and the hour runs inside the frame. */
+.shell[data-mode="hour"] .house-frame {
+  background: radial-gradient(120% 90% at 50% 18%, #1d1409 0%, #120c07 52%, #0a0705 100%);
+  color: #f8e4c0;
+  transition: background 2.4s var(--ease);
+}
+.shell[data-mode="hour"] .room {
+  background: #0a0705;
+}
+.shell[data-mode="hour"] .light-leak {
+  opacity: 0.9;
+}
+.shell[data-mode="hour"] .name-ghost {
+  opacity: 0.55;
+}
+
+/* ── The Same Hour ───────────────────────────────────────────────────────
+   Nine o'clock on the second of September. It looks like nothing else in the
+   house because it happens for about seven minutes a year. */
+.hour {
+  z-index: 40;
+  place-items: center;
+  gap: 0;
+  width: 100%;
+  height: 100%;
+  padding: clamp(26px, 7vw, 72px);
+  display: grid;
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+}
+.hour-stage {
+  text-align: center;
+  place-self: center;
+  width: 100%;
+  max-width: 34ch;
+}
+.hour-line {
+  font-family: var(--display);
+  color: #fbf1e2;
+  font-size: clamp(1.3rem, 5.6vw, 2.1rem);
+  line-height: 1.44;
+  text-shadow:
+    0 0 2px #f2d9a629,
+    0 0 22px #f2d9a63d,
+    0 0 66px #e8b9a42e;
+}
+.hour-big {
+  font-size: clamp(1.6rem, 7vw, 2.7rem);
+  line-height: 1.3;
+}
+.hour-open {
+  letter-spacing: 0.01em;
+}
+.hour-under {
+  font-family: var(--display);
+  color: var(--paper-dim);
+  margin-top: clamp(16px, 3.4vh, 30px);
+  font-size: clamp(1rem, 4vw, 1.28rem);
+  font-style: italic;
+  line-height: 1.6;
+}
+.hour-together {
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: #d8b877a8;
+  text-align: center;
+  z-index: 2;
+  font-size: 0.56rem;
+  position: absolute;
+  top: max(20px, env(safe-area-inset-top));
+  left: 0;
+  right: 0;
+}
+.hour-count {
+  place-items: center;
+  gap: 6px;
+  display: grid;
+}
+.hour-number {
+  font-family: var(--display);
+  color: var(--lamp);
+  font-size: clamp(3.6rem, 19vw, 7rem);
+  line-height: 1;
+  text-shadow:
+    0 0 30px #f2d9a647,
+    0 0 90px #e8b9a433;
+}
+.hour-unit {
+  letter-spacing: 0.4em;
+  text-indent: 0.4em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+  font-size: 0.66rem;
+}
+.hour-slip {
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: #bda89347;
+  z-index: 2;
+  font-size: 0.52rem;
+  transition: color 0.5s ease;
+  position: absolute;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  left: 0;
+  right: 0;
+}
+.hour-slip:hover,
+.hour-slip:focus-visible {
+  color: var(--ui);
+}
+
+/* the question */
+.hour-ask,
+.hour-done {
+  place-items: center;
+  gap: clamp(10px, 2vh, 16px);
+  display: grid;
+}
+.hour-kicker {
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #d8b877b3;
+  font-size: 0.58rem;
+}
+.hour-hint,
+.hour-fine {
+  color: var(--paper-faint);
+  max-width: 32ch;
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+.hour-field {
+  font-family: var(--display);
+  color: var(--paper);
+  resize: vertical;
+  background: #f0d6aa08;
+  border: 1px solid var(--line-warm);
+  border-radius: 3px;
+  width: 100%;
+  min-height: 7.5em;
+  margin-top: 6px;
+  padding: 14px 15px;
+  font-size: 1.06rem;
+  line-height: 1.6;
+}
+.hour-field:focus-visible {
+  border-color: #d8b87794;
+  outline: none;
+}
+.hour-row {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  display: flex;
+}
+
+/* the card on the landing, before nine */
+.hour-card {
+  border: 1px solid #d8b8773d;
+  border-radius: 3px;
+  gap: 7px;
+  width: 100%;
+  max-width: 34ch;
+  padding: 16px 18px;
+  display: grid;
+  background: linear-gradient(160deg, #f2d9a614, #f2d9a605);
+}
+.hour-card[data-near="true"] {
+  border-color: #d8b87794;
+  background: linear-gradient(160deg, #f2d9a626, #f2d9a60a);
+}
+.hour-card-kicker {
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #d8b877cc;
+  font-size: 0.55rem;
+}
+.hour-card-line {
+  font-family: var(--display);
+  color: var(--paper);
+  font-size: 1.08rem;
+  line-height: 1.5;
+}
+.hour-card-under {
+  color: var(--paper-faint);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+.hour-card button {
+  justify-self: start;
+  margin-top: 6px;
+}
+
+/* the Septembers */
+.septembers ul {
+  gap: clamp(14px, 3vh, 24px);
+  margin-top: 14px;
+  display: grid;
+}
+.septembers li {
+  border-left: 1px solid var(--line-warm);
+  padding-left: 14px;
+  list-style: none;
+}
+.september-year {
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #d8b877a8;
+  font-size: 0.58rem;
+  display: block;
+}
+.septembers li p {
+  font-family: var(--display);
+  color: var(--paper);
+  margin-top: 6px;
+  font-size: 1.04rem;
+  font-style: italic;
+  line-height: 1.62;
+  white-space: pre-wrap;
+}
+
 /* ── her hand ────────────────────────────────────────────────────────────
    Wherever her thumb is, there is a little more light. And when she holds a
    beat, the room settles: the rain eases, the frame draws in a fraction, and

@@ -21,6 +21,8 @@ var EMPTY_STATE = {
   nameWritten: false,
   firstOpen: 0,
   lastOpen: 0,
+  // One entry per September: when the hour was kept, and what she wrote.
+  sameHour: {},
 };
 var storageBroken = false;
 function probeStorage() {
@@ -215,6 +217,18 @@ function importState(text) {
 
       // A word written today is hers now; an old copy does not overwrite it.
       state.words = { ...copy.words, ...state.words };
+
+      // The Septembers. Never lose one: whichever side has an answer for a
+      // year keeps it, and a year answered on both keeps the earlier one.
+      let years = { ...copy.sameHour };
+      for (let [year, mine] of Object.entries(state.sameHour ?? {})) {
+        let theirs = years[year];
+        if (!theirs) years[year] = mine;
+        else if (mine.answer && !theirs.answer) years[year] = mine;
+        else if (mine.answer && theirs.answer)
+          years[year] = (mine.answeredAt ?? 0) <= (theirs.answeredAt ?? 0) ? mine : theirs;
+      }
+      state.sameHour = years;
 
       // Counts and reach: whichever went further.
       state.pulls = highest(copy.pulls, state.pulls);
