@@ -55,7 +55,7 @@ function SettingsRoom() {
             className: "fine",
             children: score.hasSong
               ? "The song he chose is in the file. It plays under everything."
-              : "There is no song in this copy, so the rain and the storm are the score.",
+              : "There is no song in this copy. The rain, the far-off thunder and the occasional note are the whole score.",
           }),
         ],
       }),
@@ -150,7 +150,7 @@ function SettingsRoom() {
           (0, jsx.jsx)("p", {
             className: "fine",
             children:
-              "Everything you have written, as one file. If you change phones, open it here on the new one and nothing is lost.",
+              "Everything you have written and everything you have opened, as one file. If you ever change phones, open it here on the new one and none of it is lost.",
           }),
           (0, jsx.jsxs)("div", {
             className: "row",
@@ -168,7 +168,7 @@ function SettingsRoom() {
                     (n.download = `her-backup-${new Date().toISOString().slice(0, 10)}.json`),
                     n.click(),
                     URL.revokeObjectURL(t),
-                    l("Saved. Keep it somewhere dull and safe."));
+                    l("Saved. Keep it somewhere dull and safe, where nobody would think to look."));
                 },
                 children: "save everything",
               }),

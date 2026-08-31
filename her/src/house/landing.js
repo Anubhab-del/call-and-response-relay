@@ -2,42 +2,42 @@ var ROOMS = [
   {
     id: "letters",
     name: "Letters",
-    sub: "Some of them are sealed",
+    sub: "Some of them are sealed until a day arrives",
   },
   {
     id: "say",
     name: "Say something",
-    sub: "A page that is yours",
+    sub: "A page that belongs to you alone",
   },
   {
     id: "everything",
     name: "Everything",
-    sub: "One small true thing a day",
+    sub: "One small true thing, every day",
   },
   {
     id: "promises",
     name: "Promises",
-    sub: "Things I am on the hook for",
+    sub: "Twelve things I am on the hook for",
   },
   {
     id: "days",
     name: "Your days",
-    sub: "The calendar of us",
+    sub: "Every date that is ours",
   },
   {
     id: "distance",
     name: "The distance",
-    sub: "It is only a number",
+    sub: "It was only ever a number",
   },
   {
     id: "reel",
     name: "The picture",
-    sub: "Watch it again, or one part",
+    sub: "Watch it again, or just one part of it",
   },
   {
     id: "settings",
     name: "The fuse box",
-    sub: "Sound, motion, backups",
+    sub: "Sound, motion, keeping a copy",
   },
 ];
 function Landing({ onGo: onGo, onOpenLetter: onOpenLetter }) {

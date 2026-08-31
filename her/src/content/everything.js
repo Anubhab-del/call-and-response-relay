@@ -1,432 +1,437 @@
 var EVERYTHING = `
 # ── things I have noticed ──────────────────────────────────────────
-You say "hmm" before you disagree with me. You think it softens it. It does not.
-You get quieter when something matters. Most people get louder.
+You say "hmm" before you disagree with me. You think it softens it. It never has, and I love it.
+You get quieter when something matters. Everyone else in the world gets louder.
 You apologise for the length of your messages and then send the good one anyway.
-You remember what I said about work three weeks ago better than I do.
-You use the exact right word, and if you cannot find it you wait rather than use a near one.
-You laugh late, after you have checked whether it was actually funny.
-When you are tired your sentences get shorter and your opinions get better.
-You say my name differently when you are worried. I can hear it in one syllable.
-You ask follow-up questions. Almost nobody does.
-You are polite to people who cannot do anything for you.
+You remember what I said about work three weeks ago better than I do, and you bring it back at exactly the right moment.
+You use the exact right word, and if you cannot find it you wait, rather than use the one standing nearby.
+You laugh late — after you have checked whether it was actually funny — and that late laugh is the one I work for.
+When you are tired your sentences get shorter and your opinions get sharper and I like you even more.
+You say my name differently when you are worried. I can hear it in one syllable, from a thousand kilometres.
+You ask follow-up questions. Almost nobody does. It is the most underrated form of love there is.
+You are gentle with people who cannot do anything for you, which is the only test that has ever meant anything.
 You hate being fussed over and you check twice that I have eaten.
-You do not fill silences. You let them sit. It took me a year to stop panicking in them.
-You are competitive about things that do not matter and generous about things that do.
-You notice when I am off before I have decided that I am.
-You never say a thing you do not mean, which means everything you say costs something.
-You are funnier at midnight than you are willing to be at noon.
-You have a whole voice you use only for children and animals.
-You get shy about being praised and then think about it for days.
-You give advice in the form of a question.
-When you are certain, you get very still.
-You do not say "I am fine" when you are not. You say nothing. I have learned to read the nothing.
-You take a long time to trust a person and then you do it completely.
-You underestimate how much people like you by roughly half.
-You end an argument by getting more precise, never by getting cruel.
+You do not fill silences. You let them sit. It took me a year to stop panicking inside them and now they are my favourite part.
+You are fiercely competitive about things that do not matter and endlessly generous about the things that do.
+You notice I am off before I have decided that I am.
+You never say a thing you do not mean, which means everything you have ever said to me cost you something.
+You are funnier at midnight than you are willing to be at noon, and I have stayed up for years to get at it.
+You have a whole voice you keep only for children and animals, and hearing it does something to me.
+You get shy about being praised and then think about it for days. I know. I count on it.
+You give advice in the form of a question, and it works every single time.
+When you are certain, you go very still. I have learned to watch for it.
+You do not say "I am fine" when you are not. You say nothing at all. I have learned to read the nothing.
+You take a very long time to trust a person and then you do it completely, with nothing held back.
+You underestimate how much people like you by roughly half. Possibly more.
+You end an argument by getting more precise, never by getting cruel, and I have never once been afraid of you.
+The way you say "achha" when you have decided something. I would know it anywhere.
+You hold your breath slightly before you say something that matters. I hear it. I always wait.
 
 # ── things I do ───────────────────────────────────────────────────
-I check my phone when the signal drops on your side, as though that helps.
-I keep the last message you sent open longer than I need to.
-I have your voice notes saved. All of them. I do not listen to most of them. I like knowing they are there.
-I plan the week around one call.
-I tell people about you unprompted and then feel slightly foolish about it.
+I check my phone when the signal drops on your side, as though that could possibly help.
+I keep the last message you sent open longer than I need to, and then I read it again.
+I have every voice note you have ever sent me. I do not listen to most of them. I like knowing they are there.
+I plan the whole week around one call, and I would plan a life around it, and I am about to.
+I tell people about you unprompted and then feel faintly foolish and then do it again the next day.
 I look at the weather where you are before I look at the weather here.
-I rehearse things I want to tell you and then forget them the moment you pick up.
-I have never once dreaded the phone ringing when it was you.
-I count. I did not decide to. I just always know roughly how many days it has been.
-I read your messages twice. Once fast, once properly.
-I have got better at being alone and worse at wanting to be.
-I keep the lamp on later than I need to, on the nights we talk late.
-I have learned your family, your friends, your streets, your bus, none of which I have seen.
-I got good at this. That was not free.
-I do not tell you every time I miss you. It would be most hours and it would stop meaning anything.
-I have stopped making plans that do not have you in them. It happened without a decision.
-I know how you sound when you are lying about being all right, and I mostly let you.
-I have never wanted to be talked out of you.
-I put my phone face down and it lights the ceiling anyway.
-I do the maths on flights I am not going to book.
+I rehearse things I want to tell you and forget every one of them the moment you pick up.
+I have never once dreaded the phone ringing when it was you. Not once, in three years.
+I count. I did not decide to. I simply always know roughly how many days it has been.
+I read your messages twice. Once fast, because I cannot help it, and once properly.
+I have got better at being alone and much worse at wanting to be.
+I keep the lamp on later than I need to on the nights we talk late.
+I have learned your family, your friends, your streets, your bus — none of which I have ever seen.
+I got good at this. I want you to know that was not free.
+I say goodnight and then stay on the line for a moment after, every time, hoping you will say one more thing.
+I have a photograph of a doorway that I have looked at more times than I would ever tell you.
+I have arranged my whole evening around nine o'clock for three years and never once resented it.
+I hear a song and immediately want to know what you would think of it.
+I save things to tell you. Small things. Things that would not survive being told to anyone else.
+I have imagined the sound of your keys in a door I do not own yet.
+I have written and deleted more messages to you at two in the morning than I have ever sent.
+I check the time in your city out of habit, even though it is the same time.
 
 # ── the distance ──────────────────────────────────────────────────
-A thousand kilometres is a number. It is not an argument.
-The distance is the cost. It is not the thing.
-We have done nearly all of this on a bad line and it worked anyway.
-I have loved you at a distance longer than most people manage it up close.
-Everyone told us the arithmetic. We were not confused about the arithmetic.
-The signal has dropped a thousand times. It has never once meant anything.
-This is temporary. I want to be careful and not promise you a date. But it is temporary.
-We are not being patient. We are building something with a long lead time.
-There is a version of this where I am irritating you from the next room. We are walking towards it.
-Two hours in three years, and I would take that trade again without asking the price.
-I do not think of it as waiting. Waiting is what you do when nothing is happening.
-Somebody has to go first into the difficult version. We both did.
-Distance is only unbearable if you think the alternative was someone nearer. It was not.
-The hardest part is not the missing. It is the ordinary things I cannot hand you.
-When we are old this will be one paragraph.
+One thousand two hundred and eighty-seven kilometres. I have never once thought of it as far.
+Distance is only a number. It has never been an argument, and it has never been a reason.
+The distance is not the hard part. The hard part is that there is nothing to do about it but wait well.
+I have loved you across a whole country and it never once felt like less.
+Some nights the distance is furniture. Some nights it has teeth. Tonight it is only furniture.
+Everyone told us the arithmetic. We were never confused about the arithmetic.
+It is a train and a night and a morning. It is not the sea. It is not the moon.
+People say long distance as though it were a diagnosis. It is a postcode.
+Every kilometre of it has been paid for and I would pay again.
+The distance has taken three years from us and given us three years of talking properly. I am not sure it owes me anything.
+Somewhere there is a photograph of us that has not been taken yet.
+I have never had to wonder where you are. Only how far, and that is arithmetic, and arithmetic ends.
+It is a number that is going to become zero. That is the only thing I know about the future for certain.
+Two roofs, one weather, most nights.
+The map is wrong about us. It thinks we are apart.
 
-# ── May 3, 2026 ───────────────────────────────────────────────────
-Two hours. I have run them back so many times they have worn thin.
-I did not know what to do with my hands.
-You were shorter than I expected and exactly as you sounded.
-Everything before that was faith. Everything after is memory.
-I spent two and a half years earning two hours and it was not a bad rate.
-I remember what the light was doing. I could not tell you a word either of us said.
-You were real, which I knew, and also did not.
-It was not enough. It was not supposed to be enough. It was proof.
-I have been living off it since. It has not run out.
+# ── the third of May ──────────────────────────────────────────────
+Two hours in the same room, in three years. I have made them last eighteen months.
+I could not tell you one sentence either of us said. I could describe the light exactly.
+Your hands were smaller than I had built them, and better.
+Everything before that day was faith. Everything since has been memory.
+I did not look back when I left. I half regret it and I would do it again.
+I have run those two hours back so often they have worn thin in places.
+There is one photograph and it is not good and it is the most valuable thing either of us owns.
+The corridor. I will remember that corridor when I have forgotten most things.
+Two hours was cruel and I would take two hours again tomorrow, and again the day after.
 
 # ── promises, small ───────────────────────────────────────────────
-I will always tell you the boring truth over the interesting lie.
-I will not go quiet on you. If I need a day I will say it is a day.
-I will not use your softness against you in an argument. Not once.
-I will keep being the one who asks whether you ate.
-I will learn the things that matter to you even when they do not come naturally to me.
-I will not make you responsible for my mood.
-I will say sorry properly, without the paragraph that takes it back.
-I will not let this become a thing you manage.
-I will remember the small dates, not just the big one.
-I will be interested in your work for the next forty years, actually interested.
-I will not be the reason you shrink anything.
-I will get better. Steadily, without announcing it.
-I will not stop asking what you think.
-When you are old and difficult I will be old and worse and still here.
-I will keep the lamp on.
+I will always dial again.
+I will never go quiet on you. If I need a day I will say it is a day.
+You get the boring truth. Always. Even when the interesting lie would be kinder.
+Nothing you tell me softly gets used against you later. Not once, not ever.
+I will keep asking whether you ate, in forty years, from the next room.
+I will apologise without the paragraph that takes it back.
+I will not become something you have to manage.
+I am never the reason you make anything about yourself smaller.
+I will remember the small dates, not only the big one.
+The lamp stays on. Whatever hour, whatever state, whatever you have to tell me.
+Tomorrow, again. That is the only one that has to be renewed daily, and it has been.
+I will be interested in your work for the rest of my life, and not politely.
+If I am ever wrong I will say so on the day, not the following week.
+I will not let this drift. Drifting is how these things end and it does not get to end like that.
+You will never have to guess what is going on with me.
 
 # ── what is coming ────────────────────────────────────────────────
-A house. A door that only takes one key.
-Mornings that are not a negotiation.
-You, in front of a class, being difficult about grammar.
-Me in the next room, listening.
-An argument about where the table goes that we will both enjoy.
-Boredom. Actual boredom, with you, in the same room. I want it badly.
-Someone to hand things to.
-The end of the phrase "when I see you next".
-Groceries. I am not joking, I want to do groceries with you.
-A dull Tuesday with nothing planned.
-Your handwriting somewhere in my house.
-Two sets of footsteps in the same corridor.
-You, asleep, in the same building, at the same time as me.
-A wedding that is mostly paperwork on something already true.
-The rest of it.
+A door with one key and two people who have it. That is the entire fantasy and I am aware of its size.
+Two cups on a table at once, going cold at the same rate.
+Groceries. I am not being clever. I want to do the groceries with you.
+Actual boredom, in the same room, with nothing planned. I want it more than most things I have worked for.
+Your handwriting somewhere in my house, on the back of an envelope, not addressed to anyone.
+Two sets of footsteps in the same corridor at different hours, without it being an occasion.
+The end of the phrase "when I see you next". I will not miss it.
+Waking up somewhere that is also yours.
+Arguing about the heating. I have thought about this specific argument with real longing.
+You in front of a class, being difficult about grammar, changing somebody's life by accident.
+Me in the next room. Listening. Not needed. Perfectly happy.
+Forty years, if we are lucky and sensible. I have already spent three on the telephone.
+Getting old with you specifically. Not in general. Not with somebody.
+A Sunday with nothing in it.
+The first meal, cooked badly, received politely, remembered for decades.
 
 # ── on you, plainly ───────────────────────────────────────────────
-You are exact. That is the first thing I would say about you.
-You are kind in the difficult way, not the easy way.
-You are the most serious person I know about things that deserve it and the least serious about the rest.
-You held a shape until it meant something. You do it with your hands and with your whole life.
-You are not fragile. You are careful, which people confuse with fragile, to their cost.
-You underestimate yourself with real conviction. It is the only thing you are wrong about.
-You are good at being loved, which is rarer than being lovable.
-You have never once made me feel small in order to feel large.
-You are brave in a very quiet register.
-You would rather be honest than liked, and you are both anyway.
-You get things done without needing anyone to watch.
-You are the person I would want in the room if something went badly wrong.
-You are not easy. Easy would have bored me by the second month.
-You are worth arranging a life around. That is the whole argument.
+You are the most exact person I have ever met and it is the sexiest thing about you.
+You are beautiful, and it is somehow the fourth or fifth most interesting thing about you.
+You are kind in the specific, expensive way — the kind that costs you something and that you never mention.
+You are much braver than you have been told.
+You are the only person who has ever asked me the second question.
+You are funny in a way that arrives half a second late and is worth the wait.
+You are stubborn, and I have never once wanted you to be less so.
+You are the calmest person in every room you are in, and the least calm inside, and almost nobody knows.
+You are better at being loved than you believe, and getting better at it every year.
+You have never bored me. Not for one minute of three years.
+You are the person I would choose in any life, in any city, at any distance.
+There is nobody else. I have checked. I did not have to check.
+You are not too much. You have never once been too much.
+You are, and this is the plainest thing I know how to say, the love of my life.
 
 # ── the ordinary ──────────────────────────────────────────────────
 Nothing happened today and it was still yours.
-Eat something. This one is not poetry.
-Drink water. Also not poetry.
-Go to sleep. It is later than you think.
-Whatever you are behind on, you are less behind than you feel.
-Take the afternoon. Nothing will fall over.
-You do not have to earn a Sunday.
-Say the thing you have been sitting on. It gets heavier.
-Call your people. You will feel better and you always forget that you will.
-Put the phone down for an hour. Not because I do not want to talk. Because you need the hour.
-If today was a write-off, let it be one. Tomorrow is not paying for it.
-Nothing you are worrying about at this hour is as large at nine in the morning.
-You are allowed to have a bad day without it meaning something about you.
-Rest is not a reward for finishing.
-Do the small easy thing first. It works and I do not know why.
-Stand up. Go outside for four minutes. I will wait.
-You do not have to be gracious about it tonight.
-Be pleased where I can see it.
-Half of what a person is for is being the one who saw it.
-Tell me the small one, the one that is not worth a call. There is no minimum.
+An ordinary Tuesday with your voice in it is better than most people's holidays.
+We have made something out of almost nothing and I am extremely proud of us.
+The content has never been the point. The point is that one of us dials and the other answers.
+Half of loving someone is being the one who saw it.
+A bad line and forty minutes of nothing much. I would not trade it.
+Most of this has been unremarkable and all of it has been the best part of my life.
+Nine at night. Still. After everything.
+We have talked about food more than about the future and I think that was correct.
+You told me about a bus today and I listened like it was news.
+Nobody is going to make a film about this year. It is the year that did it.
+The very ordinariness of us is the achievement. Anyone can manage the dramatic part.
+I have never needed anything to happen. I have only needed you to pick up.
+A quiet evening, the two of us, a thousand kilometres apart, entirely content.
+Some nights we have nothing to say and stay on the line anyway.
+The small talk is not small. It is the whole load-bearing structure.
+I like you. That gets said less than the other thing and it matters just as much.
+You are the best part of every single day and most days are not eventful.
+There has not been one day in three years I did not want to talk to you.
+An evening with no news in it is still an evening with you in it.
 
 # ── us, mechanically ──────────────────────────────────────────────
-We have never had a fight that was actually about the thing we were fighting about.
-We are both bad at asking and good at giving. It nearly caused a problem. It does not any more.
-We got quiet for a while once and both privately decided to fix it. Neither of us mentioned it.
-We have never gone to bed on it. Not because we are wise. Because neither of us can sleep.
-You are the one who apologises first and I am working on it.
-We do not have a song. We have a month.
-Our whole relationship has been conducted through a device that drops calls, and it held.
-We disagree well. It is not nothing. Most people cannot.
-We have been three people in three years and kept choosing the new ones.
-Nobody taught us how to do this. We made it up and it worked.
-We are not a story about distance. Distance is the setting, not the plot.
+The call that dropped four times, and I dialled four times.
+Three years, mostly on a phone, and never once out of obligation.
+We got through February by continuing to answer. That is the whole method.
+There was no conversation about the repair. We simply started staying on longer.
+We have never gone to sleep on it. Not once. That was not luck.
+Neither of us has ever hung up first on purpose.
+We decided the same thing in the same week and told each other months later.
+We have had exactly one bad fortnight in three years and we both remember it.
+Nothing clever has ever saved us. Only turning up.
+We are not being patient. Patience is passive. We are building something with a long lead time.
+It held. Not because either of us was heroic. Because we kept turning up.
 
 # ── the plain ones ────────────────────────────────────────────────
 I love you.
+I have loved you since a night in September when neither of us was being careful.
 I am not going anywhere.
-I stayed.
-I would do it again.
-I chose this. I keep choosing it. It is not an accident.
-You are my favourite person, which sounds small and is not.
-Three years. I would sign for thirty right now, without reading it.
-I am proud of you. Not in general. Today, specifically.
-Thank you for being patient with the parts of me that took time.
-There is nobody else. There was never a moment when there nearly was.
-I like you. That one matters more than people think.
-You are the best decision I have made.
-I am here.
-Tomorrow, again.
-The lamp is still on.
+You are the person.
+I would do all of it again without reading it first.
+There has never been a day I wanted to be somewhere else.
+I chose you and I keep finding out that I have chosen you again.
+You are my favourite thing that has ever happened.
+I am so glad it was you.
+Nothing about this has been a mistake.
+I would rather be wrong with you than right on my own.
+I am proud to be the person you tell things to.
+I have never once had to convince myself.
+Whatever this is, it is the real one.
+You are worth arranging a life around, and I am arranging it.
 
 # ── things I want to know ─────────────────────────────────────────
-What did you eat. I want the real answer.
-What was the best four minutes of today.
-Who annoyed you. Be specific. Names.
-What did you almost tell me and then decide was not worth it.
-What are you looking forward to that you have not mentioned.
-What do you want that you have not let yourself want out loud.
-What would you do with a free week and no obligations.
-What is one thing you would change about how we do this.
-What did you think of me, honestly, in the first month.
-What are you afraid I will get tired of.
-What do you need more of that you have not asked for.
-Which of these have you skipped past because it was too close.
+What you were like at nine.
+What you thought of me, honestly, in the first month.
+The thing you almost told me and decided was not worth it.
+What you want that you have not let yourself want out loud.
+What you would do with a free week and nobody to answer to.
+What you are afraid I will get tired of. There is nothing.
+What you need more of that you have not asked for.
+Which of your own opinions you would defend to the end.
+What made you laugh today that nobody else would have found funny.
+What you were thinking about in the pause just then.
+The thing about your childhood you have only told two people.
+What you want the house to be like. Actually, in detail, room by room.
 
 # ── late night ────────────────────────────────────────────────────
-It is very late where you are.
-You are up. I know you are up.
-Nothing gets solved at this hour. The hour is lying to you.
-The morning is closer than it feels.
-Put it down. It will still be there. So will I.
-If you cannot sleep, do not fight it for three hours. Read something dull. That is the whole trick.
+It is very late where you are and I am glad you are here.
+Nothing gets decided well at this hour. Decide it in the morning.
+The dark makes things bigger. It is extremely good at that and it is lying.
+If you cannot sleep, do not solve it. Just be awake with me for a bit.
+Two in the morning is not a good adviser and has never given anyone useful counsel.
+Put your feet somewhere warm. Let your shoulders come down.
 I am asleep or pretending to be. Either way I am on the other end of it.
-Close your eyes. I will be here.
-This is the hour where everything seems permanent. It is not.
-Whatever you are turning over, you have turned it over enough.
+The morning is closer than it feels from here.
+Whatever it is, it will be smaller at eight.
+You do not have to be anything at this hour. Not even all right.
 
 # ── seasons and weather ───────────────────────────────────────────
-It is September again.
-It rained here and I thought of the sound on your side of the call.
-The year is turning and I am counting.
-Winter here is nothing. You would laugh at it.
-It is hot and I am complaining and you would tell me it is not hot.
-The light in the evening this week has been very good and you were not here to see it.
-The rain started while we were talking and neither of us mentioned it.
-Storms are ours now. I did not plan that. It happened.
+It started raining here while we were talking and you said it was raining there too.
+Two roofs, one weather, and neither of us mentioned it again for an hour.
+The first cold evening of the year always makes me want to be in the same room as you.
+Monsoon takes the signal and gives back the sound of rain behind your voice. A fair trade, most nights.
+Summer here is unreasonable and I would still rather you were in it.
+There is a particular quality of light around seven that I have never been able to describe to you properly.
+The rain on the window is doing the same thing at both ends of this call.
+Every season so far has been on a phone. The next ones will not be.
 
 # ── the difficult ones ────────────────────────────────────────────
-There have been days I was not good at this. I know which ones.
-I have been short with you when the day had nothing to do with you.
-I have taken your steadiness for granted, which is the easiest thing in the world to do.
-I got something wrong and let you carry it longer than you should have.
-I am not always as certain as I sound. I am always as committed.
-I have been afraid of losing this in a way I have not fully told you about.
-Some of the waiting has been harder than I let on. I did not want it to be your problem.
-I would rather be wrong with you than right on my own.
-I miss things. Tell me. I have never once been angry that you told me.
+There was a fortnight I was genuinely frightened and I never told you at the time.
+February was nobody's fault, which made it worse.
+I have gone quiet on you and I am not proud of it.
+Some nights the missing has teeth and there is nothing to be done but get through the evening.
+I have wanted to be in the room so badly it was physically uncomfortable.
+There were months when money was tight and I did not say and you knew anyway.
+The waiting has cost you more than it cost me. You were the one explaining us to people.
+I have been jealous of anyone who gets to see you on an ordinary Tuesday.
+Not all of this has been beautiful. All of it has been worth it.
 
-# ── things about a name ───────────────────────────────────────────
-Your name means memory. I have been trying to earn it.
-I said your name out loud for a year before I ever said it to your face.
-It is a good name. It was doing a lot of work before I met you.
-I named the file after you. There was never a shortlist.
+# ── your name ─────────────────────────────────────────────────────
+Your name means memory. I have been trying to be worth remembering.
+Smruti. I say it out loud sometimes when you are not on the line.
+I have loved the sound of your name in your mother's voice, from three rooms away, over a bad connection.
+Of all the words I have learned in three years, that one.
+You were named for remembrance and I intend to give you a great deal to remember.
 
 # ── one-line films ────────────────────────────────────────────────
-A phone lighting a ceiling at two in the morning, three years running.
-Two people, one room, two hours, twelve hundred kilometres of setup.
-A call that drops and is immediately dialled again.
-A lamp nobody turned off.
-Somebody counting days without deciding to.
-An empty chair that has a name.
-Rain on glass and a voice through a speaker.
-The word September doing more work than any word should have to.
+A corridor, a door, and two and a half years of waiting ending in eight seconds.
+The screen lighting the ceiling at two in the morning.
+A doorway, badly lit, half turned away.
+Your handwriting in the corner of something else, small and very exact.
+The fourth time the call dropped and the fourth time I dialled.
+Two cups on a table, cooling at the same rate. Not yet. Soon.
+A lamp left on in Bengaluru for somebody in Odisha.
+The last three seconds of a call, when neither of us hangs up.
 
 # ── lighter ───────────────────────────────────────────────────────
-You are wrong about one thing and I am saving it.
-I have lost every argument we have had about grammar and I am not conceding the war.
-You send voice notes that are four seconds long and contain a whole essay.
-I have a folder. You know about the folder. We do not discuss the folder.
-You type and then delete and then type. I can see all of it. I have never said anything until now.
-Your typing indicator has caused me more suspense than most films.
-You say "one minute" and mean somewhere between one and forty.
-I am always the one who has to hang up and you know exactly what you are doing.
-You have never once let me have the last word and I have stopped trying.
-Two people this stubborn should not work. We are a scandal.
-You would win in a fight. I have thought about it and I am at peace.
-You pretend not to be competitive and then keep score.
-You have opinions about spoons. I did not know that was available.
-You have corrected my Odia pronunciation the same number of times as I have attempted it.
-I am the reason we are always talking about the weather. I regret nothing.
-If you are reading this on the toilet, I respect the commitment.
-There is a version of me that is chill about you. Nobody has met him.
-I googled how long the train takes. Several times. For no reason. Purely academic.
-You claim you do not snore. I have the audio.
-The call quality is the third person in this relationship and it is not welcome.
-I have practised what I would say if you walked in right now and I would say none of it.
-You are very hard to buy presents for, which is why you got a file.
-Three years and I still check my hair before a video call.
-I have started sentences with "we" for two years without noticing.
-You laugh at my worst jokes, which has done incalculable damage to my standards.
-Every time I fix something in this file I find another thing. It is possible I built this to have something to do.
+You are wrong about that thing and I have decided to let it go for now.
+I have been rehearsing an argument about rice for three years.
+You would hate my flat. I am going to make you live in a better one.
+I have plans for you that involve a very slow Sunday and no telephones.
+I intend to be insufferable about you at parties for decades.
+You laugh at my worst jokes about a second later than my best ones. I have noticed. I keep doing both.
+I am going to be so annoying about the heating.
+One of us is going to be in charge of the plants and it should not be me.
+I will lose every argument about films and win every argument about directions.
+I have already decided which side of the bed. You may appeal.
+You are going to steal the blanket. I have made peace with it.
+I want to be bored with you so specifically that it is basically a hobby.
+There is a version of us in forty years, still bickering, and I find it enormously comforting.
+I am going to be an embarrassing husband and you are going to allow it.
+The first time I make tea wrong in your kitchen will be a foundational moment.
+I have a list of restaurants. It is longer than you would believe.
+You will pretend not to like being fussed over for about the first six months.
+I will read out things from my phone that you have already seen. Forever.
+I am going to be very smug about having been right about you.
+You will make one face at me across a room and I will know the entire sentence.
+We are going to be the couple who tell the story wrong, both of us, at the same time.
+Somebody is going to ask how we met and we will start in different places.
+I plan to hold your hand in an extremely undignified way in public.
+You are going to have opinions about how I fold things.
+I am looking forward to being the two people in the kitchen at a party.
+Forty years of this. I have thought about it and I want all of them.
 
 # ── things you taught me ──────────────────────────────────────────
-That you can be certain without being loud.
-That waiting properly is a skill and most people cannot do it.
-That the right word is worth the pause it costs.
-That being fussed over is a way of being loved and I should let people do it.
-That you do not have to answer immediately to be answering seriously.
-That precision is a kind of kindness.
-That a small good thing is not too small to mention.
-That you can be angry and still be safe to be around.
-That there is a difference between being needed and being wanted, and which one to build on.
-That it is possible to be known this well and not want to run.
-How to sit in a silence without filling it.
-How to apologise without the paragraph that takes it back.
-How to hold something until it means something.
+That waiting properly is a skill and not a punishment.
+That silence on a line is not the same as absence.
+That the right word is worth waiting for.
+That you can be furious and precise at the same time and never once be cruel.
+That apologising first is not losing.
+That asking the second question is what love looks like on a Tuesday.
+That it is possible to be steady. I did not know that about myself before you.
+That being trusted completely is a heavier and better thing than being liked.
+That you should tell people the good thing at the time.
+That a small kindness done quietly outranks a grand one done loudly.
+That there is no minimum. Nothing is too small to say.
+That the hardest sentence is usually the shortest one.
+That love is mostly logistics and attention, and both of those are learnable.
 
 # ── the hours ─────────────────────────────────────────────────────
-Six in the morning: you are already up and pretending you slept fine.
-Nine: your day has started and mine is pretending to.
-Noon: eat something that is not tea.
-Three: this is your hard hour. It passes at four. It always passes at four.
-Six: tell me one thing from today. Any one.
-Nine: this is our hour. Three years of nine o'clock.
-Eleven: you should be asleep and we both know it.
-One in the morning: whatever it is, it is not as big as it is being right now.
-Four in the morning: if you are awake at this hour I want to know why.
+Nine at night, for three years, and I have never once resented it.
+The hour before the call is my favourite hour of the day.
+The hour after the call is the quietest room in the world.
+Two in the morning belongs to us and to nobody else.
+Six in the morning, when you are up and I am not, and you let me sleep.
+The last minute of a call, where we both keep finding one more thing.
+Sunday afternoons are the worst of it. I have never worked out why.
+The moment your name appears on the screen.
+Eight fifty-eight. Every day. Like a man waiting at a station.
 
 # ── work ──────────────────────────────────────────────────────────
-You take work more seriously than the work takes itself, which is why you are good at it.
-The thing you are worried about at work is smaller than the thing you are not worried about.
-You will be underpaid and overtrusted for a few more years. Both will correct.
-Do not fix the problem that is not yours to fix. You have done it twice this year.
-Say no to one thing this week. Any one. Practice.
-You are allowed to be ambitious out loud.
-The people who do not notice what you do are not the people who decide.
-Being the reliable one is a good trap. Watch it.
-You are building towards a classroom. Everything before it is a corridor.
+You take your work more seriously than it takes itself, which is why you are good at it.
+I have watched you fix things twice this year that were never yours to fix.
+Tell me the names of the people who annoyed you. I want the whole cast.
+You come home flattened and say it went badly and it never went badly.
+I have asked you about your week every week for three years and never had to make myself.
+Whatever you build, build it as though you intend to be there in ten years.
+You are allowed to leave something that is wrong. Not everything is a test of character.
+Your ambition is not a problem to be managed. It is one of the best things about you.
+I want the boring middle part of the story, not just the ending.
 
 # ── the teaching ──────────────────────────────────────────────────
-You are going to be the strict one they are grateful for later.
-You will overprepare the first month and then find your voice in the second.
-Some child is going to be entirely different because of a sentence you said without thinking.
-You will bring the work home for the first year. I will make you stop in the second.
-You will be better at this than at anything you have done so far and it will not feel like it at the start.
-I want to see your handwriting on a blackboard.
-Save one for me. I will sit at the back.
+They have no idea what they are getting.
+You will be exact with them and a little severe and completely fair.
+Some of them will be different for the rest of their lives and never know why.
+You will overprepare for the first term and find your voice in the second.
+You explain things by slowing down and finding one word. It works on children and it worked on me.
+I will be in the next room, listening, not helping, not needed, perfectly happy.
+You are going to be somebody's favourite teacher. Probably several somebodies.
 
 # ── the dance ─────────────────────────────────────────────────────
+Years of practice for something that lasts four minutes and is then gone.
 You learned to hold a shape until it means something.
-That is the whole thing. That is what I have been doing for three years.
-Your hands know things the rest of you is too modest to claim.
-There is a discipline in you that people mistake for softness right up until they need it.
-I would like to see you dance once without you knowing I am watching.
-Years of practice for something that lasts a few minutes. You have never once complained about the rate.
-It taught you patience before I ever needed you to have any.
+That is what I have been doing since September, badly, in your general direction.
+I had heard your hands for two years before I saw them move.
+You do not perform. You arrive somewhere and let everyone else catch up.
+The discipline of it is the most romantic thing about you and you would hate me for saying so.
+You have never once complained about the rate of exchange. Neither have I.
 
 # ── food ──────────────────────────────────────────────────────────
-Tea is not a meal. Three teas are not three meals.
-What did you eat. The real answer, not the one that ends the conversation.
-I want to cook for you badly, once, so you can be polite about it.
-You are going to make me eat things I have opinions about and I will eat them.
-The first meal in the same room. That is the one I think about.
-You eat standing up when you are busy. I have noticed. Sit down.
+Eat something. This one is not poetry.
+Did you eat is the most romantic sentence in this house and I will not be argued with.
+I want to cook for you badly and be told politely that it is fine.
+Tell me what you ate today. The real answer, not the summary.
+There is a meal at the end of all this waiting and I have thought about it in detail.
+Tea, made the way the other one likes it, without being asked. That is the entire ambition.
 
 # ── money and the practical ───────────────────────────────────────
-We will be fine. Not comfortable at first. Fine.
-I am building towards something that has room in it for you not to have to earn.
-You will want to contribute anyway and I will let you, because I know you.
-None of the good parts of this cost anything, which was lucky, given the first two years.
-Whatever we end up with, the arithmetic on the last three years was already in our favour.
+There were tight months and you never made me say so out loud.
+The plan has dates on it now. Actual dates. That was the night it stopped being a hope.
+Boring logistics done well are a form of devotion and nobody says so.
+I would rather do the dull part properly than promise you the exciting part badly.
+Everything difficult about this is the cost of a decision I would make again.
 
 # ── counting ──────────────────────────────────────────────────────
-A thousand days went past and neither of us made a fuss.
+I count. I did not decide to. I simply always know.
+One thousand and something days, and every one of them answered.
 Three Septembers. Three of them.
-I know roughly how many days it has been at any moment and I did not decide to.
-Every anniversary so far has been on a phone. The next ones will not be.
-Somewhere in here is the day it stopped being new and started being ours.
-The days add up faster than the distance does.
-One year of only your voice. Two more of learning what to do with it.
-We are further along than it feels, most of the time.
+Two hours in a room, in three years. Stretched a very long way.
+Nine hundred nights of you telling me by turning up.
+The number goes up whether or not either of us looks at it.
+Somewhere in here I stopped needing to check the number to know it.
+One day the distance becomes zero, and after that I will have to find something else to count.
 
 # ── if you walked in right now ────────────────────────────────────
-I would not say anything clever. I would just be very quiet for a second.
-I would want the room to be tidier than it is.
-I would put the kettle on, because I would not know what else to do with my hands.
-You would find something wrong with the flat within four minutes.
-I would keep checking that you were still there.
-It would be ordinary within an hour. That is the part I want.
+I would not say anything clever. I have tried and it does not work.
+I would want to know what your hands were doing before you came in.
+I would put the kettle on, which is the only thing I know how to do with feeling.
+I would look at you longer than is socially acceptable.
+Everything I have rehearsed is designed for a phone and would be useless.
+I would probably just say your name.
 
 # ── things I do not say out loud ──────────────────────────────────
-I am afraid of being the reason this got hard.
-I have wondered whether the waiting cost you more than it cost me.
-Sometimes I am not sure I deserved somebody being this patient with me.
-I think about the years we did not get and I make myself stop.
-I would have waited longer. I did not want you to have to.
-There are two or three nights I would take back and I remember all of them.
-I have rehearsed losing you once or twice, to see if I could stand it. I could not.
+I am frightened of how much this matters and I would not change a thing.
+I have imagined the wedding more than a man is supposed to admit.
+I check that you got home long after you have stopped needing me to.
+There are nights I have wanted to get on a train and simply not told you.
+I reread the good messages. All of them. Regularly.
+I am not sure what I would be without this and I have stopped wondering.
+I have loved you longer than I let on at the beginning.
 
 # ── gratitude ─────────────────────────────────────────────────────
-Thank you for answering, that first time, when there was no reason to.
-Thank you for the patience I did not always earn.
-Thank you for not making me prove it every week.
-Thank you for staying interested in a life you could only hear about.
-Thank you for the boring nights. Those were the ones that did it.
-Thank you for not treating this as a story you were in temporarily.
-Thank you for being on the other end of it, for a thousand nights, without being asked.
+Thank you for answering, nine hundred times, on the ordinary nights.
+Thank you for defending us in rooms I was not in.
+Thank you for being patient with a man who is slower at apologising than you are.
+Thank you for the second question, every time.
+Thank you for never once making me feel like a burden when the money was tight.
+Thank you for telling me the small true thing when the large one would have been easier.
+Thank you for three years of nine o'clock.
 
 # ── the house ─────────────────────────────────────────────────────
-Everything in here works with no signal. That was decided before any of the words.
+Not large. Ours. That word is doing enormous work in that sentence.
+I have thought about the doors more than is reasonable.
+The lamp is on. It has been on for three years.
+Nobody in this house has ever had to knock.
+Take what you need. Leave the rest sealed. It keeps.
+This house works with no signal at all. That was the first decision I made about it.
+Everything in here is true and none of it is a surprise.
 I built this on the nights we could not talk.
-There are letters in here that will not open for years. I cannot open them either.
-If you have read everything, start again. It reads differently the second year.
-Nothing in this house needs you to be all right today.
-You do not have to finish it. It is not that kind of thing.
-Nothing in here will ask you a question you do not want to answer.
-This file will still work in ten years on a plane with no internet. I checked.
-If the phone dies, it is not gone. Ask me for it again.
-I wrote the whole thing knowing exactly which lines you would skip past.
+There is nothing in this house that will ask anything of you.
+Stay as long as you like. That is not a figure of speech.
 
 # ── short ─────────────────────────────────────────────────────────
-Still here.
-Still yours.
+Today, and tomorrow, again.
+I am here.
+Come sit.
+Nothing happened. It was still yours.
+You. Always you.
+Eat something.
+The lamp is on.
+Not far. Never far.
+I am not going anywhere. I never was.
 Still counting.
-Nothing has changed.
-Not going anywhere.
-You are enough. Full stop.
-It holds.
-Good morning, wherever you are.
-Sleep.
-Eat.
-Breathe out.
-Come here.
-I am proud of you.
-Say it out loud.
-You were right.
-I miss you. That is all.
-It is fine. Genuinely.
+Still yours.
+Still nine o'clock.
+Take your time.
+I would dial again.
+It held.
+Say the small one.
+You are enough. You were always enough.
 Rest.
-Tell me later.
-Nothing is wrong.
-I was thinking about you. No reason.
-Three years.
-Yes.
+Breathe out.
+I noticed.
+There is nobody else.
+Soon, and then always.
+Goodnight, love.
 
 # ── the far future ────────────────────────────────────────────────
-When we are old this will be one paragraph and we will tell it badly.
-Somebody is going to ask us how we met and we will both start at a different place.
-I want to be irritating to you for a very long time.
-I would like to be the person who knows what you mean before you finish.
-I am not interested in a life that goes well. I am interested in this one.
-There is a Tuesday forty years from now that I am already looking forward to.
-When you cannot remember what I said, this file will.
-I want to be old with you specifically. Not in general. You.
-Somewhere there is a photograph of us that has not been taken yet.
-The story gets better from here and I have read ahead.
-I am going to know you for longer than I have been alive so far.
-There will be a day when the distance is the funny part.
-We are going to have an ordinary life and I want it so badly it is embarrassing.
-The best of this has not happened.
+Forty years, if we are lucky and sensible.
+I want to be old with you specifically. Not in general.
+Somebody will ask how we met and we will tell it wrong together.
+There will be a year neither of us can remember anything particular about, and it will have been a good one.
+One day this distance will be a story we tell badly at a dinner party.
+I would sign for all of it again, including February, without reading it.
+The best of this has not happened yet.
+I intend to be difficult, in the same house as you, for a very long time.
+There will be a morning that is entirely unremarkable and I will be so happy I cannot speak.
+Somewhere ahead of us there is a Tuesday with nothing in it and both of us in it.
+When we are old I will still be asking whether you have eaten.
 I will still be here.
+Every anniversary so far has been on a phone. The next ones will not be.
+There is a version of this where I am irritating you from the next room. We are walking towards it.
+Whatever is coming, I am in it with you. That was decided a long time ago.
 `
   .split(
     `

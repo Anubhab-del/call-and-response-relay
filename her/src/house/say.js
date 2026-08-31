@@ -44,7 +44,7 @@ function SayRoom({ answering: answering, onClearAnswering: onClearAnswering }) {
         o(null),
         c(false),
         onClearAnswering(),
-        f("Kept. It is on your phone and nowhere else."),
+        f("Kept. It is on your phone and nowhere else in the world."),
         window.setTimeout(() => f(""), 4e3));
     },
     x = async () => {
@@ -106,7 +106,7 @@ function SayRoom({ answering: answering, onClearAnswering: onClearAnswering }) {
         className: "room-lede",
         ...fadeIn(0, 0.6),
         children:
-          "This page is yours. Nothing here goes anywhere until you send it, and the private ones never go anywhere at all.",
+          "This page belongs to you. Nothing written here goes anywhere until you decide to send it, and the private ones never go anywhere at all, not even to me.",
       }),
       answering
         ? (0, jsx.jsxs)(motion.div, {
@@ -151,7 +151,7 @@ function SayRoom({ answering: answering, onClearAnswering: onClearAnswering }) {
             onChange: (e) => i(e.target.value),
             placeholder: answering
               ? "Answer it however you like."
-              : "Anything. It does not have to be good.",
+              : "Anything at all. It does not have to be good, or finished, or make sense.",
             rows: 8,
             spellCheck: true,
           }),
@@ -243,7 +243,7 @@ function SayRoom({ answering: answering, onClearAnswering: onClearAnswering }) {
             className: "send-body",
             children:
               v.length === 0
-                ? "Nothing waiting. Write something and it will appear here."
+                ? "Nothing waiting yet. Write something and it will be here, holding, until you want to send it."
                 : `${v.length} ${v.length === 1 ? "letter" : "letters"} waiting. This makes one message you can send any way you like — it needs signal only for the second it takes to send.`,
           }),
           (0, jsx.jsx)("button", {

@@ -4,7 +4,7 @@ var CANON = {
   unlockWord: "september",
   lockKicker: "Come in",
   lockHint: "the word",
-  welcome: "You found it.",
+  welcome: "There you are.",
   title: "HER",
   kilometres: 1287,
   hisCity: "Bengaluru",
@@ -19,9 +19,9 @@ var DATES = {
 var INVITATION_COPY = {
   kicker: "Before you start",
   lines: [
-    "Headphones, if you have them.",
-    "The lights off, if you can.",
-    "It is about a quarter of an hour.",
+    "Headphones, if you have them. I made it quiet on purpose.",
+    "The lights off, if you can. It looks better in the dark, and so do most true things.",
+    "About a quarter of an hour. I have had three years; you can give me fifteen minutes.",
   ],
   button: "I am ready",
 };
@@ -85,12 +85,12 @@ var DAY_GREETINGS = {
   },
 };
 var LOCK_MISSES = [
-  "That is all right. Try again.",
-  "No. Take your time.",
-  "Still no. I am not going anywhere.",
+  "That is all right. Try it again, love.",
+  "No. Take as long as you like. I have nowhere else to be.",
+  "Still no. I am not going anywhere, and neither is the door.",
 ];
 var LOCK_HINTS = [
   "It is a month.",
-  "It is the month I stopped being careful.",
-  "It is the month on the title card. Type it in small letters.",
+  "It is the month I stopped being careful with you.",
+  "It is the month on the title card. All in small letters.",
 ];

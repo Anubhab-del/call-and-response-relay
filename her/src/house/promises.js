@@ -8,7 +8,7 @@ function PromisesRoom() {
         className: "room-lede",
         ...fadeIn(0, 0.6),
         children:
-          "Not wishes. Things I am on the hook for. You decide when one has been kept — I do not get to mark my own homework.",
+          "Not wishes, and not things I hope to be. Twelve things I am on the hook for, in writing, where you can find them. You are the one who says when one has been kept — I do not get to mark my own homework.",
       }),
 
       (0, jsx.jsx)("ul", {
@@ -123,7 +123,7 @@ function DaysRoom() {
       (0, jsx.jsx)(motion.p, {
         className: "room-lede",
         ...fadeIn(0, 0.6),
-        children: "The days that are ours. The house knows which one today is.",
+        children: "Every date that belongs to us, and how far off it is tonight. The house always knows which day today is, even when neither of us does.",
       }),
       (0, jsx.jsx)("ul", {
         className: "day-list",
@@ -230,7 +230,7 @@ function DistanceRoom() {
       (0, jsx.jsx)(motion.p, {
         className: "room-lede",
         ...fadeIn(0, 0.6),
-        children: "Everyone told us the arithmetic. We were not confused about the arithmetic.",
+        children: "Everyone told us the arithmetic, at length, as though we might not have done it. We were never confused about the arithmetic.",
       }),
       (0, jsx.jsxs)(motion.div, {
         className: "km",

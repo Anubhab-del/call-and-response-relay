@@ -4,212 +4,126 @@ var LETTERS = [
     open: "open this one first",
     kind: "anytime",
     weight: 0,
-    body: `Everything in this house is true and nothing in it is a surprise.
-
-I did not build this because there was an occasion. The occasion made me finish it.
-
-There are letters here you will not need for a long time. Some of them will not open for years — I mean that literally, the dates are locked, I cannot open them either from where I am.
-
-Take what you need. Leave the rest sealed. It keeps.`,
+    body: "Everything in this house is true, and none of it is a surprise. I have said all of it to you already, in some form, on some night, usually badly and usually at the wrong hour.\n\nI did not build this because there was an occasion. The occasion only made me finish it. I built it on the nights the signal went, when I had a whole evening of things to tell you and nowhere to put them, and I got tired of carrying them around until nine o'clock the next day.\n\nSo this is where I have been putting them. There are letters in here you will not need for a long time. Some of them will not open for years — I mean that literally, the dates are locked into the thing, and I cannot open them either from where I am sitting.\n\nTake whatever you need tonight. Leave the rest sealed. It keeps. I made it to keep.",
   },
   {
     id: "cannot-sleep",
-    open: "when you cannot sleep",
+    open: "when you cannot sleep and the hour has gone strange",
     kind: "anytime",
     weight: 10,
-    body: `Put the phone down in a minute. Not yet.
-
-You are not behind on anything. The day you are afraid of has not started and will be smaller than it is right now, at this hour, in the dark, alone with it.
-
-You do not have to solve it tonight. Nobody solves anything at this hour. The hour is lying to you.
-
-I am asleep or I am pretending to be. Either way I am on the other end of it. Close your eyes. I will be here in the morning and the morning is closer than you think.`,
+    body: "Put the phone down in a minute. Not yet. Stay here with me for a moment first.\n\nYou are not behind on anything. Whatever it is you are turning over at this hour has not started yet, and it will be smaller in the morning than it is now — everything is smaller in the morning. The dark makes things enormous. It is very good at that and it is lying to you.\n\nNobody solves anything at three in the morning. Nobody has ever, in the history of the world, lain awake and reasoned their way out of it. You are not failing at something. You are just awake.\n\nSo: put your feet somewhere warm. Let your shoulders down from around your ears — you are doing it now, I know you are. Breathe out for longer than you breathed in.\n\nI am asleep, or I am lying in the dark doing exactly this, a thousand kilometres from you, under the same enormous sky, thinking about your hands. Either way I am on the other end of it. Close your eyes, my love. The morning is much closer than it feels, and I will be in it.",
   },
   {
     id: "after-a-fight",
-    open: "when we have just fought",
+    open: "when we have just fought and the house feels wrong",
     kind: "anytime",
     weight: 11,
-    body: `I am still here.
-
-Whatever I said, I want you to know that I am not leaving over it, and neither are you, and we both know that, and it is only fear that makes it feel otherwise for an hour.
-
-I would rather be wrong with you than right on my own. If I was wrong, I will say so. Give me a little time to stop being proud about it.
-
-Do not go to sleep thinking this is the shape of us. This is weather. The house is fine.`,
+    body: "I am still here.\n\nWhatever I said, and whatever you said, and whatever either of us meant by it — I am not leaving over this. Neither are you. We both know that in the part of us that is not currently furious, and it is only fear that makes it feel otherwise for an hour or two.\n\nI would rather be wrong with you than right on my own. I mean that plainly. If I was wrong, I will say so, and I will not wrap it in the paragraph that quietly takes it back. Give me a little time to stop being proud about it. I am slower at that than you are.\n\nDo not go to sleep believing this is the shape of us. This is weather. It came in off the sea and it will go out again, and the house will still be standing in the morning with the lamp on and everything where we left it.\n\nCome back when you are ready. I will be exactly here. I am always exactly here.",
   },
   {
     id: "bad-missing",
-    open: "when you miss me and it is not a nice missing",
+    open: "when you miss me and it is not the nice kind",
     kind: "anytime",
     weight: 12,
-    body: `I know the difference. The nice one is warm and you can hold it. This one has teeth.
-
-I get it too, usually around nine at night, usually for no reason. I have decided it is the cost. I pay it and I do not complain, because the alternative was not knowing you.
-
-It is not forever. I want to be careful here and not promise you a date. But it is not forever. There is a version of this where I am irritating you from the next room and you would like some space, and we are walking towards it.
-
-Until then, this is real even when it hurts. Especially then.`,
+    body: "I know the difference. The nice one is warm, and you can hold it, and it makes you smile at your phone in a queue. This one has teeth. This one sits on your chest at nine at night for no reason at all and will not be reasoned with.\n\nI get it too. Usually around the same hour. Usually on a completely unremarkable Tuesday when nothing has happened and there is nothing to point at.\n\nI have decided it is the cost, and I pay it without complaining, because the alternative was a life in which I never found out what your voice does when you are about to laugh. That was the other option. That was the whole other option, and I would not take it now for anything on this earth.\n\nIt is not forever. I want to be careful and not promise you a date I cannot keep, but I will say this as flatly as I can: it is not forever. There is a version of us where I am irritating you from the next room and you would quite like ten minutes of peace, and we are walking towards it, and we are closer to it tonight than we were last night.\n\nUntil then — this is real even when it hurts. Especially then. The teeth are just the size of it.",
   },
   {
     id: "proud-alone",
     open: "when you did something well and nobody noticed",
     kind: "anytime",
     weight: 13,
-    body: `I noticed. Tell me what it was. I want the whole thing, including the boring part in the middle, including the part where you were sure it was going badly.
-
-You have a habit of finishing something difficult and immediately looking around for the next difficult thing, as though stopping to be pleased would be a kind of showing off.
-
-Stop for a minute. I am asking you to. Be pleased where I can see it.`,
+    body: "I noticed. Tell me what it was.\n\nI want the whole thing. Including the boring part in the middle. Including the part where you were sure it was going badly and carried on anyway, which is the part you will skip and which is the part I want most.\n\nYou have a habit I have watched for three years: you finish something difficult and immediately start looking round for the next difficult thing, as though stopping to be pleased with yourself would be a kind of showing off. It is not. Nobody thinks that. I certainly do not.\n\nStop for a minute. I am asking you properly. Be pleased where I can see it, and let me be unbearable about you for a little while — I am extremely good at it and I get so few chances.\n\nYou did a good thing today and somebody should have said so. I am saying so.",
   },
   {
     id: "doubt",
-    open: "when you doubt this",
+    open: "when you doubt this, and doubt yourself for doubting",
     kind: "anytime",
     weight: 14,
-    body: `Good. Doubt it. I would rather be chosen by someone who checked.
-
-Here is what I would put in front of you: three years, a thousand kilometres, bad signal, no photographs to speak of, no shared city, none of the things that are supposed to hold two people together. And it held. Not because either of us was heroic about it. Because we kept turning up.
-
-That is the whole argument. It is not romantic. It is better than romantic. Romantic is cheap and turning up is not.
-
-If you need to ask me anything directly, ask. I will not be hurt by the question.`,
+    body: "Good. Doubt it. I would far rather be chosen by someone who checked.\n\nHere is what I would put in front of you. Three years. One thousand two hundred and eighty-seven kilometres. Bad signal, a monsoon, two hours in the same room in the whole of it, almost no photographs, no shared city, no shared kitchen, none of the ordinary machinery that is supposed to hold two people together.\n\nAnd it held. Not because either of us was heroic about it. Because we kept turning up. Because at nine o'clock, on the bad days as well as the good ones, one of us dialled and the other one answered, and we did that about a thousand times.\n\nThat is the whole argument, and it is not a romantic one. It is better than romantic. Romantic is cheap and easy and available to anyone with a free evening. Turning up for three years is not.\n\nIf there is something you need to ask me directly, ask it. Tonight, in the middle of a sentence, however it comes out. I will not be hurt by the question, and I will not be careful with the answer.",
   },
   {
     id: "cruel-day",
     open: "when the day was cruel to you",
     kind: "anytime",
     weight: 15,
-    body: `You do not have to be gracious about it tonight.
-
-Say the unfair thing. Say the version where you are completely right and they are completely wrong. You can be reasonable tomorrow. Tonight you can be furious and I will agree with every word without checking any of it.
-
-You are allowed to have had a bad day without it meaning something about you.`,
+    body: 'You do not have to be gracious about it tonight.\n\nSay the unfair thing. Say the version where you are completely right and they are completely, unforgivably wrong, and leave out all the mitigating detail you would normally put in because you are scrupulous even when you are hurt.\n\nYou can be reasonable tomorrow. Tomorrow you will be reasonable automatically, you always are, it is practically a reflex. Tonight you get to be furious, and I will agree with every single word without checking any of it, and I will not once say "well, to be fair".\n\nYou are allowed to have had a bad day without it meaning anything at all about who you are. It was just a day. It was cruel and it is over.\n\nCome here. Put it down.',
   },
   {
     id: "strong-one",
     open: "when you are tired of being the strong one",
     kind: "anytime",
     weight: 16,
-    body: `Then be tired here.
-
-You do not have to hold anything up in this house. Nothing in it depends on you being capable today. I have not needed you to be all right for a single one of these three years — I have only ever needed to know which one it was.
-
-Put it down. It will still be there. I am not asking you to be strong, I am asking you to tell me the truth, which is harder and which you are better at than you think.`,
+    body: "Then be tired here.\n\nYou do not have to hold anything up in this house. Nothing in it depends on you being capable tonight. Nothing in it will fall over if you stop.\n\nIn three years I have never needed you to be all right. Not once. I have only ever needed to know which one it is tonight, so that I know whether to talk or to shut up, and you can tell me that in one word if one word is what you have.\n\nYou are the person everyone in your life leans on. I have watched it from a thousand kilometres away and I have wanted, more times than I can tell you, to stand between you and all of them for an afternoon.\n\nI cannot do that from here yet. What I can do is this: put it down. It will still be there. I am not asking you to be strong — I am asking you for the truth, which is harder, and which you have always been much better at than you think.",
   },
   {
     id: "ill",
     open: "when you are ill and I am not there",
     kind: "anytime",
     weight: 17,
-    body: `This is the one I hate.
-
-Eat something small. Drink water in front of me on a call so I can watch you do it. Tell someone in the house that you are not well, actually tell them, do not do the thing where you carry on and mention it afterwards.
-
-I cannot bring you anything from here and it makes me useless in a way I have not made peace with. So let me do the only thing I can do, which is ask you every hour, and let me be annoying about it.`,
+    body: "This is the one I hate. This is the one I built this whole house to avoid feeling, and it did not work.\n\nEat something small. Anything. Drink water in front of me on a call so that I can watch you do it and stop imagining the worst. Tell somebody in the house that you are not well — actually tell them, out loud, at the time, not afterwards as a footnote once you are better.\n\nI cannot bring you anything from here. I cannot put my hand on your forehead or make you the thing you like or take the day off and sit at the end of the bed being quietly annoying. It makes me useless in a way I have never made peace with, and I do not think I will.\n\nSo let me do the only thing I can do from Bengaluru, which is ask you every hour whether you have eaten, and let me be insufferable about it, and do not tell me you are fine.\n\nGet better. That is not a request.",
   },
   {
     id: "beautiful",
-    open: "when you want to hear it",
+    open: "when you want to hear it said plainly",
     kind: "anytime",
     weight: 18,
-    body: `You are beautiful. I am not going to be clever about it.
-
-But that is not the thing I would say first if someone asked me to describe you, and I want you to know what is.
-
-You are exact. You use the right word. When you are listening you actually stop, which almost nobody does. You get quieter when something matters instead of louder. You hold a shape until it means something — I have watched you do it with your hands and with your whole life.
-
-Yes. And beautiful.`,
+    body: "You are beautiful. I am not going to be clever about it, or hedge it, or bury it in a joke the way I usually do.\n\nYou are beautiful, and I have thought so from a badly lit photograph in a doorway, and I thought so in a corridor in May, and I think so on a bad line at nine at night when I cannot see you at all.\n\nBut that is not the first thing I would say if someone stopped me in the street and asked me to describe you, and I want you to know what is.\n\nYou are exact. You find the right word and you will wait for it rather than use the near one. When you listen you actually stop — you put the other thing down, which almost nobody does. You get quieter when something matters instead of louder. You are gentle with people who can do nothing for you. You take a long time to trust and then you do it completely, with your whole self, no part of it held back.\n\nYou hold a shape until it means something. I have watched you do that with your hands and with your whole life, and I have been trying to learn it from you for three years.\n\nYes. And beautiful.",
   },
   {
     id: "no-signal",
     open: "when the signal is gone and you cannot reach me",
     kind: "anytime",
     weight: 19,
-    body: `This one I wrote knowing exactly when you would read it.
-
-Nothing has happened. I am not angry. I am not gone. The bar at the top of your screen has no opinion about us.
-
-This whole house works with no signal at all — that was the first thing I decided about it, before the words, before any of it. You can read every letter in here on a dead network in the middle of nowhere. That was the point.
-
-Say what you want to say into the writing room. It will keep it. Send it when the world comes back.`,
+    body: "I wrote this one knowing exactly when you would read it.\n\nNothing has happened. I am not angry, I am not gone, I have not changed my mind between one bar and none. The signal has no opinion about us. It never has.\n\nThis whole house works with no connection at all. That was the very first decision I made about it, before a single word of it was written — that it had to work in a dead spot, on a train, in a storm, on the worst night of a bad week when the world has quietly disconnected you. Every letter in here opens on a dead network. That was the entire point.\n\nSo read whatever you need. Say whatever you want to say into the writing room; it will hold it for you, and you can send it when the world comes back and stops being ridiculous.\n\nI am at the other end of a line that is temporarily not working. That is all this is. I am still here, on the other side of the weather, waiting for it to clear.",
   },
   {
     id: "happy",
     open: "when you are happy and want it witnessed",
     kind: "anytime",
     weight: 20,
-    body: `Tell me. Tell me the small one, the one that is not worth a call.
-
-I have noticed you save the good things up until there are enough of them to justify the interruption. There is no minimum. There is no interruption. The bar is on the floor.
-
-A good cup of tea qualifies. Weather qualifies. Say it out loud and let it be seen. Half of what a person is for is being the one who saw it.`,
+    body: "Tell me. Tell me the small one — the one you have already decided is not worth a call.\n\nI have noticed that you save the good things up. You collect them quietly until there are enough of them to justify the interruption, as though joy needed a quorum before it could be reported.\n\nThere is no minimum. There is no interruption. The bar is on the floor and I put it there myself.\n\nA good cup of tea qualifies. Weather qualifies. A sentence you overheard on a bus qualifies. Say it out loud and let it be seen, because half of what a person is actually for is being the one who saw it.\n\nI want the whole unremarkable inventory of your happiness. I have three years of it and I want three hundred more.",
   },
   {
     id: "rest",
     open: "when you need permission to rest",
     kind: "anytime",
     weight: 21,
-    body: `Granted. Not that it was mine to give.
-
-Nothing is going to collapse. You have built the thing you are worried about well enough that it survives one day of you lying down, and if it does not, then it was going to fall over anyway and better today while you are watching.
-
-Rest is not a reward for finishing. You do not have to earn a Sunday.`,
+    body: "Granted. Not that it was ever mine to give.\n\nNothing is going to collapse. You have built the thing you are worried about carefully enough that it survives one day of you lying down, and if it does not, then it was going to fall over anyway and much better today, while you are awake to watch.\n\nRest is not a reward for having finished. It is not something you earn by being sufficiently exhausted first. You do not have to have deserved a Sunday.\n\nLie down. Put something on you have already seen. Let the day go on without your supervision for a few hours — it will manage, it always manages, and you are the only one who has not noticed.\n\nI will still be here at nine, and I will not ask you what you got done.",
   },
   {
     id: "angry-at-me",
     open: "when you are angry at me and I have not noticed",
     kind: "anytime",
     weight: 22,
-    body: `Tell me. Plainly, without softening it first.
-
-I would rather be told badly than not told. I would rather have an hour of you being sharp with me than a week of you being polite.
-
-I miss things. I am not proud of it. But I have never once been angry that you told me — go back through three years and find me an example. There is not one. Use that.`,
+    body: "Tell me. Plainly, and without softening it first, and without waiting until you have worked out whether you are entitled to it.\n\nI would much rather be told badly than not told at all. I would rather have one hour of you being sharp with me than a whole week of you being polite, because I know what your politeness sounds like when something is wrong underneath it, and it is the loneliest sound I know.\n\nI miss things. I am not proud of it and I am not going to pretend it is charming. But go back through three years and find me one time I was angry with you for telling me. There is not one. There is not going to be one.\n\nSay it tonight. I will not get defensive first, or at least I will try not to, and if I do, wait ten minutes and I will come back and do it properly.\n\nWe are much better at this than we were. That happened because you kept telling me.",
   },
   {
     id: "why",
     open: "when you cannot remember why we are doing it this way",
     kind: "anytime",
     weight: 23,
-    body: `Because you were worth arranging a life around, and the arrangement takes time.
-
-That is it. That is the whole reason. Everything difficult about this — the distance, the waiting, the two hours we have had in a room together in three years — is the cost of a decision I would make again on the worst day of it.
-
-We are not being patient. Patience is passive. We are building something with a long lead time.`,
+    body: "Because you were worth arranging a life around, and arrangements take time.\n\nThat is it. That is the whole reason, and it has never once wavered. Everything difficult about this — the distance, the waiting, the two hours we have had in one room in three years, the birthdays on a screen — is the cost of a decision I would make again on the worst day of it, in the worst hour of the worst day, without needing to think about it.\n\nWe are not being patient. Patience is passive; patience is what you do in a waiting room. We are building something with a long lead time, and there is a difference, and the difference matters.\n\nEvery anniversary so far has been on a phone. The next ones will not be. Every one of these nights has been paying for that.\n\nYou are not waiting for nothing, Smruti. You are waiting for the rest of it.",
   },
   {
     id: "brave",
     open: "before something you are dreading",
     kind: "anytime",
     weight: 24,
-    body: `You will be fine, and I know you hate being told that, so here is the useful version.
-
-You have done harder things with less warning. You do not fall apart under pressure, you get very quiet and very precise, and people mistake it for calm. Let them.
-
-It will take less time than the dread did. It always does. Text me when it is over — one word is enough, I do not need the report.`,
+    body: "You will be fine, and I know how much you hate being told that, so here is the useful version.\n\nYou have done harder things than this with less warning and no time to prepare. You do not fall apart under pressure — you go very quiet and very precise, and people mistake it for calm, and you let them, and it works every single time.\n\nLet them think you are calm. That is a perfectly good disguise and you wear it beautifully.\n\nIt will take less time than the dread did. It always does. The dread is nearly always the longer and worse of the two, and you have almost finished the dread part now.\n\nText me when it is over. One word is enough — I do not need the report tonight, I only need to know you are on the other side of it. I will be thinking about you the whole time, if that helps, and if it does not help then ignore me and go.",
   },
   {
     id: "quit",
     open: "when you want to quit something",
     kind: "anytime",
     weight: 25,
-    body: `Then quit it.
-
-I am serious. Not everything is a test of character. Some things are just a bad fit that you have been loyal to past the point of sense, because you are the kind of person who finishes things.
-
-One question and then I will stop: are you leaving it because it is wrong, or because today was hard? If it is today, sleep first. If it is wrong, leave, and I will not ask you to justify it to me. Not once, not later, not in an argument.`,
+    body: "Then quit it.\n\nI am completely serious. Not everything is a test of character. Some things are simply a bad fit that you have stayed loyal to long past the point of sense, because you are the sort of person who finishes what she starts, and that is usually a virtue and occasionally a trap.\n\nOne question, and then I will stop. Are you leaving because it is wrong, or because today was hard?\n\nIf it is today — sleep first, and ask me again tomorrow, and I will ask you the same question in the same tone.\n\nIf it is wrong, then leave, and I will not ask you to justify it to me. Not once. Not later. Not in three years, in an argument, when I am looking for something to throw. That is a promise and it is written down now.\n\nYou are allowed to change your mind. It is your one life and it is yours.",
   },
   {
     id: "crying",
     open: "when you have been crying and do not want to say why",
     kind: "anytime",
     weight: 26,
-    body: `Then do not say why.
-
-I do not need a reason to be handed one. You are allowed to be sad without a cause that would hold up if someone examined it.
-
-Sit here for a minute. Nothing in this house is going to ask you a question. When you want to talk I am one message away, and if you never explain this particular hour to me, that is completely fine and I will not bring it up.`,
+    body: "Then do not say why.\n\nI do not need a reason handed to me. You are allowed to be sad without a cause that would hold up if somebody examined it, and you are allowed to be sad about something small, and you are allowed to be sad about something you cannot name.\n\nSit here for a minute. Nothing in this house is going to ask you a question or need anything from you. It is only a lamp and some words and a man who loves you, all of it switched on and waiting and none of it in any hurry.\n\nWhen you want to talk I am one message away, at any hour, and I do not care what hour.\n\nAnd if you never explain this particular night to me — not tomorrow, not next year, not ever — that is completely fine, and I will not bring it up, and it will not be a thing between us. Some nights are just weather.\n\nPut your head down. I have got you.",
   },
   {
     id: "birthday",
@@ -217,13 +131,7 @@ Sit here for a minute. Nothing in this house is going to ask you a question. Whe
     kind: "sealed",
     on: "06-13",
     weight: 40,
-    body: `Happy birthday.
-
-I have been thinking about what I actually want for you this year and it is not a bigger year. You have had big years. I want you to have an easy one — a year where the ordinary parts are good, where the mornings are not a negotiation, where nothing has to be survived.
-
-You are one year further into being the person you have been trying to become since I met you, and from here it is very obvious that it is working.
-
-I will say the rest of it out loud. This part is just so it is written down somewhere.`,
+    body: "Happy birthday.\n\nI have been thinking for weeks about what I actually want for you this year, and it is not a bigger year. You have had big years. You have had years that asked far too much and got it, because you always give it.\n\nI want you to have an easy one. A year where the ordinary parts are good. Where the mornings are not a negotiation. Where nothing has to be survived and nobody needs you to be the capable one and the whole thing is simply, unremarkably, kind to you.\n\nYou are one year further into being the person you have been trying to become since the night I met you, and I want to tell you, from where I am standing, with the best view anyone has: it is working. It is visibly working. You are becoming her.\n\nI will say the rest of it out loud today, badly, probably at the wrong moment, and you will laugh at me. This part is just so that it is written down somewhere permanent, in case you ever need to check.\n\nI am so glad you were born. That is the whole of it, underneath everything else. Of all the people who have ever lived, you, and here, and now, and me.",
   },
   {
     id: "year-four",
@@ -231,13 +139,7 @@ I will say the rest of it out loud. This part is just so it is written down some
     kind: "sealed",
     on: "2027-09-02",
     weight: 41,
-    body: `Four years.
-
-I do not know what this year was. I am writing this in 2026 with no idea. That is the strange part about sealing a letter — I have to love you without knowing what happened.
-
-So here is what I know is still true, whatever it was: I stayed. If this year was the hard one, I stayed through it. If it was the good one, I did not get careless.
-
-Tell me what happened. I was there for it, but tell me anyway. I like hearing you say it.`,
+    body: "Four years.\n\nI do not know what this year was. I am writing this in 2026 with absolutely no idea what happened to us between then and now, which is the strange and slightly frightening part about sealing a letter — I have to love you without knowing what I am loving you through.\n\nSo here is what I know is still true, whatever it turned out to be.\n\nI stayed. If this was the hard year, I stayed through it and I did not go quiet on you. If it was the good one, I did not get careless with it, and I did not start taking any of it for granted, because I have never once been able to.\n\nFour Septembers. The first one we did not make a fuss about. I hope by now we make a fuss. I hope by now there is a table and two cups on it and somebody has bought something ridiculous.\n\nTell me what happened this year. I know I was there for it. Tell me anyway — I like the way you tell things, I always have, and I have never once been bored by you.",
   },
   {
     id: "ten-years",
@@ -245,13 +147,7 @@ Tell me what happened. I was there for it, but tell me anyway. I like hearing yo
     kind: "sealed",
     on: "2033-09-02",
     weight: 42,
-    body: `Ten years.
-
-If you are reading this then the file survived, which means somebody kept moving it from phone to phone for seven years, and I think we both know it was me.
-
-I wrote this when we had been apart for almost all of it and had spent two hours in the same room. By now that sentence should read as history. I hope it is difficult to remember what that was like. I hope you have to think about it.
-
-I have loved you at a distance longer than most people manage it up close. Whatever else I turned out to be, I was steady. Hold me to it.`,
+    body: "Ten years.\n\nIf you are reading this then the file survived, which means somebody kept moving it from phone to phone for seven years, and I think we both know which one of us it was.\n\nI wrote this in 2026, when we had been apart for almost the whole of it and had spent two hours in the same room. Two hours, in three years. By now that sentence should read as history — something that happened to two younger people who did not know how it was going to turn out.\n\nI hope it is genuinely difficult for you to remember what that was like. I hope you have to stop and think. I hope the version of me sitting next to you now is so ordinary and so present that the man who wrote this seems slightly dramatic.\n\nHe was. He was also right.\n\nI have loved you at a distance for longer than most people manage it up close, and then, I hope, up close for longer still. Whatever else I turned out to be over these ten years — whatever I got wrong, and I will have got things wrong — I was steady. Hold me to it. Keep holding me to it.\n\nTen years, Smruti. And I would still dial again.",
   },
   {
     id: "first-class",
@@ -259,13 +155,7 @@ I have loved you at a distance longer than most people manage it up close. Whate
     kind: "sealed",
     on: "2028-06-01",
     weight: 43,
-    body: `They have no idea what they are getting.
-
-You are going to be exact with them, and a little severe, and they are going to work harder for you than for anyone else and not fully understand why until years later.
-
-I have watched you explain things to me that I already knew, just to hear how you would do it. You slow down. You find the one word. It is the same thing you do when you dance and it is the same thing you did to me.
-
-Go on. I will be in the next room.`,
+    body: "They have no idea what they are getting.\n\nYou are going to be exact with them, and a little severe, and completely fair, and they are going to work harder for you than for anyone else in that building and not fully understand why until they are thirty.\n\nI have watched you explain things to me that I already knew, purely because I wanted to hear how you would do it. You slow down. You find the one word and you refuse the nearly-right one. You wait for the person to actually arrive at it rather than handing it over. It is the same thing you do when you dance, and it is the same thing you did to me on the second of September, and it works.\n\nSome of them are going to be difficult. Some of them are having a worse year than they will tell you. You will notice — you always notice — and you will do something quiet about it that nobody will thank you for, and it will matter for the rest of their lives.\n\nDo not overprepare tonight. You know it. You have known it for years.\n\nGo on. I will be in the next room, listening to a voice I have loved since before I ever saw it, being good at something.",
   },
   {
     id: "wedding-week",
@@ -273,29 +163,13 @@ Go on. I will be in the next room.`,
     kind: "sealed",
     on: "2027-11-24",
     weight: 44,
-    body: `Almost.
-
-Everyone is going to want something from you this week and most of it will not matter in a month. Let it be a bit of a mess. The parts you will remember are not on anyone's list.
-
-I want to say one thing before the noise starts, while it is still just us and a file on your phone.
-
-I did not spend three years waiting for you. I spent three years with you. The wedding is not the beginning of anything. It is paperwork on something that has been true since a night in September when neither of us was being careful.`,
+    body: "Almost.\n\nEveryone is going to want something from you this week, and most of it will not matter in a month, and none of it will matter in a year. Let it be a bit of a mess. The parts you will actually remember are not on anybody's list — they never are.\n\nI want to say one thing before the noise starts, while it is still just us and a file on your phone at whatever hour you have found to read this.\n\nI did not spend three years waiting for you. I want to be precise about that, because people will say it this week and they will mean it kindly and they will be wrong. I did not wait. I spent three years with you. Nine at night, every night, through a monsoon and a bad February and a signal that came and went. That was not the waiting room. That was the marriage. We have been doing it for years; on Wednesday we are just telling everyone.\n\nThe wedding is not the beginning of anything. It is paperwork on something that has been true since a night in September when neither of us was being careful.\n\nI will see you at the end of the week. I will be the one who cannot stop looking at you.",
   },
   {
     id: "once",
     open: "the one you can only open once",
     kind: "once",
     weight: 60,
-    body: `You spent it. I would have too.
-
-Here is the thing I was saving.
-
-I have never, in three years, had to convince myself. Not once. Not on the nights the call dropped four times, not in the month we were both unbearable, not on the long stretches where nothing was happening and it would have been easy to drift.
-
-People talk about love like it is a decision you keep making. Mine has been more like a fact I keep discovering, in the morning, slightly surprised, the way you notice the sun came up.
-
-That is what I was keeping behind one door so it would not get worn out.
-
-It is yours now. There is nothing else behind it. That was the whole thing.`,
+    body: "You spent it. I would have too.\n\nHere is the thing I was keeping.\n\nI have never, in three years, had to convince myself. Not once. Not on the nights the call dropped four times, not in the month we were both unbearable, not in that fortnight of quiet when I was more frightened than I ever told you, not on the long unremarkable stretches where nothing was happening and it would have been so easy to drift.\n\nPeople talk about love as though it were a decision you keep making, a thing you renew, a discipline. Mine has never been like that. Mine has been more like a fact I keep rediscovering — in the morning, slightly surprised, the way you notice that the sun came up again and think, well, of course.\n\nI did not choose you once, on a night in September. I have simply woken up every day for three years and found that it was still true, and that it had gone on being true while I slept, without my supervision, like something growing.\n\nThat is what I was keeping behind one door so that it would not get worn smooth by being said too often.\n\nIt is yours now. There is nothing else behind it. That was the whole thing, and it was always going to be you.",
   },
 ];

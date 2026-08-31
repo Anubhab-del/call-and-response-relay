@@ -38,7 +38,7 @@ function LettersRoom({ onOpenReply: onOpenReply, openId: openId, onOpened: onOpe
         className: "room-lede",
         ...fadeIn(0, 0.6),
         children:
-          "Some of these open when you need them. Some will not open until a day arrives — not for you, and not for me either.",
+          "Some of these open the moment you need them. Some will not open until a particular day arrives — not for you, and not for me either, and I cannot cheat them open from here.",
       }),
       (0, jsx.jsxs)(motion.p, {
         className: "room-fact",
@@ -165,7 +165,7 @@ function LettersRoom({ onOpenReply: onOpenReply, openId: openId, onOpened: onOpe
                   (0, jsx.jsx)("p", {
                     className: "confirm-body",
                     children:
-                      "After this it stays open for you to read again, but it will never be unread. There is no way to put it back. You do not have to do it today.",
+                      "After tonight it stays open for you to read as often as you like, but it will never be unread again, and there is no way of putting it back. You do not have to do it today. It will keep.",
                   }),
                   (0, jsx.jsxs)("div", {
                     className: "confirm-row",

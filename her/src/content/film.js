@@ -569,60 +569,60 @@ function roman(e) {
 }
 var DISTANCE_COPY = {
   kicker: "Between us",
-  line: "I have never once thought of it as far.",
-  after: "It is a number. It is not an argument.",
+  line: "I have never once, in three years, thought of it as far.",
+  after: "It is a number. It has never been an argument.",
 };
 var TWO_HOURS_COPY = {
-  kicker: "May 3, 2026",
+  kicker: "The third of May, 2026",
   line: "Two hours.",
-  after: "I have run them back so many times they have worn thin.",
-  closing: "Everything before that was faith. Everything after is memory.",
+  after: "I have run them back so often they have worn thin in places, and I keep running them.",
+  closing: "Everything before that was faith. Everything since has been memory. I know which I would rather live on.",
 };
 var SLEEP_COPY = {
   kicker: "While you sleep",
   lines: [
-    "I check that you got home.",
-    "I put my phone face down and it lights the ceiling anyway.",
-    "I do this every night. You were never supposed to know.",
+    "I check that you got home, long after you have stopped needing me to.",
+    "I put the phone face down and the ceiling stays lit anyway, and so do I.",
+    "I have done this nearly every night for three years. You were never meant to find out.",
   ],
 };
 var DANCE_COPY = {
   kicker: "The way you move",
   lines: [
-    "You learned to hold a shape until it means something.",
-    "That is the whole thing. That is what I have been doing for three years.",
+    "You learned to hold a shape until it means something, and then to hold it a little longer.",
+    "That is the whole of it. That is what I have been doing since the second of September.",
   ],
 };
 var HOLD_COPY = {
-  ms: 4200,
+  ms: 5200,
 };
 var CARE_COPY = {
-  line: "Tomorrow, again.",
+  line: "Tomorrow, again. And the day after that, and the one after that.",
 };
 var VOW_COPY = {
   line: "We are not going anywhere.",
-  under: "That is not a wish. It is a report.",
+  under: "That is not a wish, or a hope, or a promise I am making. It is a report on something that has already happened.",
 };
 var CREDITS_COPY = {
-  hers: "starring",
-  yours: "kept by",
+  hers: "all of it, for",
+  yours: "kept, nightly, by",
 };
 var OVERTURE_COPY = {
   kicker: "One hundred chapters",
-  line: "Take it in one sitting or a hundred nights. It keeps your place either way.",
+  line: "Take it in one sitting, or across a hundred nights. It keeps your place either way, and I will wait.",
 };
 var AFTER_COPY = {
   date: "September 2, 2026",
-  line: "I am here.",
+  line: "I am still here. I was always going to be.",
 };
 var CODA_COPY = {
   still: "/stills/coda.svg",
-  line: "The lamp is still on.",
+  line: "The lamp is still on. It has been on for three years.",
   last: `Your name means memory.
-I have been trying to earn it.`,
+I have spent every day since September trying to be worth remembering.`,
 };
 var DOORWAY_COPY = {
   line: "The picture is over.",
-  under: "The house is not. Stay as long as you like.",
+  under: "The house is not. The lamp is on, the door is unlocked, and nobody is going to ask you to leave.",
   button: "Come in",
 };

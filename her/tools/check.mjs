@@ -357,7 +357,7 @@ async function visit(iso, { entered = true, viewport = { width: 390, height: 844
   await v.page.waitForTimeout(1500);
   const open = await v.page.locator(".reading").innerText();
   ok("it opens the letter for it", /cannot sleep/i.test(open), open.slice(0, 120));
-  ok("and the letter is the right one", /The hour is lying to you/i.test(open), open.slice(0, 200));
+  ok("and the letter is the right one", /it is lying to you/i.test(open), open.slice(0, 200));
   await v.close();
 }
 
