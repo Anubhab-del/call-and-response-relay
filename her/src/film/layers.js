@@ -355,7 +355,7 @@ function Dust() {
             r: 16 + Math.random() * 34,
             vx: (Math.random() - 0.5) * 0.004,
             vy: -0.0016 - Math.random() * 0.0034,
-            a: 0.03 + Math.random() * 0.055,
+            a: 0.024 + Math.random() * 0.042,
             ph: Math.random() * Math.PI * 2,
             warm: Math.random() < 0.66,
           }),
@@ -390,9 +390,10 @@ function Dust() {
             u = n.createRadialGradient(c, l, 0, c, l, a.r);
           // A real out-of-focus point has a soft centre and a brighter rim.
           let f = a.warm ? "255, 216, 168" : "255, 194, 176";
-          (u.addColorStop(0, `rgba(${f}, ${a.a * o * 0.72})`),
-            u.addColorStop(0.72, `rgba(${f}, ${a.a * o * 0.42})`),
-            u.addColorStop(0.93, `rgba(${f}, ${a.a * o})`),
+          (u.addColorStop(0, `rgba(${f}, ${a.a * o * 0.66})`),
+            u.addColorStop(0.6, `rgba(${f}, ${a.a * o * 0.44})`),
+            u.addColorStop(0.88, `rgba(${f}, ${a.a * o * 0.6})`),
+            u.addColorStop(0.97, `rgba(${f}, ${a.a * o * 0.18})`),
             u.addColorStop(1, `rgba(${f}, 0)`),
             (n.fillStyle = u),
             n.beginPath(),

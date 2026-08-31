@@ -326,6 +326,42 @@ html.is-still .letterbox[data-cut="true"] {
   will-change: opacity;
 }
 
+/* Depth.
+   The camera moves the words one way. The layers behind them answer on the
+   tilt, further and in the opposite direction, so the frame has air in it.
+   Drifting the painted wall as well looked lovely and cost half the frame
+   budget in software, which is not a trade worth making on her phone. */
+.dust,
+.light-leak {
+  transform: translate3d(calc(var(--par-x, 0) * 0.9px), calc(var(--par-y, 0) * 0.9px), 0);
+}
+.centre {
+  transform: translate3d(calc(var(--par-x, 0) * -0.46px), calc(var(--par-y, 0) * -0.46px), 0);
+}
+
+/* The light behind the vow. Sits under the words, never over them. */
+.centre.vow {
+  position: relative;
+}
+.vow-bloom {
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(
+    circle,
+    #f2d9a642 0%,
+    #e8b9a428 30%,
+    #d9a08f14 56%,
+    #0000 78%
+  );
+  border-radius: 50%;
+  width: 150%;
+  aspect-ratio: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
 /* Halation.
    Film stock blooms around a bright edge — light scatters back off the base
    and haloes the letter. It is the difference between type on a screen and
@@ -382,8 +418,11 @@ html.is-lean .last-line {
   pointer-events: none;
   z-index: 13;
   position: absolute;
-  inset: -20%;
-  opacity: 0.62;
+  /* Was inset: -20%, which is 1.96x the frame's area to composite every
+     frame for light that mostly falls outside it. */
+  inset: -6%;
+  opacity: 0.68;
+  contain: strict;
 }
 .light-leak:before,
 .light-leak:after,

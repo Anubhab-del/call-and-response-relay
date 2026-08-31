@@ -105,7 +105,10 @@ function ThresholdBeat() {
   });
 }
 function HoldScene() {
+  // Nothing on screen. Five seconds of the room, and the camera still moving
+  // so it reads as a held breath rather than a stall.
   return (0, jsx.jsx)(Beat, {
+    hold: true,
     children: null,
   });
 }
@@ -480,10 +483,33 @@ function CareBeat() {
   });
 }
 function VowBeat() {
+  // The only sentence in here that is a report rather than a promise, with
+  // light coming up behind it and beating once while she reads.
   return (0, jsx.jsx)(Beat, {
+    hold: true,
     children: (0, jsx.jsxs)("div", {
-      className: "centre",
+      className: "centre vow",
       children: [
+        isStill()
+          ? null
+          : (0, jsx.jsx)(motion.div, {
+              className: "vow-bloom",
+              "aria-hidden": "true",
+              initial: {
+                opacity: 0,
+                scale: 0.72,
+              },
+              animate: {
+                opacity: [0, 0.5, 0.34, 0.62, 0.4],
+                scale: [0.72, 1.04, 1, 1.1, 1.02],
+              },
+              transition: {
+                duration: 6.4,
+                times: [0, 0.28, 0.46, 0.62, 1],
+                ease: "easeInOut",
+                delay: 0.3,
+              },
+            }),
         (0, jsx.jsx)(Heading, {
           className: "vow-line",
           text: VOW_COPY.line,

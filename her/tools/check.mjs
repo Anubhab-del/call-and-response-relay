@@ -404,13 +404,18 @@ async function visit(iso, { entered = true, viewport = { width: 390, height: 844
       watched: false, reelAt: 0, reelFurthest: 0, sound: false, motion: "still", nameWritten: true }));
   });
   await page.goto("file://" + FILE, { waitUntil: "load" });
-  await page.waitForTimeout(1400);
+  // Wait for the picture to actually be running before tapping at it, and let
+  // the last write settle — otherwise this races the app's own mount.
+  await page.waitForSelector(".film", { timeout: 10000 });
+  await page.waitForTimeout(900);
   for (let i = 0; i < 12; i++) { await page.mouse.click(195, 700); await page.waitForTimeout(200); }
+  await page.waitForTimeout(400);
   const left = await page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).reelAt);
   ok("the picture records where she is", left >= 8, String(left));
   const before = (await page.locator("#root").innerText()).replace(/\s+/g, " ").trim();
   await page.reload({ waitUntil: "load" });
-  await page.waitForTimeout(1800);
+  await page.waitForSelector(".film", { timeout: 10000 });
+  await page.waitForTimeout(600);
   const at = await page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).reelAt);
   const after = (await page.locator("#root").innerText()).replace(/\s+/g, " ").trim();
   ok("and starts there again, not at the projector", at === left, `${at} vs ${left}`);
