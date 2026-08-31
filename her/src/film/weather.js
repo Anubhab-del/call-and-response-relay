@@ -19,22 +19,38 @@ function dayDrift() {
 function dayTilt() {
   return (daySeed() - 0.5) * 0.5;
 }
-function strikeDelay(e, t, n = new Date()) {
-  let r = (isNightHours(n) ? 0.82 : 1) * dayWarmth();
-  return t
-    ? (700 + Math.random() * 1400) * r
-    : e === "silence"
-      ? (2800 + Math.random() * 4200) * r
-      : e === "hers"
-        ? (1600 + Math.random() * 2600) * r
-        : e === "dusk" || e === "reply"
-          ? (1800 + Math.random() * 2600) * r
-          : e === "ember"
-            ? (2400 + Math.random() * 3600) * r
-            : e === "void"
-              ? (3200 + Math.random() * 4800) * r
-              : (2200 + Math.random() * 3e3) * r;
+// How long until the next flash.
+//
+// A storm in a film is punctuation, not weather reporting. It used to fire
+// every two to five seconds, and every seven-tenths of a second when it was
+// close, which is not a storm — it is a strobe with a soundtrack. Now the sky
+// mostly holds still and the room waits for it.
+function strikeDelay(weather, close, when = new Date()) {
+  let scale = (isNightHours(when) ? 0.86 : 1) * dayWarmth();
+  if (close) return (4800 + Math.random() * 6400) * scale;
+  switch (weather) {
+    case "silence":
+      return (14000 + Math.random() * 16000) * scale;
+    case "hers":
+      return (9000 + Math.random() * 11000) * scale;
+    case "dusk":
+    case "reply":
+      return (10000 + Math.random() * 12000) * scale;
+    case "ember":
+      return (13000 + Math.random() * 15000) * scale;
+    case "void":
+      return (16000 + Math.random() * 18000) * scale;
+    default:
+      return (11000 + Math.random() * 13000) * scale;
+  }
 }
+
+// How far away it was, 0 overhead and 1 on the far edge of the sky. A close
+// storm is nearer; the rest is mostly weather happening to somebody else.
+function strikeDistance(close) {
+  return close ? 0.08 + Math.random() * 0.34 : 0.34 + Math.random() * 0.62;
+}
+
 function strikeIntensity(e, t) {
   let n = dayDrift();
   return ((e) => Math.max(0.1, Math.min(1, e)))(

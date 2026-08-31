@@ -70,7 +70,11 @@ function Lightning({ weather: weather, close = false, pulse = 0, calm = false })
             _.length > (r ? 2 : 5);
           )
             _.shift();
-          (score.thunder(i), i > 0.7 && !c.current && tapWeighted(i));
+          // Light arrives first. The sound takes its time getting here, which
+          // is the whole difference between a storm and a strobe.
+          let far = strikeDistance(o.current);
+          (score.thunder(i * (1 - far * 0.72), far),
+            i > 0.82 && far < 0.3 && !c.current && tapWeighted(i * (1 - far)));
         },
         x = (e, n, r, i) => {
           (t.beginPath(),
@@ -114,19 +118,19 @@ function Lightning({ weather: weather, close = false, pulse = 0, calm = false })
             c = n.power * o * o * s;
           i = Math.max(i, c);
           for (let e of n.bolts)
-            (r || x(e, `rgba(160, 200, 255, ${Math.min(1, c * 0.22)})`, 14 * n.power, 28),
+            (r || x(e, `rgba(196, 206, 255, ${Math.min(1, c * 0.22)})`, 14 * n.power, 28),
               x(
                 e,
-                `rgba(196, 222, 255, ${Math.min(1, c * 0.55)})`,
+                `rgba(226, 226, 255, ${Math.min(1, c * 0.55)})`,
                 (r ? 3.2 : 4.2) * n.power,
                 r ? 0 : 12,
               ),
-              x(e, `rgba(255, 255, 255, ${Math.min(1, c)})`, 1.15 + n.power * 0.9, 0));
+              x(e, `rgba(255, 250, 244, ${Math.min(1, c)})`, 1.15 + n.power * 0.9, 0));
         }
         if (!r && i > 0.03) {
           let e = t.createLinearGradient(0, 0, 0, u * 0.55);
-          (e.addColorStop(0, `rgba(214, 232, 255, ${i * 0.22})`),
-            e.addColorStop(1, "rgba(214, 232, 255, 0)"),
+          (e.addColorStop(0, `rgba(255, 226, 186, ${i * 0.2})`),
+            e.addColorStop(1, "rgba(255, 226, 186, 0)"),
             (t.fillStyle = e),
             t.fillRect(0, 0, l, u));
         }
@@ -213,7 +217,7 @@ function RainGlass({ weather: weather, calm = false }) {
         for (let e of d)
           ((e.y += e.vy * n * 0.12),
             e.y > s + 20 && ((e.x = Math.random() * o), (e.y = -e.len)),
-            (t.strokeStyle = "rgba(214, 228, 242, 1)"),
+            (t.strokeStyle = "rgba(246, 226, 196, 1)"),
             (t.globalAlpha = e.alpha),
             (t.lineWidth = e.thick),
             t.beginPath(),
@@ -237,14 +241,14 @@ function RainGlass({ weather: weather, calm = false }) {
           ((i.y += i.vy * n),
             (i.x += Math.sin(e * 0.004 + i.wob) * 6 * n),
             (t.globalAlpha = i.alpha * 0.35),
-            (t.strokeStyle = "rgba(226, 236, 248, 1)"),
+            (t.strokeStyle = "rgba(250, 232, 204, 1)"),
             (t.lineWidth = i.r * 0.7),
             t.beginPath(),
             t.moveTo(i.x, a - i.r * 6),
             t.lineTo(i.x, i.y),
             t.stroke(),
             (t.globalAlpha = i.alpha),
-            (t.fillStyle = "rgba(232, 240, 250, 1)"),
+            (t.fillStyle = "rgba(252, 238, 214, 1)"),
             t.beginPath(),
             t.ellipse(i.x, i.y, i.r * 0.55, i.r * 1.15, 0, 0, Math.PI * 2),
             t.fill(),
@@ -323,6 +327,7 @@ function Dust() {
         i = 0,
         a = 0,
         o = performance.now(),
+        // Dust in the beam: fine, bright, quick.
         s = Array.from(
           {
             length: 34,
@@ -335,6 +340,24 @@ function Dust() {
             vy: -0.004 - Math.random() * 0.01,
             a: 0.05 + Math.random() * 0.16,
             ph: Math.random() * Math.PI * 2,
+          }),
+        ),
+        // Bokeh: whatever light is behind all this, thrown wide open and out
+        // of focus. Big, slow, almost not there — the warmth you see past
+        // someone's shoulder rather than anything you are meant to look at.
+        d = Array.from(
+          {
+            length: 7,
+          },
+          () => ({
+            x: Math.random(),
+            y: Math.random(),
+            r: 16 + Math.random() * 34,
+            vx: (Math.random() - 0.5) * 0.004,
+            vy: -0.0016 - Math.random() * 0.0034,
+            a: 0.03 + Math.random() * 0.055,
+            ph: Math.random() * Math.PI * 2,
+            warm: Math.random() < 0.66,
           }),
         ),
         c = () => {
@@ -355,6 +378,27 @@ function Dust() {
         if (((a = requestAnimationFrame(u)), document.hidden)) return;
         let t = Math.min(0.05, (e - o) / 1e3);
         ((o = e), n.clearRect(0, 0, r, i));
+        for (let a of d) {
+          ((a.x += a.vx * t),
+            (a.y += a.vy * t),
+            a.y < -0.3 && ((a.y = 1.3), (a.x = Math.random())),
+            a.x < -0.3 && (a.x = 1.3),
+            a.x > 1.3 && (a.x = -0.3));
+          let o = 0.72 + Math.sin(e * 0.00042 + a.ph) * 0.28,
+            c = a.x * r,
+            l = a.y * i,
+            u = n.createRadialGradient(c, l, 0, c, l, a.r);
+          // A real out-of-focus point has a soft centre and a brighter rim.
+          let f = a.warm ? "255, 216, 168" : "255, 194, 176";
+          (u.addColorStop(0, `rgba(${f}, ${a.a * o * 0.72})`),
+            u.addColorStop(0.72, `rgba(${f}, ${a.a * o * 0.42})`),
+            u.addColorStop(0.93, `rgba(${f}, ${a.a * o})`),
+            u.addColorStop(1, `rgba(${f}, 0)`),
+            (n.fillStyle = u),
+            n.beginPath(),
+            n.arc(c, l, a.r, 0, Math.PI * 2),
+            n.fill());
+        }
         for (let a of s) {
           ((a.x += a.vx * t),
             (a.y += a.vy * t),
@@ -363,7 +407,7 @@ function Dust() {
             a.x > 1.05 && (a.x = -0.05));
           let o = 0.6 + Math.sin(e * 0.0012 + a.ph) * 0.4;
           ((n.globalAlpha = a.a * o),
-            (n.fillStyle = "rgba(226, 238, 252, 1)"),
+            (n.fillStyle = "rgba(250, 226, 198, 1)"),
             n.beginPath(),
             n.arc(a.x * r, a.y * i, a.r, 0, Math.PI * 2),
             n.fill());

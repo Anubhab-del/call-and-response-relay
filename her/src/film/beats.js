@@ -1,16 +1,53 @@
-function Beat({ children: children, full = false }) {
+// The camera.
+//
+// Every beat is on a slow move — a push, a pull, a drift — that runs longer
+// than the beat itself, so the cut always lands mid-gesture and nothing is
+// ever a photograph of some words. Twenty seconds to travel six percent: too
+// slow to watch, too alive to call still.
+var SHOTS = [
+  { from: { scale: 1.0, x: "0%", y: "0.6%" }, to: { scale: 1.075, x: "0%", y: "-0.6%" } }, // push in
+  { from: { scale: 1.08, x: "0%", y: "-0.5%" }, to: { scale: 1.005, x: "0%", y: "0.5%" } }, // pull back
+  { from: { scale: 1.05, x: "1.6%", y: "0%" }, to: { scale: 1.02, x: "-1.6%", y: "0%" } }, // drift left
+  { from: { scale: 1.05, x: "-1.6%", y: "0%" }, to: { scale: 1.02, x: "1.6%", y: "0%" } }, // drift right
+  { from: { scale: 1.02, x: "0%", y: "1.4%" }, to: { scale: 1.06, x: "0%", y: "-0.4%" } }, // rise
+  { from: { scale: 1.06, x: "-0.9%", y: "-0.8%" }, to: { scale: 1.015, x: "0.9%", y: "0.8%" } }, // fall away
+];
+var shotTurn = 0;
+
+function nextShot() {
+  // Walk the list rather than picking at random, so two pushes never land
+  // back to back, and nudge the step so the cycle does not become a pattern.
+  shotTurn += 1 + (Math.random() < 0.35 ? 1 : 0);
+  return SHOTS[shotTurn % SHOTS.length];
+}
+
+function Beat({ children: children, full = false, hold = false }) {
+  let [shot] = (0, React.useState)(nextShot);
+  let fade = transition();
+  if (isStill())
+    return (0, jsx.jsx)(motion.div, {
+      className: full ? "beat full" : "beat",
+      initial: { opacity: 0 },
+      animate: { opacity: 1 },
+      exit: { opacity: 0 },
+      transition: fade,
+      children: children,
+    });
   return (0, jsx.jsx)(motion.div, {
     className: full ? "beat full" : "beat",
-    initial: {
-      opacity: 0,
-    },
+    initial: { opacity: 0, ...shot.from },
     animate: {
       opacity: 1,
+      ...shot.to,
+      transition: {
+        opacity: fade,
+        default: { duration: hold ? 34 : 21, ease: "linear" },
+      },
     },
     exit: {
       opacity: 0,
+      transition: { duration: (fade.duration ?? 0.38) * 0.9 },
     },
-    transition: transition(),
     children: children,
   });
 }

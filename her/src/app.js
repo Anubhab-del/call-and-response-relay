@@ -191,6 +191,11 @@ function App() {
             ),
             (0, jsx.jsx)(Grain, {}, e.motion),
             (0, jsx.jsx)("div", {
+              className: "light-leak",
+              "aria-hidden": "true",
+              children: (0, jsx.jsx)("span", {}),
+            }),
+            (0, jsx.jsx)("div", {
               className: "vignette",
               "aria-hidden": "true",
             }),
@@ -206,7 +211,7 @@ function App() {
               },
               e.motion,
             ),
-            t === "film" ? (0, jsx.jsx)(Dust, {}, e.motion) : null,
+            (0, jsx.jsx)(Dust, {}, e.motion),
             t === "house"
               ? (0, jsx.jsx)(Lamp, {
                   warm: S,

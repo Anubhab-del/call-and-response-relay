@@ -90,164 +90,105 @@ var KEYS = [
     colour: 0.88,
   },
 ];
-function scaleFor(e) {
-  return e.minor ? [0, 7, 8, 3, 2] : [0, 7, 9, 4, 2];
-}
-function octaveFor(e) {
-  return Math.max(2, Math.min(5, e + 2));
-}
-function voicesFor(e, t, n = -5, r = 19) {
-  return t.map((t, i) => {
-    let a = e[i],
-      o = (e) => e >= n && e <= r,
-      s = [];
-    for (let e = -48; e <= 48; e += 12) o(t + e) && s.push(t + e);
-    if (s.length === 0) return Math.max(n, Math.min(r, t));
-    if (a === void 0) return s[Math.min(i, s.length - 1)];
-    let c = s[0],
-      l = Math.abs(c - a);
-    for (let e of s) {
-      let t = Math.abs(e - a);
-      t < l && ((l = t), (c = e));
-    }
-    return c;
-  });
-}
-function makePad(e, t, n, { level: r = 0.1, colour: i = 0.6, attack: a = 2.4, detune: o = 5 } = {}) {
-  let s = isLean(),
-    c = e.createGain();
-  ((c.gain.value = 0), c.connect(t));
-  let l = e.createBiquadFilter();
-  ((l.type = "lowpass"), (l.frequency.value = n * 2), (l.Q.value = 0.6), l.connect(c));
-  let u = [],
-    d = s
-      ? [
-          ["triangle", 1, 1],
-          ["sine", 2, 0.22],
-        ]
+// A struck string, heard through a wall.
+//
+// Not a sample and not a sawtooth: a hammer click, a stack of slightly
+// inharmonic partials that die at different rates the way real strings do,
+// and a damper closing over the whole thing. Most of it goes to the reverb,
+// which is what puts it in the next room rather than in her ear.
+function strikeKey(ctx, out, hz, { level = 0.06, decay = 5.2, hammer = 1 } = {}) {
+  try {
+    let now = ctx.currentTime;
+    let lean = isLean();
+
+    let body = ctx.createGain();
+    body.gain.value = 0;
+    body.connect(out);
+
+    // The damper: open at the strike, closed by the end of the note.
+    let damper = ctx.createBiquadFilter();
+    damper.type = "lowpass";
+    damper.Q.value = 0.4;
+    damper.frequency.setValueAtTime(Math.min(9000, hz * 7), now);
+    damper.frequency.exponentialRampToValueAtTime(Math.max(220, hz * 1.7), now + decay * 0.7);
+    damper.connect(body);
+
+    // Partials. Higher ones are quieter and shorter, and sit a little sharp of
+    // the harmonic series, which is the whole sound of a real string.
+    let partials = lean
+      ? [[1, 1, 1], [2.001, 0.3, 0.55], [3.004, 0.1, 0.32]]
       : [
-          ["triangle", 1, 1],
-          ["sine", 2, 0.26],
-          ["sine", 3, 0.13],
-          ["sine", 4.01, 0.055],
+          [1, 1, 1],
+          [2.001, 0.32, 0.58],
+          [3.005, 0.13, 0.36],
+          [4.012, 0.06, 0.24],
+          [5.42, 0.028, 0.15],
+          [6.8, 0.012, 0.1],
         ];
-  for (let [t, r, i] of d) {
-    let a = e.createOscillator();
-    ((a.type = t), (a.frequency.value = n * r), (a.detune.value = (Math.random() - 0.5) * o));
-    let s = e.createGain();
-    ((s.gain.value = i),
-      a.connect(s),
-      s.connect(l),
-      a.start(),
-      u.push({
-        osc: a,
-        gain: s,
-        ratio: r,
-      }));
-  }
-  let f = null,
-    p = null;
-  if (!s) {
-    ((f = e.createOscillator()),
-      (f.frequency.value = 4.4 + Math.random() * 1.1),
-      (p = e.createGain()),
-      (p.gain.value = n * 0.0022),
-      f.connect(p));
-    for (let e of u) p.connect(e.osc.frequency);
-    f.start();
-  }
-  let m = e.currentTime;
-  (c.gain.setValueAtTime(1e-4, m),
-    c.gain.setTargetAtTime(r, m, a / 3),
-    l.frequency.setValueAtTime(n * 1.2, m),
-    l.frequency.setTargetAtTime(n * (1.8 + i * 5), m, a / 2));
-  let h = false;
-  return {
-    level(t, n = 2) {
-      let r = e.currentTime;
-      (c.gain.cancelScheduledValues(r), c.gain.setTargetAtTime(Math.max(1e-4, t), r, n / 3));
-    },
-    glide(t, n) {
-      let r = e.currentTime;
-      for (let e of u)
-        (e.osc.frequency.cancelScheduledValues(r),
-          e.osc.frequency.setTargetAtTime(t * e.ratio, r, n / 3));
-      (l.frequency.setTargetAtTime(t * (1.8 + i * 5), r, n / 2),
-        p && p.gain.setTargetAtTime(t * 0.0022, r, n / 2));
-    },
-    release(t = 2.2) {
-      if (h) return;
-      h = true;
-      let n = e.currentTime;
-      (c.gain.cancelScheduledValues(n),
-        c.gain.setTargetAtTime(0, n, t / 3),
-        window.setTimeout(
-          () => {
-            for (let e of u)
-              try {
-                (e.osc.stop(), e.osc.disconnect(), e.gain.disconnect());
-              } catch {}
-            try {
-              (f?.stop(), f?.disconnect(), p?.disconnect(), l.disconnect(), c.disconnect());
-            } catch {}
-          },
-          Math.ceil(t * 1e3) + 900,
-        ));
-    },
-  };
-}
-function playNoise(e, t, n, r = 0.05) {
-  try {
-    let i = e.currentTime,
-      a = e.createGain();
-    ((a.gain.value = 0), a.connect(t));
-    let o = e.createOscillator();
-    ((o.type = "sine"), (o.frequency.value = n));
-    let s = e.createGain();
-    ((s.gain.value = 1), o.connect(s), s.connect(a));
-    let c = e.createOscillator();
-    ((c.type = "sine"), (c.frequency.value = n * 3));
-    let l = e.createGain();
-    ((l.gain.value = 0),
-      c.connect(l),
-      l.connect(a),
-      a.gain.setValueAtTime(1e-4, i),
-      a.gain.exponentialRampToValueAtTime(r, i + 0.035),
-      a.gain.exponentialRampToValueAtTime(1e-4, i + 4.4),
-      l.gain.setValueAtTime(0.22, i),
-      l.gain.exponentialRampToValueAtTime(1e-4, i + 0.6),
-      o.start(i),
-      c.start(i),
-      o.stop(i + 4.6),
-      c.stop(i + 0.8),
-      (o.onended = () => {
+    let parts = [];
+    for (let [ratio, amp, life] of partials) {
+      let f = hz * ratio;
+      if (f > 14000) continue;
+      let osc = ctx.createOscillator();
+      osc.type = "sine";
+      osc.frequency.value = f;
+      // Two cents of drift so no two strikes are quite the same note.
+      osc.detune.value = (Math.random() - 0.5) * 4;
+      let g = ctx.createGain();
+      g.gain.setValueAtTime(0, now);
+      g.gain.linearRampToValueAtTime(amp, now + 0.006);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + Math.max(0.4, decay * life));
+      osc.connect(g);
+      g.connect(damper);
+      osc.start(now);
+      osc.stop(now + decay + 0.4);
+      parts.push([osc, g]);
+    }
+
+    // The hammer. A few milliseconds of filtered noise, felt more than heard.
+    if (hammer > 0 && !lean) {
+      let n = Math.floor(ctx.sampleRate * 0.02);
+      let buf = ctx.createBuffer(1, n, ctx.sampleRate);
+      let d = buf.getChannelData(0);
+      for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n) ** 5;
+      let src = ctx.createBufferSource();
+      src.buffer = buf;
+      let bp = ctx.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.frequency.value = Math.min(5200, hz * 4);
+      bp.Q.value = 0.8;
+      let hg = ctx.createGain();
+      hg.gain.value = 0.16 * hammer;
+      src.connect(bp);
+      bp.connect(hg);
+      hg.connect(damper);
+      src.start(now);
+      src.onended = () => {
         try {
-          (o.disconnect(), c.disconnect(), s.disconnect(), l.disconnect(), a.disconnect());
+          (src.disconnect(), bp.disconnect(), hg.disconnect());
         } catch {}
-      }));
+      };
+    }
+
+    body.gain.setValueAtTime(0, now);
+    body.gain.linearRampToValueAtTime(level, now + 0.004);
+    body.gain.setTargetAtTime(0, now + decay * 0.55, decay * 0.3);
+
+    window.setTimeout(
+      () => {
+        for (let [osc, g] of parts)
+          try {
+            (osc.disconnect(), g.disconnect());
+          } catch {}
+        try {
+          (damper.disconnect(), body.disconnect());
+        } catch {}
+      },
+      Math.ceil((decay + 1) * 1000),
+    );
   } catch {}
 }
-function playTone(e, t, n, r = 0.1) {
-  try {
-    let i = e.currentTime,
-      a = e.createOscillator();
-    ((a.type = "sine"), (a.frequency.value = n));
-    let o = e.createGain();
-    ((o.gain.value = 0),
-      a.connect(o),
-      o.connect(t),
-      o.gain.setValueAtTime(1e-4, i),
-      o.gain.exponentialRampToValueAtTime(r, i + 1.6),
-      o.gain.exponentialRampToValueAtTime(1e-4, i + 6),
-      a.start(i),
-      a.stop(i + 6.2),
-      (a.onended = () => {
-        try {
-          (a.disconnect(), o.disconnect());
-        } catch {}
-      }));
-  } catch {}
-}
+
 var BASE_GAIN = 0.5;
 var PAD_LEVELS = [0.26, 0.19, 0.13];
 var score = new (class {
@@ -260,16 +201,6 @@ var score = new (class {
   verb = null;
   rainGain = null;
   rainSrc = null;
-  movement = null;
-  voices = [];
-  chord = 0;
-  held = [];
-  chordTimer = 0;
-  padLevel = 1;
-  themeTimer = 0;
-  themeStep = 0;
-  themeNotes = 2;
-  themeGap = 9e3;
   song = null;
   songReady = false;
   whisper = null;
@@ -358,173 +289,194 @@ var score = new (class {
       (t.gain.cancelScheduledValues(e.currentTime),
       t.gain.setTargetAtTime(this.muted ? 0 : BASE_GAIN * this.volume, e.currentTime, 0.2));
   }
-  startMovement(e) {
-    let t = this.ctx;
-    if (!t || isStill() || this.movement === e) return;
-    let n = this.movement;
-    (this.stopMovement(n === null ? 0.8 : 3.2), (this.movement = e));
-    let r = KEYS[e];
-    if (!r) return;
-    this.chord = 0;
-    let i = voicesFor(
-      [],
-      r.chords[0].map((e) => r.root + e),
-    );
-    ((this.held = i),
-      (this.voices = i.map((e, n) => {
-        let i = this.bus();
-        return i
-          ? makePad(t, i, midiToHz(e + (n === 0 ? 0 : 12)), {
-              level: (PAD_LEVELS[n] ?? 0.1) * r.weight * this.padLevel,
-              colour: r.colour,
-              attack: 3.6,
-            })
-          : {
-              glide: () => {},
-              level: () => {},
-              release: () => {},
-            };
-      })));
-    let a = this.bus();
-    (a && playTone(t, a, midiToHz(r.root - 12), 0.2 * r.weight),
-      this.runChords(r),
-      (this.themeNotes = octaveFor(e)),
-      this.runTheme(r));
+  // ── the score ────────────────────────────────────────────────────────────
+  //
+  // Near silence, and a note every so often. The rain is the bed; this is one
+  // hand on a piano in another room, not playing anything in particular.
+  //
+  // Nothing sustains. Nothing repeats on a loop she can learn. Two notes at
+  // most, now and then, and long gaps she can forget the music inside.
+
+  keyIndex = null;
+  keyTimer = 0;
+  keyGap = 12000;
+  keyLevel = 1;
+  keyLast = -1;
+
+  setKey(index) {
+    if (!this.ctx || this.keyIndex === index) return;
+    this.keyIndex = index;
+    this.runKeys(2600 + Math.random() * 2200);
   }
-  runChords(e) {
-    window.clearTimeout(this.chordTimer);
-    let t = () => {
-      if (!this.ctx || this.movement === null) return;
-      this.chord = (this.chord + 1) % e.chords.length;
-      let n = e.chords[this.chord].map((t) => e.root + t),
-        r = voicesFor(this.held, n);
-      ((this.held = r),
-        r.forEach((t, n) => {
-          this.voices[n]?.glide(midiToHz(t + (n === 0 ? 0 : 12)), e.bar * 0.45);
-        }),
-        (this.chordTimer = window.setTimeout(t, e.bar * 1e3)));
-    };
-    this.chordTimer = window.setTimeout(t, e.bar * 1e3);
+
+  stopKeys() {
+    (window.clearTimeout(this.keyTimer), (this.keyIndex = null), (this.keyTimer = 0));
   }
-  runTheme(e) {
-    window.clearTimeout(this.themeTimer);
-    let t = scaleFor(e),
-      n = () => {
-        if (!this.ctx || this.movement === null) return;
-        let r = this.themeStep % Math.max(1, this.themeNotes),
-          i = e.root + t[r] + 24,
-          a = this.bus();
-        (a && playNoise(this.ctx, a, midiToHz(i), 0.17 * Math.max(0.25, this.padLevel)),
-          (this.themeStep += 1));
-        let o = r === this.themeNotes - 1;
-        this.themeTimer = window.setTimeout(n, o ? this.themeGap * 2 : this.themeGap);
-      };
-    this.themeTimer = window.setTimeout(n, 3200);
+
+  // Where in the key the next note comes from. A wide, open voicing —
+  // roots, fifths, sixths, ninths — nothing that resolves and closes a door.
+  keyNotes() {
+    let key = KEYS[this.keyIndex ?? 0] ?? KEYS[0];
+    let degrees = key.minor ? [0, 3, 7, 10, 14, 15, 19] : [0, 4, 7, 9, 12, 16, 19];
+    let out = [];
+    for (let octave of [12, 24, 36]) for (let d of degrees) out.push(key.root + d + octave);
+    return out.filter((n) => n >= 10 && n <= 48);
   }
-  declareTheme(e, t = 0.24) {
-    if (!this.ctx) return;
-    let n = KEYS[e] ?? KEYS[KEYS.length - 1];
-    scaleFor(n).forEach((e, r) => {
-      window.setTimeout(() => {
-        if (!this.ctx) return;
-        let r = this.bus();
-        r && playNoise(this.ctx, r, midiToHz(n.root + e + 24), t);
-        let i = this.bus();
-        i && playNoise(this.ctx, i, midiToHz(n.root + e + 12), t * 0.5);
-      }, r * 1500);
+
+  // The piano sits further back than anything else: less of it dry, all of it
+  // into the reverb. That is what puts it through a wall instead of in her ear.
+  keyBus() {
+    if (!this.ctx || !this.dry || !this.wet) return null;
+    let near = this.ctx.createGain();
+    near.gain.value = 0.42;
+    near.connect(this.dry);
+    let room = this.ctx.createGain();
+    room.gain.value = 1.15;
+    room.connect(this.wet);
+    let bus = this.ctx.createGain();
+    (bus.connect(near), bus.connect(room));
+    return bus;
+  }
+
+  strike(note, { level = 1, hammer = 1 } = {}) {
+    let ctx = this.ctx;
+    if (!ctx || this.muted) return;
+    let bus = this.keyBus();
+    if (!bus) return;
+    let hz = midiToHz(note);
+    // High notes are quieter and shorter; low ones ring. As a piano does.
+    let high = Math.max(0, Math.min(1, (note - 12) / 34));
+    strikeKey(ctx, bus, hz, {
+      level: (0.115 - high * 0.045) * level * this.keyLevel,
+      decay: 7.4 - high * 3.1,
+      hammer,
     });
+    window.setTimeout(() => {
+      try {
+        bus.disconnect();
+      } catch {}
+    }, 9000);
   }
-  stopMovement(e = 2.6) {
-    (window.clearTimeout(this.chordTimer), window.clearTimeout(this.themeTimer));
-    for (let t of this.voices) t.release(e);
-    ((this.voices = []), (this.movement = null));
+
+  runKeys(first) {
+    window.clearTimeout(this.keyTimer);
+    let play = () => {
+      if (!this.ctx || this.keyIndex === null) return;
+      let notes = this.keyNotes();
+      if (notes.length) {
+        // Step somewhere near the last note rather than leaping about.
+        let from = notes.indexOf(this.keyLast);
+        let i =
+          from < 0
+            ? Math.floor(notes.length * (0.3 + Math.random() * 0.45))
+            : Math.max(0, Math.min(notes.length - 1, from + Math.round((Math.random() - 0.5) * 5)));
+        let note = notes[i];
+        this.keyLast = note;
+        this.strike(note);
+
+        // Now and then, a second finger. Never a chord, never a phrase.
+        if (Math.random() < 0.34) {
+          let below = notes.filter((n) => n < note - 4 && n > note - 15);
+          let other = below.length
+            ? below[Math.floor(Math.random() * below.length)]
+            : note + (Math.random() < 0.5 ? 7 : 12);
+          window.setTimeout(
+            () => this.strike(other, { level: 0.72, hammer: 0.7 }),
+            110 + Math.random() * 260,
+          );
+        }
+      }
+      // Long, uneven gaps. Regularity is what made the old one wallpaper.
+      let gap = this.keyGap * (0.7 + Math.random() * 0.75);
+      this.keyTimer = window.setTimeout(play, gap);
+    };
+    this.keyTimer = window.setTimeout(play, first ?? this.keyGap);
   }
-  setPadLevel(e) {
-    this.padLevel = e;
-    let t = this.movement === null ? null : KEYS[this.movement];
-    t && this.voices.forEach((n, r) => n.level((PAD_LEVELS[r] ?? 0.1) * t.weight * e, 2.4));
+
+  // A single note, deliberately, when a beat wants one.
+  sound(offset = 0, level = 1) {
+    let key = KEYS[this.keyIndex ?? 0] ?? KEYS[0];
+    this.strike(key.root + 24 + offset, { level });
   }
-  async setCue(e) {
-    if (e === this.cue || ((this.cue = e), !this.ctx)) return;
-    if (e.startsWith("/")) {
-      let t = scoreUrl(e);
-      if (t) {
-        (await this.playNamed(t), this.setRain(0.03));
+
+  // Each beat sets three things: which key the hand is in, how long it waits
+  // between notes, and how hard the rain is. Nothing else. The gaps are long
+  // — ten to twenty-five seconds — because the quiet is the point.
+  async setCue(cue) {
+    if (cue === this.cue) return;
+    this.cue = cue;
+    if (!this.ctx) return;
+
+    if (cue.startsWith("/")) {
+      let url = scoreUrl(cue);
+      if (url) {
+        (await this.playNamed(url), this.setRain(0.03));
         return;
       }
     }
-    let t = e.startsWith("part-") ? Number.parseInt(e.slice(5), 10) : null;
-    if (t !== null && Number.isFinite(t)) {
-      ((this.themeGap = 9e3),
-        this.setPadLevel(1),
-        this.startMovement(t),
-        this.setRain(0.026 + t * 0.004),
-        await this.playSong(0.24));
+
+    let part = cue.startsWith("part-") ? Number.parseInt(cue.slice(5), 10) : null;
+    if (part !== null && Number.isFinite(part)) {
+      ((this.keyGap = 13000), (this.keyLevel = 1), this.setKey(part), this.setRain(0.026 + part * 0.004));
       return;
     }
-    switch (e) {
+
+    switch (cue) {
       case "silent":
-        (this.stopMovement(1.6), this.setRain(0.012), await this.playSong(0));
+        (this.stopKeys(), this.setRain(0.012));
         return;
       case "projector":
         (this.projectorWake(), this.setRain(0.034));
         return;
       case "title":
-        (this.startMovement(0), this.setPadLevel(0.85), this.setRain(0.024), await this.playSong(0.34));
+        // One note under the title card, then nothing for a long while.
+        ((this.keyGap = 16000), (this.keyLevel = 0.9), this.setKey(0), this.setRain(0.024));
         return;
       case "distance":
-        (this.setPadLevel(0.6), this.setRain(0.05), (this.themeGap = 6e3));
+        ((this.keyGap = 15000), (this.keyLevel = 0.7), this.setRain(0.05));
         return;
       case "twohours":
-        (this.setPadLevel(1.15), this.setRain(0.014), (this.themeGap = 5200));
+        ((this.keyGap = 9000), (this.keyLevel = 1.05), this.setRain(0.014));
         return;
       case "sleep":
-        (this.setPadLevel(0.42), this.setRain(0.056), (this.themeGap = 14e3));
+        ((this.keyGap = 21000), (this.keyLevel = 0.5), this.setRain(0.056));
         return;
       case "dance":
-        (this.setPadLevel(0.95), this.setRain(0.022), (this.themeGap = 4200));
+        ((this.keyGap = 8000), (this.keyLevel = 0.95), this.setRain(0.022));
         return;
       case "hold":
-        (this.setPadLevel(0.1), this.setRain(0.042), (this.themeGap = 3e4), await this.playSong(0.05));
+        // The hold is a held breath. Nothing plays over it.
+        (this.stopKeys(), this.setRain(0.042));
         return;
       case "care":
-        (this.setPadLevel(0.9), this.setRain(0.026), await this.playSong(0.3));
+        ((this.keyGap = 14000), (this.keyLevel = 0.85), this.setRain(0.026));
         return;
       case "vow":
-        (this.startMovement(3),
-          this.setPadLevel(1.25),
-          (this.themeNotes = 5),
-          this.setRain(0.048),
-          this.startHeart(),
-          this.declareTheme(3, 0.26),
-          await this.playSong(0.4));
+        ((this.keyGap = 11000), (this.keyLevel = 1), this.setKey(3), this.setRain(0.048));
+        (this.startHeart(), this.sound(0, 0.9));
+        window.setTimeout(() => this.sound(7, 0.75), 1500);
+        window.setTimeout(() => this.sound(12, 0.6), 3400);
         return;
       case "credits":
-        (this.setPadLevel(1),
-          (this.themeNotes = 5),
-          (this.themeGap = 7e3),
-          this.setRain(0.024),
-          this.declareTheme(this.movement ?? 3, 0.2),
-          await this.playSong(0.36));
+        ((this.keyGap = 12000), (this.keyLevel = 0.9), this.setRain(0.024));
         return;
       case "coda":
-        (this.setPadLevel(0.5), this.setRain(0.04), (this.themeGap = 11e3), await this.playSong(0.2));
+        ((this.keyGap = 17000), (this.keyLevel = 0.6), this.setRain(0.04));
         return;
       case "house":
-        (this.startMovement(2),
-          this.setPadLevel(0.42),
-          (this.themeGap = 22e3),
-          this.setRain(0.032),
-          this.stopHeart(),
-          await this.playSong(0.1));
+        // Indoors it is barely there at all — a note every half minute or so.
+        ((this.keyGap = 27000), (this.keyLevel = 0.42), this.setKey(2), this.setRain(0.032));
+        this.stopHeart();
         return;
       case "letter":
-        (this.setPadLevel(0.3), (this.themeGap = 26e3), this.setRain(0.02), await this.playSong(0.07));
+        // While she is reading, silence. A note over a letter is an intrusion.
+        (this.stopKeys(), this.setRain(0.018));
         return;
       default:
-        (this.setPadLevel(0.8), this.setRain(0.03), await this.playSong(0.2));
+        ((this.keyGap = 15000), (this.keyLevel = 0.8), this.setRain(0.03));
     }
   }
+
   async loadSong() {
     if (this.song) return;
     let e = firstAvailable(VOW_SOURCES);
@@ -629,13 +581,24 @@ var score = new (class {
     }
     (n.gain.cancelScheduledValues(t.currentTime), n.gain.setTargetAtTime(e, t.currentTime, 1.6));
   }
-  thunder(e) {
+  // `far` is 0 overhead and 1 on the edge of the sky. It buys the sound a
+  // travel time of up to four and a half seconds, takes the top off it, and
+  // leaves a rumble where there would have been a crack.
+  thunder(e, far = 0) {
+    if (far > 0.02) {
+      window.setTimeout(() => this.rumble(e, far), 140 + far * 4400);
+      return;
+    }
+    this.rumble(e, far);
+  }
+  rumble(e, far = 0) {
     let t = this.ctx;
     if (!(!t || !this.punch || this.muted))
       try {
         let n = t.currentTime,
           r = isLean(),
-          i = r ? 0.12 + e * 0.3 : 0.18 + e * 0.6,
+          // Close is a crack; far is a roll that goes on for seconds.
+          i = (r ? 0.4 : 0.7) + far * (r ? 1.1 : 2.6) + e * 0.5,
           a = t.createBuffer(1, Math.floor(t.sampleRate * i), t.sampleRate),
           o = a.getChannelData(0),
           s = 0;
@@ -648,7 +611,7 @@ var score = new (class {
         let c = t.createBufferSource();
         c.buffer = a;
         let l = t.createBiquadFilter();
-        ((l.type = "lowpass"), (l.frequency.value = 220 + e * 1400));
+        ((l.type = "lowpass"), (l.frequency.value = (180 + e * 1500) * (1 - far * 0.78)));
         let u = t.createGain();
         ((u.gain.value = 0),
           c.connect(l),
@@ -658,7 +621,7 @@ var score = new (class {
         let d = 0.04 + (1 - e) * 0.35;
         if (
           (u.gain.setValueAtTime(0, n),
-          u.gain.linearRampToValueAtTime(0.9 + e * 1.1, n + d),
+          u.gain.linearRampToValueAtTime((0.34 + e * 0.72) * (1 - far * 0.6), n + d),
           u.gain.exponentialRampToValueAtTime(0.001, n + d + i),
           c.start(n + d),
           c.stop(n + d + i + 0.05),
@@ -667,7 +630,7 @@ var score = new (class {
               (c.disconnect(), l.disconnect(), u.disconnect());
             } catch {}
           }),
-          e > 0.4 && this.duckFor(i + d, 0.34 * e),
+          e > 0.5 && far < 0.4 && this.duckFor(i + d, 0.3 * e),
           r)
         )
           return;
@@ -678,7 +641,7 @@ var score = new (class {
           f.connect(p),
           p.connect(this.punch),
           p.gain.setValueAtTime(0, n),
-          p.gain.linearRampToValueAtTime(0.3 + e * 0.4, n + d),
+          p.gain.linearRampToValueAtTime((0.16 + e * 0.3) * (1 - far * 0.35), n + d),
           p.gain.exponentialRampToValueAtTime(0.001, n + d + i * 2.2),
           f.start(n + d),
           f.stop(n + d + i * 2.3),
@@ -799,7 +762,7 @@ var score = new (class {
     } catch {}
   }
   dispose() {
-    (this.stopMovement(0.2), this.stopHeart(), this.stopSongOnly());
+    (this.stopKeys(), this.stopHeart(), this.stopSongOnly());
     try {
       this.rainSrc?.stop();
     } catch {}

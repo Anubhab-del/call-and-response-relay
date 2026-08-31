@@ -34,27 +34,27 @@
   src: url(data:font/woff2;base64,__FONT:outfit-500__) format("woff2");
 }
 :root {
-  --void: #05070c;
-  --paper: #e6eef7;
-  --paper-dim: #c4d6e89e;
-  --paper-faint: #b4c8de61;
-  --tungsten: #cfdcee;
-  --tungsten-wash: #0a1018;
-  --dusk: #a4b6cd;
-  --dusk-wash: #080c14;
-  --still: #eaf0f7;
-  --still-wash: #07090e;
-  --hers: #bccbdd;
-  --hers-wash: #080b12;
-  --reply: #d8e6f5;
-  --reply-wash: #0b1018;
+  --void: #08050a;
+  --paper: #f4e9dc;
+  --paper-dim: #ddccb89e;
+  --paper-faint: #d3c0aa61;
+  --tungsten: #f2ddbe;
+  --tungsten-wash: #15100a;
+  --dusk: #cdb0bb;
+  --dusk-wash: #100a11;
+  --still: #f6ebdd;
+  --still-wash: #0d0907;
+  --hers: #eec9bf;
+  --hers-wash: #130a0b;
+  --reply: #f8e4c0;
+  --reply-wash: #150e08;
   --ember: #efdcc0;
-  --ember-wash: #0d0b09;
+  --ember-wash: #140d07;
   --lamp: #f2d9a6;
   --lamp-deep: #c99f5f;
   --gold: #d8b877;
-  --ui: #93a7bc;
-  --line: #aac8f024;
+  --ui: #bda893;
+  --line: #e8c9a424;
   --line-warm: #e8c8942e;
   --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --ui-font: Outfit, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -137,7 +137,7 @@ button {
   overflow: hidden;
 }
 .room {
-  background: #020308;
+  background: #06040a;
   place-items: center;
   width: 100%;
   height: 100%;
@@ -149,8 +149,8 @@ button {
   pointer-events: none;
   opacity: 0.95;
   background:
-    radial-gradient(90% 72% at 50% 28%, #121826 0%, #070a10 58%, #03050a 100%),
-    repeating-linear-gradient(92deg, #b4d2ff05 0 1px, #0000 1px 9px);
+    radial-gradient(90% 72% at 50% 28%, #241b13 0%, #110c0a 58%, #08050a 100%),
+    repeating-linear-gradient(92deg, #f0d4a805 0 1px, #0000 1px 9px);
   transition: background 1.4s;
   position: absolute;
   inset: 0;
@@ -192,9 +192,9 @@ button {
     background-color 1.9s var(--ease),
     color 1.9s var(--ease);
   box-shadow:
-    0 0 0 1px #aac8f01a,
-    0 0 0 11px #07090e,
-    0 0 0 12px #a0bee60f,
+    0 0 0 1px #e8c9a41a,
+    0 0 0 11px #0d0907,
+    0 0 0 12px #dcc09a0f,
     0 28px 90px #000000b8,
     0 0 calc(120px * var(--flash)) rgba(186, 214, 255, calc(0.55 * var(--flash)));
 }
@@ -250,7 +250,7 @@ html.is-still .letterbox[data-cut="true"] {
   background: #07080c;
 }
 .house-frame[data-weather="silence"] {
-  background: #05070b;
+  background: #0a0708;
 }
 .bars {
   pointer-events: none;
@@ -282,6 +282,9 @@ html.is-still .letterbox[data-cut="true"] {
 .rain-glass[data-heavy="true"] {
   opacity: 0.28;
 }
+.house-frame .dust {
+  opacity: 0.42;
+}
 .dust {
   z-index: 5;
   mix-blend-mode: screen;
@@ -307,7 +310,132 @@ html.is-still .letterbox[data-cut="true"] {
   position: absolute;
   inset: -50%;
 }
+/* Halation.
+   Film stock blooms around a bright edge — light scatters back off the base
+   and haloes the letter. It is the difference between type on a screen and
+   type that was photographed. Warm on the film, warmer still on the vow. */
+.title-word,
+.title-her,
+.scene-line,
+.chapter-line,
+.chapter-title,
+.act-title,
+.big-count,
+.care-line,
+.vow-line,
+.last-line,
+.name-flash,
+.distance-km,
+.doorway-year {
+  text-shadow:
+    0 0 1px #f2d9a61f,
+    0 0 14px #f2d9a629,
+    0 0 42px #e8b9a41c;
+}
+.vow-line,
+.name-flash,
+.title-her {
+  text-shadow:
+    0 0 2px #f2d9a63d,
+    0 0 20px #f2d9a647,
+    0 0 60px #e8b9a433,
+    0 0 110px #d9a08f1f;
+}
+html.is-lean .title-word,
+html.is-lean .scene-line,
+html.is-lean .chapter-line,
+html.is-lean .chapter-title,
+html.is-lean .act-title,
+html.is-lean .care-line,
+html.is-lean .last-line {
+  text-shadow: 0 0 16px #f2d9a626;
+}
+
+/* The vignette breathes with the room, very slowly, the way a projector lamp
+   is never quite steady. */
+@keyframes gate-breathe {
+  0%, 100% { opacity: 0.94; }
+  50% { opacity: 1.06; }
+}
+
+/* Light leak.
+   Two warm shapes drifting across the gate at different speeds, the way light
+   gets past a film door that does not quite close. Screen blended, so it only
+   ever adds light and never dirties a black. Pure transform, so it is free. */
+.light-leak {
+  pointer-events: none;
+  z-index: 13;
+  mix-blend-mode: screen;
+  position: absolute;
+  inset: -20%;
+  opacity: 0.5;
+}
+.light-leak:before,
+.light-leak:after,
+.light-leak span {
+  content: "";
+  border-radius: 50%;
+  display: block;
+  position: absolute;
+  filter: blur(38px);
+}
+.light-leak:before {
+  background: radial-gradient(circle, #f2d9a63d 0%, #f2d9a614 44%, #0000 72%);
+  width: 62%;
+  height: 46%;
+  top: 4%;
+  left: -12%;
+  animation: 71s ease-in-out infinite leak-a;
+}
+.light-leak:after {
+  background: radial-gradient(circle, #e8b9a433 0%, #d9a08f12 46%, #0000 74%);
+  width: 54%;
+  height: 52%;
+  bottom: 2%;
+  right: -10%;
+  animation: 93s ease-in-out infinite leak-b;
+}
+.light-leak span {
+  background: radial-gradient(circle, #f2ddc21f 0%, #0000 68%);
+  width: 40%;
+  height: 34%;
+  top: 38%;
+  left: 32%;
+  animation: 127s linear infinite leak-c;
+}
+@keyframes leak-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  38% { transform: translate3d(26%, 9%, 0) scale(1.22); }
+  67% { transform: translate3d(9%, -7%, 0) scale(0.92); }
+}
+@keyframes leak-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
+  44% { transform: translate3d(-22%, -12%, 0) scale(0.86); }
+  72% { transform: translate3d(-8%, 8%, 0) scale(1.18); }
+}
+@keyframes leak-c {
+  0% { transform: translate3d(-18%, 6%, 0) scale(1); }
+  50% { transform: translate3d(18%, -8%, 0) scale(1.3); }
+  100% { transform: translate3d(-18%, 6%, 0) scale(1); }
+}
+/* On a still night the leaks stay, they just stop moving. */
+html.is-still .light-leak:before,
+html.is-still .light-leak:after,
+html.is-still .light-leak span {
+  animation: none;
+}
+html.is-lean .light-leak span {
+  display: none;
+}
+html.is-lean .light-leak {
+  opacity: 0.38;
+}
+.house-frame .light-leak {
+  opacity: 0.62;
+}
+
 .vignette {
+  animation: 17s ease-in-out infinite gate-breathe;
   pointer-events: none;
   z-index: 14;
   background: radial-gradient(78% 68% at 50% 48%, #0000 40%, #0000009e 100%);
@@ -317,14 +445,14 @@ html.is-still .letterbox[data-cut="true"] {
 .glass-film {
   pointer-events: none;
   z-index: 16;
-  background: linear-gradient(#ffffff0b 0%, #0000 16% 78%, #0000002e 100%);
+  background: linear-gradient(#fff6e80b 0%, #0000 16% 78%, #0000002e 100%);
   position: absolute;
   inset: 0;
-  box-shadow: inset 0 0 0 1px #bed6ff14;
+  box-shadow: inset 0 0 0 1px #f0d8b614;
 }
 .flicker {
   pointer-events: none;
-  background: #e2eefc;
+  background: #fbeeda;
   position: absolute;
   inset: 0;
 }
@@ -367,7 +495,8 @@ html.is-still .letterbox[data-cut="true"] {
     opacity: 1;
   }
 }
-html.is-still .lamp-glow {
+html.is-still .lamp-glow,
+html.is-still .vignette {
   animation: none;
 }
 .film {
@@ -400,7 +529,7 @@ html.is-still .lamp-glow {
   letter-spacing: 0.34em;
   text-indent: 0.34em;
   color: var(--paper);
-  text-shadow: 0 0 60px #bed8ff29;
+  text-shadow: 0 0 60px #f2dcb429;
   font-size: clamp(3.6rem, 15vw, 9rem);
   font-weight: 400;
   line-height: 1;
@@ -465,7 +594,7 @@ html.is-still .lamp-glow {
 }
 .still-frame:after {
   content: "";
-  background: linear-gradient(#03050a47 0%, #0000 34%, #03050ac7 100%);
+  background: linear-gradient(#08050a47 0%, #0000 34%, #08050ac7 100%);
   position: absolute;
   inset: 0;
 }
@@ -548,7 +677,7 @@ html.is-still .lamp-glow {
 }
 .ceiling-light {
   pointer-events: none;
-  background: radial-gradient(at 50% 0, #c8e0ff80 0%, #0000 70%);
+  background: radial-gradient(at 50% 0, #f5dfc080 0%, #0000 70%);
   width: min(70%, 420px);
   height: 42%;
   position: absolute;
@@ -601,7 +730,7 @@ html.is-still .lamp-glow {
   font-family: var(--display);
   letter-spacing: 0.08em;
   color: var(--paper);
-  text-shadow: 0 0 70px #c8e0ff47;
+  text-shadow: 0 0 70px #f5dfc047;
   font-size: clamp(2rem, 11vw, 4.6rem);
   font-style: italic;
 }
@@ -663,7 +792,7 @@ html.is-still .lamp-glow {
   transition: border-color 0.4s;
 }
 .lock-form input::placeholder {
-  color: #96acc459;
+  color: #c3ab9559;
   letter-spacing: 0.18em;
 }
 .lock-form input:focus {
@@ -709,8 +838,8 @@ html.is-still .lamp-glow {
 .hud button {
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #93a7bc6b;
-  border: 1px solid #93a7bc24;
+  color: #bda8936b;
+  border: 1px solid #bda89324;
   border-radius: 2px;
   padding: 7px 12px;
   font-size: 0.6rem;
@@ -720,12 +849,12 @@ html.is-still .lamp-glow {
 }
 .hud button:hover,
 .hud button:focus-visible {
-  color: #d6e6f8e6;
+  color: #f6e3c8e6;
   border-color: #d8b87766;
 }
 .ribbon {
   z-index: 30;
-  background: #aac8f014;
+  background: #e8c9a414;
   height: 1px;
   position: absolute;
   bottom: 0;
@@ -736,7 +865,7 @@ html.is-still .lamp-glow {
   transform-origin: 0;
   height: 100%;
   transition: transform 0.5s var(--ease);
-  background: linear-gradient(90deg, #d8b87780, #c8e0ff80);
+  background: linear-gradient(90deg, #d8b87780, #f5dfc080);
   display: block;
 }
 .film-tools {
@@ -750,8 +879,8 @@ html.is-still .lamp-glow {
 .ghost {
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #93a7bc75;
-  border: 1px solid #93a7bc24;
+  color: #bda89375;
+  border: 1px solid #bda89324;
   border-radius: 2px;
   padding: 7px 12px;
   font-size: 0.6rem;
@@ -762,7 +891,7 @@ html.is-still .lamp-glow {
 }
 .ghost:hover,
 .ghost:focus-visible {
-  color: #d6e6f8eb;
+  color: #f6e3c8eb;
   border-color: #d8b87766;
 }
 .ghost.tiny {
@@ -773,7 +902,7 @@ html.is-still .lamp-glow {
 .solid {
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #0d0b09;
+  color: #140d07;
   transition:
     background 0.3s ease,
     transform 0.3s var(--ease);
@@ -856,7 +985,7 @@ html.is-still .lamp-glow {
 }
 .broke {
   text-align: center;
-  background: #05070c;
+  background: #08050a;
   place-content: center;
   gap: 16px;
   padding: 32px;
@@ -983,7 +1112,7 @@ html.is-still .lamp-glow {
   z-index: 30;
   font-family: var(--display);
   letter-spacing: 0.24em;
-  color: #93a7bc66;
+  color: #bda89366;
   pointer-events: none;
   font-size: 0.72rem;
   position: absolute;
@@ -991,7 +1120,7 @@ html.is-still .lamp-glow {
   transform: translate(-50%);
 }
 .where span {
-  color: #93a7bc38;
+  color: #bda89338;
 }
 .contents {
   z-index: 50;
@@ -1036,7 +1165,7 @@ html.is-still .lamp-glow {
 }
 .thread-line {
   fill: none;
-  stroke: #aac8f021;
+  stroke: #e8c9a421;
   stroke-width: 1px;
 }
 /* A set of choices, not a toolbar: one per line on a phone, so each is a
@@ -1059,7 +1188,7 @@ html.is-still .lamp-glow {
 /* The door at the foot of the contents, past the last chapter. */
 .contents-leave {
   font-family: var(--display);
-  color: #93a7bccc;
+  color: #bda893cc;
   text-align: left;
   border-top: 1px solid var(--line);
   width: 100%;
@@ -1128,12 +1257,12 @@ html.is-still .lamp-glow {
     background 0.3s ease,
     box-shadow 0.3s ease,
     transform 0.3s var(--ease);
-  background: #05070c;
+  background: #08050a;
   border-radius: 50%;
   margin-top: -4px;
   position: absolute;
   top: 50%;
-  box-shadow: inset 0 0 0 1px #aac8f04d;
+  box-shadow: inset 0 0 0 1px #e8c9a44d;
 }
 .contents-row[data-reached="true"] .contents-node {
   background: #d8b8778c;
@@ -1157,7 +1286,7 @@ html.is-still .lamp-glow {
   min-width: 3.6em;
   font-family: var(--display);
   letter-spacing: 0.14em;
-  color: #93a7bc6b;
+  color: #bda8936b;
   flex: none;
   font-size: 0.72rem;
 }
@@ -1166,7 +1295,7 @@ html.is-still .lamp-glow {
 }
 .contents-label {
   font-family: var(--display);
-  color: #b4c8de80;
+  color: #d3c0aa80;
   font-size: 1.02rem;
   line-height: 1.3;
 }
@@ -1269,7 +1398,7 @@ html.is-lean .film {
   z-index: 18;
   pointer-events: none;
   mix-blend-mode: screen;
-  background: #e9f1ff;
+  background: #fcf0de;
   animation: 5.3s linear infinite gate;
   position: absolute;
   inset: 0;
@@ -1304,8 +1433,8 @@ html.is-still .letterbox:after {
   inset: 0;
 }
 .house[data-night="true"] {
-  --paper: #d6dfe9;
-  --paper-dim: #b2c4d88f;
+  --paper: #e6d8c6;
+  --paper-dim: #d2bda68f;
 }
 .house-bar {
   padding: max(14px, env(safe-area-inset-top)) 18px 12px;
@@ -1313,7 +1442,7 @@ html.is-still .letterbox:after {
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   z-index: 5;
-  background: linear-gradient(#08080cdb, #08080c33);
+  background: linear-gradient(#0e0a07db, #0e0a0733);
   flex: none;
   justify-content: space-between;
   align-items: center;
@@ -1347,9 +1476,9 @@ html.is-still .letterbox:after {
   text-align: center;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #b4c8de42;
+  color: #d3c0aa42;
   pointer-events: none;
-  background: linear-gradient(#0000, #05060ae0 42%, #05060af7);
+  background: linear-gradient(#0000, #0b0806e0 42%, #0b0806f7);
   font-size: 0.58rem;
   position: absolute;
   bottom: 0;
@@ -1417,7 +1546,7 @@ html.is-still .letterbox:after {
 }
 .days-track {
   fill: none;
-  stroke: #aac8f01a;
+  stroke: #e8c9a41a;
   stroke-width: 1.4px;
 }
 .days-fill {
@@ -1522,7 +1651,7 @@ html.is-still .letterbox:after {
   line-height: 1.4;
 }
 .room-badge {
-  color: #0d0b09;
+  color: #140d07;
   background: #d8b877e6;
   border-radius: 9px;
   place-items: center;
@@ -1669,16 +1798,16 @@ html.is-still .letterbox:after {
 .envelope[data-locked="true"] {
   cursor: default;
   opacity: 0.5;
-  background: #0a0e1666;
+  background: #130d0a66;
   border-style: dashed;
-  border-color: #aac8f024;
+  border-color: #e8c9a424;
 }
 .envelope[data-once="true"]:not([data-locked]) {
   border-color: #d8b8776b;
 }
 .reading {
   z-index: 60;
-  background: radial-gradient(80% 60% at 50% 12%, #14110c 0%, #07070a 62%, #040508 100%);
+  background: radial-gradient(80% 60% at 50% 12%, #1c140b 0%, #0d0807 62%, #09060a 100%);
   position: absolute;
   inset: 0;
   overflow-y: auto;
@@ -1770,7 +1899,7 @@ html.is-still .letterbox:after {
   justify-content: flex-start;
 }
 .sealed-code {
-  color: #c8dcf0b8;
+  color: #f0dcc0b8;
   border: 1px solid var(--line);
   resize: vertical;
   word-break: break-all;
@@ -1815,7 +1944,7 @@ html.is-still .letterbox:after {
   margin: 22px 0 12px;
 }
 .jar-bar {
-  background: #aac8f01a;
+  background: #e8c9a41a;
   height: 2px;
   overflow: hidden;
 }
@@ -2074,7 +2203,7 @@ html.is-still .letterbox:after {
   font-family: var(--ui-font);
   letter-spacing: 1.4px;
   text-transform: uppercase;
-  fill: #b4c8de73;
+  fill: #d3c0aa73;
   font-size: 7px;
 }
 .facts {
@@ -2377,7 +2506,7 @@ html.is-still .letterbox:after {
 .name-ghost {
   z-index: 4;
   font-family: var(--display);
-  color: #d6e8ff0b;
+  color: #f6e2c40b;
   letter-spacing: 0.04em;
   pointer-events: none;
   -webkit-user-select: none;
