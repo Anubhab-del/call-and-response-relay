@@ -174,23 +174,22 @@ typeof window !== "undefined" &&
         for (let e of listeners) e(current);
       } catch {}
   }));
-function exportState() {
-  return JSON.stringify(
-    {
-      her: STORE_KEY,
-      at: Date.now(),
-      store: current,
-    },
-    null,
-    2,
-  );
-}
 // A restore is a merge, never a replacement. Whatever this phone already knows
 // stays known; whatever the copy knows is added. That is the promise the fuse
 // box makes out loud ("nothing replaced"), so it has to be true of every field.
 function importState(text) {
   try {
-    let file = JSON.parse(text);
+    // A copy is a readable document with the state tucked into a script tag
+    // at the foot of it. Older copies are plain JSON. Both come back.
+    let raw = String(text).trim();
+    if (raw.startsWith("<")) {
+      let found = raw.match(
+        /<script id="her-state" type="application\/json">([^]*?)<\/script>/,
+      );
+      if (!found) return { ok: false, added: 0, reason: "That file is not from here." };
+      raw = found[1];
+    }
+    let file = JSON.parse(raw);
     let copy = normaliseState(file.store ?? file);
     let added = 0;
     update((state) => {

@@ -4,6 +4,7 @@ import { chromium } from "playwright";
 import path from "node:path";
 import os from "node:os";
 import http from "node:http";
+import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
@@ -572,6 +573,27 @@ for (const mode of ["full", "lean"]) {
 }
 
 // ── The Same Hour ─────────────────────────────────────────────────────────
+// The times below are read out of src/content/samehour.js rather than typed
+// in, so re-pacing the night can never quietly stop these from testing it.
+const hourBeats = (() => {
+  const src = readFileSync(path.join(root, "src", "content", "samehour.js"), "utf8");
+  const list = src.slice(src.indexOf("var SAME_HOUR_BEATS"), src.indexOf("var SAME_HOUR_NAME"));
+  return [...list.matchAll(/at:\s*(\d+),\s*\n?\s*kind:\s*"(\w+)"(?:,\s*\n?\s*text:\s*"((?:[^"\\]|\\.)*)")?/g)]
+    .map((m) => ({ at: Number(m[1]), kind: m[2], text: m[3] ?? "" }));
+})();
+const beatAt = (match) => {
+  const found = typeof match === "string"
+    ? hourBeats.find((b) => b.kind === match)
+    : hourBeats.find(match);
+  if (!found) throw new Error("no such beat: " + match);
+  return found.at;
+};
+// a moment a few seconds into a given beat, as a wall clock on the night
+const nightAt = (seconds) => {
+  const t = new Date("2026-09-02T21:00:00");
+  t.setSeconds(t.getSeconds() + seconds);
+  return `2026-09-02T${String(t.getHours()).padStart(2, "0")}:${String(t.getMinutes()).padStart(2, "0")}:${String(t.getSeconds()).padStart(2, "0")}`;
+};
 // Nine o'clock on the second of September, worked out from the clock alone.
 {
   const hourVisit = async (iso, seed) => {
@@ -614,34 +636,73 @@ for (const mode of ["full", "lean"]) {
   }
   {
     // Beat placement is by the clock, so a later moment shows a later line.
-    const v = await hourVisit("2026-09-02T21:03:22");
-    ok("three minutes in, the count", /1,096/.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
+    const v = await hourVisit(nightAt(beatAt("count") + 5));
+    ok("the count lands where it was placed", /1,096/.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
     await v.close();
   }
   {
-    const v = await hourVisit("2026-09-02T21:07:12");
-    ok("seven minutes in, her name and the year", /Happy third September, Smruti/i.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
+    const v = await hourVisit(nightAt(beatAt("name") + 6));
+    ok("her name and the year, before the silence", /Happy third September, Smruti/i.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
     await v.close();
   }
   {
-    // The question, the answer, the seal, and the ledger.
-    const v = await hourVisit("2026-09-02T21:07:36");
-    ok("the hour ends on one question", /What was this year, in your words/i.test(await v.text(".hour-stage")));
-    await v.page.locator(".hour-field").fill("It stopped feeling temporary.");
-    await v.page.getByRole("button", { name: /keep it/i }).click();
-    await v.page.waitForTimeout(1200);
-    const kept = await v.page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).sameHour?.["2026"]);
-    ok("her answer is kept under the year", kept?.answer === "It stopped feeling temporary." && !!kept.doneAt, JSON.stringify(kept));
-    await v.page.getByRole("button", { name: /stay in the house/i }).click();
-    await v.page.waitForTimeout(1400);
-    ok("and it lets her back into the house", (await v.mode()) === "house");
-    await v.page.reload({ waitUntil: "load" });
-    await v.page.waitForTimeout(1800);
-    ok("it is sealed: the same night does not run twice", (await v.mode()) === "house");
-    await v.page.getByText("Your days", { exact: true }).first().click();
+    // The address. Twenty seconds of nothing, then two lines and no third.
+    const v = await hourVisit(nightAt(beatAt("still") + 6));
+    ok("after the name there is silence", (await v.text(".hour-stage")) === "", JSON.stringify(await v.text(".hour-stage")));
+    ok("and the room is turned down for it",
+       (await v.page.evaluate(() => document.querySelector(".shell")?.dataset.address)) === "true");
+    await v.close();
+  }
+  {
+    const v = await hourVisit(nightAt(beatAt((b) => b.kind === "address") + 4));
+    ok("the silence breaks on the anniversary", /^Happy anniversary\.$/.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
+    ok("nothing else is on screen with it", (await v.page.locator(".hour-slip, .hour-together").count()) === 0);
+    await v.close();
+  }
+  {
+    const v = await hourVisit(nightAt(hourBeats.filter((b) => b.kind === "address")[1].at + 4));
+    ok("then the address, alone", /^Miss wife\.$/.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
+    ok("there is no third line and no button", (await v.page.locator(".hour button").count()) === 0);
+    await v.close();
+  }
+  {
+    // The night ends by itself and the house is permanently altered.
+    const v = await hourVisit(nightAt(beatAt("close") + 3));
+    await v.page.waitForFunction(() => document.querySelector(".shell")?.dataset.mode === "house", null, { timeout: 25000 }).catch(() => {});
+    ok("the night closes itself and hands her back", (await v.mode()) === "house");
+    const sealed = await v.page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).sameHour?.["2026"]?.doneAt);
+    ok("and it is sealed without her dismissing it", !!sealed);
+    ok("the question waits in the house, quietly", /would like to ask you/i.test(await v.text(".hour-card")));
+    await v.page.getByText("Letters", { exact: true }).first().click();
     await v.page.waitForTimeout(900);
-    ok("the September is on the shelf", /It stopped feeling temporary/i.test(await v.text(".septembers")), await v.text(".septembers"));
-    ok("no errors across the hour", v.errors.length === 0, v.errors.join(" | "));
+    const shelf = await v.text(".letters");
+    ok("a letter is on the shelf that was not there before", /on the third September/i.test(shelf));
+    ok("and the shelf count knows it", /There are 25/.test(shelf), shelf.slice(0, 90));
+    await v.close();
+  }
+  {
+    // The sentence the house earned, from the next morning on, forever.
+    const kept = { schema: 1, greeted: true, entered: true, watched: true, sound: false,
+      motion: "still", nameWritten: true, firstOpen: 1,
+      sameHour: { "2026": { seenAt: 1, doneAt: 2, answer: "It stopped feeling temporary.", answeredAt: 3 } } };
+    const a = await hourVisit("2026-09-03T10:00:00", kept);
+    ok("the morning after, the greeting has changed", /We were both here at nine/i.test(await a.text(".greeting")), await a.text(".greeting"));
+    await a.close();
+    const c = await hourVisit("2027-02-14T21:00:00", kept);
+    ok("and it never goes back", /We were both here at nine/i.test(await c.text(".greeting")), await c.text(".greeting"));
+    await c.close();
+    const d = await hourVisit("2027-06-13T09:00:00", kept);
+    ok("except on the days the house already keeps", /Happy birthday/i.test(await d.text(".greeting")), await d.text(".greeting"));
+    await d.close();
+  }
+  {
+    // Before the hour is kept, that letter is not on the shelf at all.
+    const v = await hourVisit("2026-09-02T14:00:00");
+    await v.page.getByText("Letters", { exact: true }).first().click();
+    await v.page.waitForTimeout(900);
+    const shelf = await v.text(".letters");
+    ok("before the night it is not there, not even sealed", !/on the third September/i.test(shelf));
+    ok("and the shelf counts 24", /There are 24/.test(shelf), shelf.slice(0, 80));
     await v.close();
   }
   {
@@ -670,9 +731,93 @@ for (const mode of ["full", "lean"]) {
     await v.page.getByRole("button", { name: /come back/i }).click();
     await v.page.waitForTimeout(1200);
     const on = await v.text(".hour-stage");
-    ok("coming back rejoins where the clock is", /looking at this too|No signal between us/i.test(on), on);
+    // Whatever the pacing, coming back must land on the beat the clock is on
+    // — not on the first one, which is what a cursor would have done.
+    const expected = hourBeats.filter((b) => b.at <= 32).pop();
+    ok("coming back rejoins where the clock is, not where she left",
+       on !== hourBeats[0].text && (expected.text === "" || on.startsWith(expected.text.slice(0, 24))),
+       `showing ${JSON.stringify(on.slice(0, 40))}, clock is on ${JSON.stringify(expected.text.slice(0, 40))}`);
     await v.close();
   }
+}
+
+// ── the copy she can keep ─────────────────────────────────────────────────
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true, acceptDownloads: true });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(String(e.message)));
+  await page.addInitScript(`if (!localStorage.getItem("her.v1")) localStorage.setItem("her.v1", ${JSON.stringify(JSON.stringify({
+    schema: 1, greeted: true, entered: true, watched: true, sound: false, motion: "still", nameWritten: true,
+    firstOpen: 1, reelFurthest: 64, visits: [20690, 20691],
+    opened: { doubt: 1756000000000 }, kept: { stay: 1756200000000 }, words: { 20692: "quiet" },
+    replies: [{ id: "a", text: "I read that one twice.", at: 1756400000000 },
+              { id: "b", text: "Not sending this.", at: 1756500000000, private: true }],
+    sameHour: { "2026": { seenAt: 1, doneAt: 2, answer: "It stopped feeling temporary.", answeredAt: 3 } },
+  }))})`);
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForTimeout(1500);
+  await page.getByText("The fuse box", { exact: true }).first().click();
+  await page.waitForTimeout(900);
+  const [dl] = await Promise.all([
+    page.waitForEvent("download"),
+    page.getByRole("button", { name: /save everything/i }).click(),
+  ]);
+  const copy = path.join(os.tmpdir(), "her-check-copy.html");
+  await dl.saveAs(copy);
+  const html = await readFile(copy, "utf8");
+
+  ok("the copy is a document, not a blob", html.startsWith("<!doctype html>"));
+  ok("it carries nothing that runs", !/<script(?![^>]*application\/json)/.test(html));
+  ok("it says who and where and how far", /Smruti and Anubhab/.test(html) && /1,287 kilometres/.test(html));
+  for (const [label, want] of [["the Septembers", "The Septembers"], ["her answer", "stopped feeling temporary"],
+       ["what she wrote", "I read that one twice"], ["what she kept back", "kept to herself"],
+       ["the letters she opened", "when you doubt this"], ["the promises she marked", "I stay."],
+       ["her one word", "quiet"]])
+    ok(`the copy holds ${label}`, html.includes(want));
+  ok("and the state, for putting it back", /id="her-state"/.test(html));
+
+  // It has to open on its own, with no house anywhere near it.
+  const alone = await browser.newContext({ offline: true });
+  const solo = await alone.newPage();
+  const soloErrors = [];
+  solo.on("pageerror", (e) => soloErrors.push(String(e.message)));
+  await solo.goto("file://" + copy);
+  await solo.waitForTimeout(500);
+  const read = (await solo.locator("body").innerText()).replace(/\s+/g, " ");
+  ok("it opens with no house and no internet", /HER/.test(read) && /A copy, kept on/.test(read) && soloErrors.length === 0,
+     soloErrors.join(" | ") || read.slice(0, 70));
+  await alone.close();
+  await ctx.close();
+
+  // And it still restores into a fresh house.
+  const back = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });
+  const r = await back.newPage();
+  await r.goto("file://" + FILE, { waitUntil: "load" });
+  await r.waitForTimeout(1400);
+  await r.getByRole("button", { name: /I am ready/i }).click();
+  await r.waitForFunction(() => document.querySelector("input") !== null, null, { timeout: 9000 });
+  await r.locator("input").first().fill("september");
+  await r.keyboard.press("Enter");
+  await r.waitForTimeout(2400);
+  const contents = r.getByRole("button", { name: /^contents$/i }).first();
+  await contents.waitFor({ timeout: 14000 });
+  await contents.click();
+  await r.waitForTimeout(900);
+  await r.locator(".contents-leave").scrollIntoViewIfNeeded();
+  await r.locator(".contents-leave").click();
+  await r.waitForTimeout(1800);
+  await r.getByText("The fuse box", { exact: true }).first().click();
+  await r.waitForTimeout(900);
+  await r.locator("input[type=file]").last().setInputFiles(copy);
+  await r.waitForTimeout(1500);
+  const state = await r.evaluate(() => JSON.parse(localStorage.getItem("her.v1")));
+  ok("the copy goes back into a fresh house",
+     state.opened?.doubt && state.kept?.stay && state.replies?.length === 2 &&
+     state.reelFurthest === 64 && state.sameHour?.["2026"]?.answer === "It stopped feeling temporary.",
+     JSON.stringify({ o: Object.keys(state.opened ?? {}), r: state.replies?.length, f: state.reelFurthest }));
+  ok("and nothing threw", errors.length === 0, errors.join(" | "));
+  await back.close();
 }
 
 // ── a broken save leaves her the house ─────────────────────────────────────

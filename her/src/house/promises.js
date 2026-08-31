@@ -48,7 +48,11 @@ function PromisesRoom() {
                     }),
                     (0, jsx.jsxs)("span", {
                       className: "vow-date",
-                      children: ["made ", formatCivil(r.made)],
+                      // A vow made on this exact date is being made tonight,
+                      // which is the one night she can mark it as it happens.
+                      children: isOnDate(r.made, false)
+                        ? ["made tonight"]
+                        : ["made ", formatCivil(r.made)],
                     }),
                   ],
                 }),

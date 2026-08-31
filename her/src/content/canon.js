@@ -21,7 +21,7 @@ var INVITATION_COPY = {
   lines: [
     "Headphones, if you have them. I made it quiet on purpose.",
     "The lights off, if you can. It looks better in the dark, and so do most true things.",
-    "About a quarter of an hour. I have had three years; you can give me fifteen minutes.",
+    "About half an hour, read at the speed I wrote it. I have had three years. You can give me thirty minutes.",
   ],
   button: "I am ready",
 };
@@ -64,6 +64,10 @@ var GREETINGS = {
     "Nearly the end of it.",
   ],
 };
+
+// After the third September the house stops saying hello and says the thing
+// that happened instead. It is the only greeting it ever earned.
+var EARNED_GREETING = "We were both here at nine.";
 
 // On the days the house already knows about, it does not open with the weather.
 // Keyed by milestone id; `any` is used when the hour has nothing of its own.

@@ -46,6 +46,29 @@ function SameHour({ startedAt: startedAt, together: together, onLeave: onLeave, 
 
   let elapsed = Date.now() - startedAt;
   let { index, beat } = sameHourBeatAt(elapsed);
+
+  // The last beat closes the night by itself. She does not dismiss it.
+  //
+  // onDone is a fresh closure on every tick, so it must not be a dependency:
+  // depending on it re-ran this effect four times a second and each run
+  // cleared the timer the run before it had set, and the night never ended.
+  let done = (0, React.useRef)(onDone);
+  done.current = onDone;
+  (0, React.useEffect)(() => {
+    if (beat?.kind !== "close") return;
+    let year = sameHourYear();
+    update((state) => {
+      let all = { ...(state.sameHour ?? {}) };
+      all[year] = {
+        ...(all[year] ?? {}),
+        seenAt: all[year]?.seenAt ?? Date.now(),
+        doneAt: all[year]?.doneAt ?? Date.now(),
+      };
+      state.sameHour = all;
+    });
+    let id = window.setTimeout(() => done.current?.(), 1800);
+    return () => window.clearTimeout(id);
+  }, [beat?.kind]);
   // On the night itself this is the third September, not the start of the fourth.
   let ordinal = ordinalWord(Math.max(1, yearsTogether()));
 
@@ -103,6 +126,20 @@ function SameHour({ startedAt: startedAt, together: together, onLeave: onLeave, 
         }),
       ],
     });
+  } else if (beat.kind === "still") {
+    // Nothing. On purpose, and for a long time.
+    body = null;
+  } else if (beat.kind === "address") {
+    // Not a line of the film. An address, spoken to her, once.
+    body = (0, jsx.jsx)(motion.p, {
+      className: "hour-address",
+      initial: { opacity: 0 },
+      animate: { opacity: 1 },
+      transition: { duration: isStill() ? 0.3 : 3.4, ease: "easeOut" },
+      children: beat.text,
+    });
+  } else if (beat.kind === "close") {
+    body = null;
   } else if (beat.kind === "ask") {
     body = kept
       ? (0, jsx.jsxs)("div", {
@@ -170,6 +207,17 @@ function SameHour({ startedAt: startedAt, together: together, onLeave: onLeave, 
     );
   }
 
+  // The shell turns the room down while the address is on screen.
+  (0, React.useEffect)(() => {
+    let saying = beat?.kind === "address" || beat?.kind === "still" || beat?.kind === "close";
+    let shell = document.querySelector(".shell");
+    if (shell) {
+      if (saying) shell.setAttribute("data-address", "true");
+      else shell.removeAttribute("data-address");
+    }
+    return () => document.querySelector(".shell")?.removeAttribute("data-address");
+  }, [beat?.kind]);
+
   return (0, jsx.jsxs)(motion.div, {
     className: "hour",
     initial: { opacity: 0 },
@@ -177,7 +225,7 @@ function SameHour({ startedAt: startedAt, together: together, onLeave: onLeave, 
     exit: { opacity: 0 },
     transition: { duration: 1.6 },
     children: [
-      together
+      together && beat?.kind !== "address" && beat?.kind !== "close"
         ? (0, jsx.jsx)(motion.p, {
             className: "hour-together",
             ...fadeIn(1.2, 2),
@@ -199,7 +247,7 @@ function SameHour({ startedAt: startedAt, together: together, onLeave: onLeave, 
           `${index}-${kept}`,
         ),
       }),
-      beat?.kind === "ask"
+      beat?.kind === "ask" || beat?.kind === "address" || beat?.kind === "close"
         ? null
         : (0, jsx.jsx)("button", {
             type: "button",
@@ -212,12 +260,69 @@ function SameHour({ startedAt: startedAt, together: together, onLeave: onLeave, 
 }
 
 // ── the Septembers she has kept ──────────────────────────────────────────
+//
+// The question was never part of the ceremony. It waits here afterwards, and
+// underneath it, every year she has answered, oldest at the bottom.
 function SameHourLedger() {
   let store = useStore();
+  let thisYear = String(new Date().getFullYear());
+  let entry = store.sameHour?.[thisYear];
+  let asking = !!entry?.doneAt && !entry?.answer;
+  let [answer, setAnswer] = (0, React.useState)("");
   let years = Object.entries(store.sameHour ?? {})
-    .filter(([, entry]) => entry?.answer)
+    .filter(([, e]) => e?.answer)
     .sort((a, b) => Number(b[0]) - Number(a[0]));
-  if (years.length === 0) return null;
+
+  let keep = () => {
+    let text = answer.trim();
+    if (!text) return;
+    update((state) => {
+      let all = { ...(state.sameHour ?? {}) };
+      all[thisYear] = { ...(all[thisYear] ?? {}), answer: text, answeredAt: Date.now() };
+      state.sameHour = all;
+    });
+    (tapKept(), setAnswer(""));
+  };
+
+  if (!asking && years.length === 0) return null;
+  return (0, jsx.jsxs)("div", {
+    className: "septembers-room",
+    children: [
+      asking
+        ? (0, jsx.jsxs)(motion.section, {
+            className: "september-ask",
+            ...fadeIn(0, 0.6),
+            children: [
+              (0, jsx.jsx)("p", { className: "hour-kicker", children: SAME_HOUR_ASK.kicker }),
+              (0, jsx.jsx)("p", { className: "september-question", children: SAME_HOUR_ASK.question }),
+              (0, jsx.jsx)("p", { className: "fine", children: SAME_HOUR_ASK.hint }),
+              (0, jsx.jsx)("textarea", {
+                className: "hour-field",
+                value: answer,
+                rows: 5,
+                placeholder: SAME_HOUR_ASK.placeholder,
+                onChange: (e) => setAnswer(e.target.value),
+              }),
+              (0, jsx.jsx)("div", {
+                className: "row",
+                children: (0, jsx.jsx)("button", {
+                  type: "button",
+                  className: "solid",
+                  disabled: !answer.trim(),
+                  onClick: keep,
+                  children: SAME_HOUR_ASK.keep,
+                }),
+              }),
+              (0, jsx.jsx)("p", { className: "fine", children: SAME_HOUR_ASK.after }),
+            ],
+          })
+        : null,
+      years.length ? SameHourYears(years) : null,
+    ],
+  });
+}
+
+function SameHourYears(years) {
   return (0, jsx.jsxs)("section", {
     className: "septembers",
     children: [

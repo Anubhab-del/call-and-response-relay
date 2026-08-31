@@ -5,7 +5,15 @@ function greetingFor(when = new Date()) {
   let seed = hash32(todayNumber(when) * 24 + when.getHours());
   let band = hourBand(when);
 
+  // Once she has been here at nine on a second of September, the house has
+  // something truer to open with than the time of day, and it never goes back.
+  let stood = Object.values(snapshot().sameHour ?? {}).some((year) => year?.doneAt);
+
+
   let today = MILESTONES.find((m) => m.takeover && isOnDate(m.on, !!m.annual, when));
+  // The days the house keeps still speak for themselves. Every other day, if
+  // she has stood in the same hour, it opens with that instead of the clock.
+  if (stood && !today) return EARNED_GREETING;
   let forDay = today && DAY_GREETINGS[today.id];
   if (forDay) {
     let lines = forDay[band] ?? forDay.any;

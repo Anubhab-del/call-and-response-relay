@@ -49,75 +49,84 @@ var SAME_HOUR_LATE = {
 // Seconds from 21:00:00. Nothing here is timed to a tap.
 var SAME_HOUR_BEATS = [
   { at: 0, kind: "open", text: "It is nine o'clock." },
-  { at: 13, kind: "line", text: "The second of September." },
+  { at: 16, kind: "line", text: "The second of September." },
   {
-    at: 27,
+    at: 33,
     kind: "hold",
     text: "Wherever you are sitting right now, I am looking at this too.",
   },
   {
-    at: 48,
+    at: 58,
     kind: "line",
     text: "Not a call. Not a message. No signal between us at all.",
   },
   {
-    at: 68,
+    at: 82,
     kind: "line",
     text: "The same words, at the same second, in two cities, on two phones that have never met.",
   },
   {
-    at: 95,
+    at: 114,
     kind: "quiet",
     text: "",
   },
   {
-    at: 108,
+    at: 130,
     kind: "line",
     text: "We chose this hour in the first week, without discussing it much, and then never moved it once.",
   },
   {
-    at: 134,
+    at: 161,
     kind: "line",
     text: "Three years ago tonight neither of us was being careful.",
   },
   {
-    at: 154,
+    at: 185,
     kind: "line",
     text: "You were a voice. I was a man being extremely sensible about a voice.",
   },
-  { at: 176, kind: "line", text: "By four in the morning I had given that up entirely." },
-  { at: 198, kind: "count" },
-  { at: 226, kind: "line", text: "Nine at night, that many times." },
+  { at: 211, kind: "line", text: "By four in the morning I had given that up entirely." },
+  { at: 237, kind: "count" },
+  { at: 271, kind: "line", text: "Nine at night, that many times." },
   {
-    at: 244,
+    at: 293,
     kind: "line",
     text: "Some of them were bad. A few of them I would not want back. Not one of them would I give up.",
   },
-  { at: 272, kind: "quiet", text: "" },
+  { at: 327, kind: "quiet", text: "" },
   {
-    at: 284,
+    at: 341,
     kind: "line",
     text: "The first September we did not make a fuss. I counted privately and told you nothing.",
   },
-  { at: 308, kind: "hold", text: "I am telling you now. I have counted every single one." },
+  { at: 370, kind: "hold", text: "I am telling you now. I have counted every single one." },
   {
-    at: 332,
+    at: 399,
     kind: "line",
     text: "There is a December coming when there will be no distance to cross at nine o'clock.",
   },
   {
-    at: 356,
+    at: 428,
     kind: "line",
     text: "Just a room, and you in it, and me being unbearable about the heating.",
   },
-  { at: 380, kind: "quiet", text: "" },
+  { at: 457, kind: "quiet", text: "" },
   {
-    at: 392,
+    at: 471,
     kind: "hold",
     text: "But tonight there is this. One minute that is the same minute. It is the one thing the distance was never able to take.",
   },
-  { at: 424, kind: "name" },
-  { at: 452, kind: "ask" },
+  // Her name and the year, while the last hold is still in the room.
+  { at: 509, kind: "name" },
+  // Then nothing at all. Twenty seconds is long enough to stop being a pause
+  // and start being a room. The lamp is the only weather in it.
+  { at: 543, kind: "still", text: "" },
+  // Two lines. There is no third, and there is no button.
+  { at: 563, kind: "address", text: "Happy anniversary." },
+  { at: 571, kind: "address", text: "Miss wife." },
+  // Held. Then the house comes back on its own, ordinary again, except it is
+  // not: after tonight it greets her differently for the rest of her life.
+  { at: 631, kind: "close" },
 ];
 
 var SAME_HOUR_NAME = {
@@ -139,8 +148,16 @@ var SAME_HOUR_ASK = {
 
 var SAME_HOUR_DONE = {
   line: "That is the hour.",
-  under: "It seals now, until the second of September next year. Goodnight, love.",
+  under: "It seals now, until the second of September next year.",
   button: "Stay in the house",
+};
+
+// The question was never part of the ceremony. It waits in the house
+// afterwards, and she answers it when she is ready to.
+var SAME_HOUR_WAITING = {
+  kicker: "One question, once a year",
+  line: "There is something the house would like to ask you, when you have a minute.",
+  button: "Answer it",
 };
 
 var SAME_HOUR_LEDGER = {

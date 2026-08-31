@@ -35,6 +35,7 @@
   "lib/seal.js",
   "house/say.js",
   "house/settings.js",
+  "lib/heirloom.js",
   "house/samehour.js",
   "house/house.js",
   "app.js"

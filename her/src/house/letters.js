@@ -22,7 +22,13 @@ function LettersRoom({ onOpenReply: onOpenReply, openId: openId, onOpened: onOpe
     // Not how many she has opened — that is a progress bar on a shelf of
     // letters. How many are still shut, which is a number that only ever goes
     // down, and one day reads: none of them are sealed any more.
-    sealedLeft = o.filter((e) => e.kind === "sealed" && !isUnsealed(e.on)).length;
+    // A letter marked afterHour is not on the shelf at all until she has
+    // stood in the same hour that year. It is not sealed — it is not here.
+    hourKept = (letter) =>
+      !letter.afterHour ||
+      Object.values(t.sameHour ?? {}).some((year) => year?.doneAt),
+    shelf = o.filter(hourKept),
+    sealedLeft = shelf.filter((e) => e.kind === "sealed" && !isUnsealed(e.on)).length;
   // The house can send her straight to one — the small-hours line does.
   (0, React.useEffect)(() => {
     if (!openId) return;
@@ -45,7 +51,7 @@ function LettersRoom({ onOpenReply: onOpenReply, openId: openId, onOpened: onOpe
         ...fadeIn(0.15, 0.6),
         children: [
           "There are ",
-          o.length,
+          shelf.length,
           ". ",
           sealedLeft > 0
             ? `${sealedLeft} of them are still sealed.`
@@ -54,7 +60,7 @@ function LettersRoom({ onOpenReply: onOpenReply, openId: openId, onOpened: onOpe
       }),
       (0, jsx.jsx)("ul", {
         className: "shelf",
-        children: o.map((e, n) => {
+        children: shelf.map((e, n) => {
           let r = isUnsealed(e.on),
             i = !!t.opened[e.id],
             a = e.kind === "once" && t.spentOnce && !i,

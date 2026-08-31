@@ -166,6 +166,17 @@ var LETTERS = [
     body: "Almost.\n\nEveryone is going to want something from you this week, and most of it will not matter in a month, and none of it will matter in a year. Let it be a bit of a mess. The parts you will actually remember are not on anybody's list — they never are.\n\nI want to say one thing before the noise starts, while it is still just us and a file on your phone at whatever hour you have found to read this.\n\nI did not spend three years waiting for you. I want to be precise about that, because people will say it this week and they will mean it kindly and they will be wrong. I did not wait. I spent three years with you. Nine at night, every night, through a monsoon and a bad February and a signal that came and went. That was not the waiting room. That was the marriage. We have been doing it for years; on Wednesday we are just telling everyone.\n\nThe wedding is not the beginning of anything. It is paperwork on something that has been true since a night in September when neither of us was being careful.\n\nI will see you at the end of the week. I will be the one who cannot stop looking at you.",
   },
   {
+    id: "third-september",
+    open: "on the third September",
+    kind: "sealed",
+    on: "2026-09-02",
+    // Not on the shelf until she has stood in the hour. Afterwards it reads
+    // as though it had always been there, which it had.
+    afterHour: true,
+    weight: 45,
+    body: "You have been to the hour by now, so I can say this part plainly.\n\nI did not know, when I started building this, that I would end up writing a letter for the far side of a night that had not happened yet. That is a strange thing to do. It is also the most honest thing in the house, because it means I was betting on you being there — on a Tuesday in September, at nine o'clock, with your phone in your hand, in a room I have never stood in.\n\nYou were. Of course you were. You always are. That is the entire discovery of my adult life and I keep making it.\n\nThree years, and every one of them on a telephone. I want to write down what that actually cost, because nobody who tells this story later is going to get it right. It cost you the ordinary version of being loved. Somebody at the door. Somebody who notices your face and not just your voice. You gave that up for three years on the strength of a bet, and you never once made me feel the size of it.\n\nI have not forgotten. I am not going to.\n\nThere is a room ahead of us where all of this is over. Where nine o'clock is not an appointment. Where I am simply in the next room being irritating, and you know exactly where I am without checking, and none of this house is necessary any more.\n\nKeep it anyway. Not because we will need it. Because one day somebody is going to ask you how we managed it, and you will start in the wrong place, and I will interrupt, and neither of us will get it right — and this will still be here, saying it properly, in my own words, from the year we were still counting.\n\nGo to sleep. I am glad it was you. I have been glad every single day.",
+  },
+  {
     id: "once",
     open: "the one you can only open once",
     kind: "once",

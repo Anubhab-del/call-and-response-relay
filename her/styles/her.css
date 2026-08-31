@@ -439,6 +439,36 @@ html.is-still .letterbox[data-cut="true"] {
   color: var(--ui);
 }
 
+/* The address. Not a line of the film — a thing said to her, once, at the
+   last breath of the night. Bigger than anything else in the house, on
+   nothing, with no chrome anywhere near it. */
+.hour-address {
+  font-family: var(--display);
+  color: #fdf5e8;
+  font-size: clamp(2rem, 9.4vw, 3.4rem);
+  line-height: 1.22;
+  text-shadow:
+    0 0 3px #f2d9a647,
+    0 0 26px #f2d9a659,
+    0 0 78px #e8b9a440,
+    0 0 150px #d9a08f24;
+}
+/* While it is being said the room goes still and the lamp is the only
+   weather. Everything that could compete is turned down. */
+.shell[data-mode="hour"][data-address="true"] .house-frame {
+  background: radial-gradient(120% 90% at 50% 20%, #241809 0%, #150e07 54%, #090604 100%);
+}
+.shell[data-mode="hour"][data-address="true"] .rain-glass,
+.shell[data-mode="hour"][data-address="true"] .dust,
+.shell[data-mode="hour"][data-address="true"] .grain {
+  opacity: 0;
+  transition: opacity 3s var(--ease);
+}
+.shell[data-mode="hour"][data-address="true"] .lamp-glow {
+  opacity: 1.35;
+  transition: opacity 4s var(--ease);
+}
+
 /* the question */
 .hour-ask,
 .hour-done {
@@ -522,6 +552,27 @@ html.is-still .letterbox[data-cut="true"] {
 }
 
 /* the Septembers */
+.septembers-room {
+  gap: clamp(26px, 6vh, 48px);
+  display: grid;
+}
+.september-ask {
+  border: 1px solid #d8b8773d;
+  border-radius: 3px;
+  gap: 10px;
+  padding: 18px;
+  display: grid;
+  background: linear-gradient(160deg, #f2d9a612, #f2d9a604);
+}
+.september-question {
+  font-family: var(--display);
+  color: var(--paper);
+  font-size: 1.24rem;
+  line-height: 1.44;
+}
+.september-ask .row {
+  justify-content: flex-start;
+}
 .septembers ul {
   gap: clamp(14px, 3vh, 24px);
   margin-top: 14px;
@@ -547,6 +598,50 @@ html.is-still .letterbox[data-cut="true"] {
   font-style: italic;
   line-height: 1.62;
   white-space: pre-wrap;
+}
+
+/* ── touch targets ───────────────────────────────────────────────────────
+   The type in here is deliberately small, and it stays small. What grows is
+   the area you can hit: a pseudo-element reaching past the visible box, so
+   nothing about the design changes and nothing needs a careful thumb.
+
+   She reads this in the dark, in bed, one-handed. Twenty-three pixels is not
+   a button under those conditions. */
+.ghost,
+.solid,
+.house-bar button,
+.hud button,
+.film-tools button,
+.hour-slip,
+.small-hours,
+.room-card,
+.envelope,
+.contents-leave {
+  position: relative;
+  touch-action: manipulation;
+}
+.ghost:after,
+.house-bar button:after,
+.hud button:after,
+.film-tools button:after,
+.hour-slip:after {
+  content: "";
+  position: absolute;
+  /* enough to clear 44px from a 22px control, without reaching into the
+     next one along: the tightest gap in the house is eight pixels */
+  inset: -11px -3px;
+}
+/* Where a control is a whole row to itself, give it real height instead —
+   a taller button there is better looking as well as easier to hit. */
+.row button,
+.hour-row button,
+.wide-button,
+.hour-card button {
+  min-height: 46px;
+}
+.solid {
+  min-height: 44px;
+  padding: 12px 22px;
 }
 
 /* ── her hand ────────────────────────────────────────────────────────────
@@ -1847,6 +1942,12 @@ html.is-still .vignette {
   .contents-label {
     font-size: 0.94rem;
   }
+}
+/* Indoors it is fainter still, and behind everything. She is not meant to be
+   sure it happened. */
+.house-frame .rain-name {
+  opacity: 0.34;
+  z-index: 4;
 }
 .rain-name {
   z-index: 22;

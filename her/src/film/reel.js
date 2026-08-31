@@ -157,10 +157,25 @@ function beatDuration(e) {
     case "part":
       return 3600;
     case "chapter": {
-      let t = chapterAt(e.n);
-      if (!t) return 3600;
-      let n = t.lines.join(" ").split(/\s+/).length;
-      return Math.round(Math.min(9e3, Math.max(3e3, 1500 + (n / 2.6) * 1e3)));
+      let chapter = chapterAt(e.n);
+      if (!chapter) return 3600;
+      let lines = chapter.lines;
+      let words = lines.join(" ").split(/\s+/).length;
+      // A beat has to last until she has finished reading it, not until some
+      // round number of seconds. Three parts: the time the last line takes to
+      // finish arriving, the time it takes to actually read the whole thing,
+      // and a breath at the end before the cut.
+      //
+      // This was capped at nine seconds when a chapter was twenty words. They
+      // are nearly forty now, which gave her about a third of the time she
+      // needed, and the line went out from under her.
+      let arrive =
+        750 +
+        lines.slice(0, -1).reduce((sum, line) => sum + readSeconds(line) * 720, 0) +
+        readSeconds(lines[lines.length - 1]) * 1000;
+      // Display serif, large, unhurried: about two and a half words a second.
+      let read = (words / 2.5) * 1000;
+      return Math.round(Math.min(26e3, Math.max(4200, arrive + read + 1800)));
     }
     case "scene":
       return e.scene === "twohours"

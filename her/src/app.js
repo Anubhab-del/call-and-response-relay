@@ -15,6 +15,10 @@ function App() {
     // The Same Hour takes the screen from whatever else is on it.
     [hourStart, setHourStart] = (0, React.useState)(null),
     [steppedOut, setSteppedOut] = (0, React.useState)(false),
+    // Her name, falling. Roughly two days a year, chosen by the day itself so
+    // it is the same all of that day and gone by the next. Rare enough that
+    // she will never be certain she saw it.
+    [nameFell, setNameFell] = (0, React.useState)(false),
     [a, o] = (0, React.useState)({
       close: false,
       pulse: 0,
@@ -234,6 +238,12 @@ function App() {
             t === "house"
               ? (0, jsx.jsx)(Lamp, {
                   warm: S,
+                })
+              : null,
+            t === "house" && hourStart == null && !nameFell && daySeed() > 0.994
+              ? (0, jsx.jsx)(NameCanvas, {
+                  text: CANON.name,
+                  onDone: () => setNameFell(true),
                 })
               : null,
             t === "house" && e.nameWritten

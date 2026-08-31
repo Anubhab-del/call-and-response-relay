@@ -182,7 +182,7 @@ function ReelRoom({ onWatch: onWatch }) {
       (0, jsx.jsx)("p", {
         className: "room-lede",
         children:
-          "A hundred chapters, in four parts — three years of us, as close as I could get it. About a quarter of an hour if you sit all the way through, and it keeps your place if you cannot.",
+          "A hundred chapters, in four parts — three years of us, as close as I could get it. About half an hour if you sit all the way through, and it keeps your place if you cannot.",
       }),
       i > 1
         ? (0, jsx.jsxs)("button", {

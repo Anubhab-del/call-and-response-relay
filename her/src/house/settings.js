@@ -150,7 +150,7 @@ function SettingsRoom() {
           (0, jsx.jsx)("p", {
             className: "fine",
             children:
-              "Everything you have written and everything you have opened, as one file. If you ever change phones, open it here on the new one and none of it is lost.",
+              "Everything you have written and everything you have opened, as one page you can read on its own. It needs no internet and no app — it will open on anything, and it prints. Put it back here on a new phone and nothing is lost.",
           }),
           (0, jsx.jsxs)("div", {
             className: "row",
@@ -159,16 +159,16 @@ function SettingsRoom() {
                 type: "button",
                 className: "ghost",
                 onClick: () => {
-                  let e = new Blob([exportState()], {
-                      type: "application/json",
+                  let e = new Blob([heirloomDocument()], {
+                      type: "text/html",
                     }),
                     t = URL.createObjectURL(e),
                     n = document.createElement("a");
                   ((n.href = t),
-                    (n.download = `her-backup-${new Date().toISOString().slice(0, 10)}.json`),
+                    (n.download = `HER-a-copy-${new Date().toISOString().slice(0, 10)}.html`),
                     n.click(),
                     URL.revokeObjectURL(t),
-                    l("Saved. Keep it somewhere dull and safe, where nobody would think to look."));
+                    l("Saved. It opens on its own, without this house — keep it somewhere dull and safe."));
                 },
                 children: "save everything",
               }),
@@ -183,7 +183,7 @@ function SettingsRoom() {
           (0, jsx.jsx)("input", {
             ref: c,
             type: "file",
-            accept: ".json,application/json",
+            accept: ".html,.json,text/html,application/json",
             className: "sr-only",
             onChange: async (e) => {
               let t = e.target.files?.[0];

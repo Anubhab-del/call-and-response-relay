@@ -1,6 +1,6 @@
 var EASE_FILM = [0.16, 1, 0.3, 1];
-var PACE = 105;
-var PACE_CAP = 1250;
+var PACE = 122;
+var PACE_CAP = 1650;
 function paceFor(e, t) {
   return Math.min(t, Math.max(38, PACE_CAP / Math.max(1, e)));
 }

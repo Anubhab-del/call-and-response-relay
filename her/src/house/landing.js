@@ -55,6 +55,10 @@ function Landing({ onGo: onGo, onOpenLetter: onOpenLetter, onBeginHour: onBeginH
     // hours after she has read it.
     hour = sameHourAt(),
     hourKept = !!t.sameHour?.[String(new Date().getFullYear())]?.doneAt,
+    // The night is over and she has not answered yet. It waits, quietly, and
+    // it does not nag: no badge, no count, no red anything.
+    hourAsking =
+      hourKept && !t.sameHour?.[String(new Date().getFullYear())]?.answer,
     sleepless =
       isSmallHours() &&
       Date.now() - (t.opened["cannot-sleep"] ?? 0) > 6 * 60 * 60 * 1000;
@@ -142,6 +146,22 @@ function Landing({ onGo: onGo, onOpenLetter: onOpenLetter, onBeginHour: onBeginH
                 className: "solid",
                 onClick: () => onBeginHour?.(Date.now()),
                 children: SAME_HOUR_LATE.button,
+              }),
+            ],
+          })
+        : null,
+      hourAsking
+        ? (0, jsx.jsxs)(motion.div, {
+            className: "hour-card",
+            ...riseIn(0.3),
+            children: [
+              (0, jsx.jsx)("p", { className: "hour-card-kicker", children: SAME_HOUR_WAITING.kicker }),
+              (0, jsx.jsx)("p", { className: "hour-card-line", children: SAME_HOUR_WAITING.line }),
+              (0, jsx.jsx)("button", {
+                type: "button",
+                className: "ghost",
+                onClick: () => onGo("days"),
+                children: SAME_HOUR_WAITING.button,
               }),
             ],
           })
