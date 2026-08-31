@@ -326,6 +326,260 @@ html.is-still .letterbox[data-cut="true"] {
   will-change: opacity;
 }
 
+/* ── her hand ────────────────────────────────────────────────────────────
+   Wherever her thumb is, there is a little more light. And when she holds a
+   beat, the room settles: the rain eases, the frame draws in a fraction, and
+   the picture stops turning until she lets go. */
+.film {
+  translate: var(--drag-x, 0) 0;
+  transition: translate 0.42s var(--ease);
+}
+.film:before {
+  content: "";
+  pointer-events: none;
+  z-index: 12;
+  opacity: 0;
+  background: radial-gradient(
+    circle at var(--touch-x, 50%) var(--touch-y, 50%),
+    #f2d9a61c 0%,
+    #e8b9a40f 22%,
+    #0000 46%
+  );
+  transition: opacity 0.6s var(--ease);
+  position: absolute;
+  inset: 0;
+}
+.film[data-holding="true"]:before {
+  opacity: 1;
+}
+.film[data-holding="true"] {
+  transition:
+    translate 0.42s var(--ease),
+    scale 1.6s var(--ease);
+  scale: 0.988;
+}
+.film[data-holding="true"] ~ * .rain-glass,
+.letterbox[data-weather] .film[data-holding="true"] {
+  --hold: 1;
+}
+html.is-still .film {
+  transition: none;
+  scale: 1;
+}
+html.is-still .film:before {
+  display: none;
+}
+
+/* ── the chapter forms ───────────────────────────────────────────────────
+   Sixteen ways for a chapter to stand on the screen. The walk in reel.js
+   guarantees two in a row never share one, so the picture never settles into
+   a template she can predict. */
+
+/* lead — the first line carries it, the rest come in underneath */
+.chapter[data-form="lead"] {
+  max-width: 30ch;
+}
+.chapter[data-form="lead"] .lead-line {
+  font-size: clamp(1.6rem, 7.6vw, 2.9rem);
+  line-height: 1.24;
+}
+.chapter[data-form="lead"] .after-line {
+  color: var(--paper-dim);
+  font-size: clamp(1rem, 3.9vw, 1.32rem);
+  line-height: 1.6;
+}
+
+/* stack — left aligned, air between the lines, the number set aside */
+.chapter[data-form="stack"] {
+  text-align: left;
+  justify-items: start;
+  max-width: 32ch;
+}
+.chapter[data-form="stack"] .chapter-lines {
+  gap: clamp(18px, 3.6vh, 34px);
+}
+.chapter[data-form="stack"] .chapter-number {
+  color: #d8b87766;
+}
+
+/* rule — a hairline draws itself under the title */
+.chapter[data-form="rule"] .chapter-rule {
+  transform-origin: 50%;
+  background: linear-gradient(90deg, #0000, var(--gold), #0000);
+  width: min(52vw, 260px);
+  height: 1px;
+  margin-top: clamp(14px, 2.6vh, 22px);
+  display: block;
+}
+
+/* watermark — the title enormous and nearly gone, behind the words */
+.chapter[data-form="watermark"] .chapter-ghost {
+  font-family: var(--display);
+  color: #f2d9a60f;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: -1;
+  font-size: clamp(3.4rem, 17vw, 8rem);
+  font-style: italic;
+  line-height: 1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
+/* subtitle — down in the lower third, the way a film puts words on a face */
+.chapter[data-form="subtitle"] {
+  justify-self: center;
+  align-self: end;
+  max-width: 36ch;
+  padding-bottom: clamp(24px, 9vh, 78px);
+}
+.chapter[data-form="subtitle"] .chapter-line {
+  font-size: clamp(1.06rem, 4.3vw, 1.5rem);
+}
+.chapter[data-form="subtitle"] .chapter-number {
+  opacity: 0.55;
+}
+
+/* drop — a raised first word */
+.chapter[data-form="drop"] .chapter-drop {
+  color: var(--lamp);
+  font-size: 1.5em;
+  font-style: italic;
+  line-height: 0.9;
+}
+
+/* apart — the distance between two lines, made literal */
+.chapter[data-form="apart"] {
+  align-content: space-between;
+  height: 100%;
+  max-width: 32ch;
+  padding: clamp(34px, 12vh, 96px) 0;
+}
+.chapter[data-form="apart"] .chapter-apart-top,
+.chapter[data-form="apart"] .chapter-apart-foot {
+  gap: clamp(10px, 2vh, 18px);
+  display: grid;
+}
+
+/* close — small and near, the way you say something at the end of a call */
+.chapter[data-form="close"] {
+  max-width: 26ch;
+}
+.chapter[data-form="close"] .chapter-line {
+  font-size: clamp(0.98rem, 3.7vw, 1.24rem);
+  line-height: 1.62;
+}
+.chapter[data-form="close"] .chapter-lines {
+  gap: 4px;
+  margin-top: clamp(12px, 2.4vh, 20px);
+}
+
+/* flare — light comes up behind the words */
+.chapter[data-form="flare"] .chapter-flare {
+  pointer-events: none;
+  z-index: -1;
+  background: radial-gradient(circle, #f2d9a636 0%, #e8b9a41f 34%, #0000 72%);
+  border-radius: 50%;
+  width: 150%;
+  aspect-ratio: 1;
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
+/* column — a narrow measure, set like a poem */
+.chapter[data-form="column"] {
+  max-width: 21ch;
+}
+.chapter[data-form="column"] .chapter-lines {
+  gap: clamp(14px, 2.8vh, 24px);
+}
+.chapter[data-form="column"] .chapter-line {
+  font-size: clamp(1.1rem, 4.6vw, 1.6rem);
+  line-height: 1.5;
+}
+
+/* corner — the chapter names itself off to one side and gets out of the way */
+.chapter[data-form="corner"] {
+  max-width: 33ch;
+}
+.chapter[data-form="corner"] .chapter-corner {
+  text-align: left;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #d8b87799;
+  gap: 10px;
+  font-size: 0.6rem;
+  display: grid;
+  position: absolute;
+  top: clamp(-92px, -11vh, -48px);
+  left: 0;
+}
+.chapter[data-form="corner"] .chapter-corner span {
+  font-family: var(--display);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--paper-dim);
+  font-size: 1rem;
+  font-style: italic;
+}
+.chapter[data-form="corner"] .chapter-line {
+  font-size: clamp(1.24rem, 5.4vw, 2.05rem);
+}
+
+/* wide — letter-spaced and unhurried */
+.chapter[data-form="wide"] {
+  max-width: 30ch;
+}
+.chapter[data-form="wide"] .chapter-line {
+  letter-spacing: 0.055em;
+  word-spacing: 0.12em;
+  font-size: clamp(1.02rem, 4.1vw, 1.44rem);
+  line-height: 1.72;
+}
+.chapter[data-form="wide"] .chapter-lines {
+  gap: clamp(14px, 2.8vh, 26px);
+}
+
+/* twoup — the title and the first line share a row */
+.chapter[data-form="twoup"] .chapter-row {
+  text-align: left;
+  align-items: baseline;
+  gap: clamp(10px, 2.4vw, 18px);
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+.chapter[data-form="twoup"] .chapter-row .chapter-title {
+  white-space: nowrap;
+  margin-top: 0;
+}
+.chapter[data-form="twoup"] .chapter-lines {
+  text-align: left;
+  margin-top: clamp(14px, 2.8vh, 24px);
+}
+
+/* quiet — no number, no title. Just the thing that was said. */
+.chapter[data-form="quiet"] {
+  max-width: 31ch;
+}
+.chapter[data-form="quiet"] .chapter-lines {
+  margin-top: 0;
+}
+.chapter[data-form="quiet"] .chapter-line {
+  font-size: clamp(1.2rem, 5.2vw, 1.86rem);
+  font-style: italic;
+}
+
+/* Over a still, everything steps back so the picture can be seen. */
+.chapter.over-light[data-form] .chapter-line {
+  text-shadow:
+    0 2px 18px #000000b3,
+    0 0 42px #00000080;
+}
+
 /* Depth.
    The camera moves the words one way. The layers behind them answer on the
    tilt, further and in the opposite direction, so the frame has air in it.

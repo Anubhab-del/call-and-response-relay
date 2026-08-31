@@ -500,6 +500,77 @@ for (const mode of ["full", "lean"]) {
   ok("the light leaks are gradients, not blurs", !leakBlur);
 }
 
+// ── no two chapters in a row look alike ───────────────────────────────────
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true, reducedMotion: "reduce" });
+  const page = await ctx.newPage();
+  await page.addInitScript(() => localStorage.setItem("her.v1", JSON.stringify({ schema: 1, greeted: true,
+    entered: true, watched: false, reelAt: 4, reelFurthest: 250, sound: false, motion: "still", nameWritten: true })));
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForSelector(".film", { timeout: 10000 });
+  await page.waitForTimeout(900);
+  const forms = [];
+  for (let i = 0; i < 24; i++) {
+    const f = await page.evaluate(() => document.querySelector(".chapter")?.dataset.form ?? null);
+    if (f) forms.push(f);
+    await page.mouse.click(195, 760, { force: true });
+    await page.waitForTimeout(230);
+  }
+  const repeats = forms.filter((f, i) => i > 0 && f === forms[i - 1]);
+  ok("chapters take many forms", new Set(forms).size >= 8, [...new Set(forms)].join(","));
+  ok("no two chapters in a row share a form", repeats.length === 0, repeats.join(","));
+  await ctx.close();
+}
+
+// ── the picture answers her hand ──────────────────────────────────────────
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(String(e.message)));
+  await page.addInitScript(() => localStorage.setItem("her.v1", JSON.stringify({ schema: 1, greeted: true,
+    entered: true, watched: false, reelAt: 10, reelFurthest: 250, sound: false, motion: "full", nameWritten: true })));
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForSelector(".film", { timeout: 10000 });
+  await page.waitForTimeout(900);
+  const at = () => page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).reelAt);
+
+  const before = await at();
+  await page.mouse.move(195, 600);
+  await page.mouse.down();
+  await page.waitForTimeout(2600);
+  const flag = await page.evaluate(() => document.querySelector(".film")?.dataset.holding);
+  await page.mouse.up();
+  await page.waitForTimeout(300);
+  ok("holding stops the picture turning", flag === "true" && (await at()) === before, `${flag} / moved ${(await at()) - before}`);
+
+  const b2 = await at();
+  await page.mouse.move(300, 600);
+  await page.mouse.down();
+  await page.mouse.move(160, 604, { steps: 8 });
+  await page.mouse.up();
+  await page.waitForTimeout(400);
+  ok("dragging turns the page", (await at()) > b2);
+
+  await page.mouse.move(195, 600);
+  await page.mouse.down();
+  await page.mouse.move(196, 455, { steps: 8 });
+  await page.mouse.up();
+  await page.waitForTimeout(800);
+  ok("swiping up opens the contents", (await page.locator(".contents").count()) === 1);
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(500);
+
+  await page.mouse.move(195, 400);
+  await page.mouse.down();
+  await page.mouse.move(196, 565, { steps: 8 });
+  await page.mouse.up();
+  await page.waitForTimeout(2200);
+  ok("swiping down goes in to the house", (await page.evaluate(() => document.querySelector(".shell")?.dataset.mode)) === "house");
+  ok("no errors from any of it", errors.length === 0, errors.join(" | "));
+  await ctx.close();
+}
+
 // ── a broken save leaves her the house ─────────────────────────────────────
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });

@@ -21,8 +21,10 @@ function nextShot() {
   return SHOTS[shotTurn % SHOTS.length];
 }
 
-function Beat({ children: children, full = false, hold = false }) {
-  let [shot] = (0, React.useState)(nextShot);
+function Beat({ children: children, full = false, hold = false, shot: wanted = null }) {
+  // A form can ask for the camera that suits it; everything else takes the
+  // next one on the walk.
+  let [shot] = (0, React.useState)(() => (wanted == null ? nextShot() : SHOTS[wanted % SHOTS.length]));
   let fade = transition();
   // A cross-dissolve, not a crossfade: the new frame comes up quickly and the
   // old one lingers under it. She sees an answer to her thumb in a quarter of
@@ -167,47 +169,208 @@ function PartBeat({ part: part }) {
       })
     : null;
 }
-function ChapterBeat({ n: e }) {
-  let t = CHAPTERS[e - 1];
-  if (!t) return null;
-  let n = isFullBleed(e);
-  return (0, jsx.jsxs)(Beat, {
-    full: n,
-    children: [
-      n
-        ? (0, jsx.jsx)(Still, {
-            variant: lightFor(e),
-            seconds: 6,
-          })
-        : null,
-      (0, jsx.jsxs)("div", {
-        className: n ? "chapter over-light" : "chapter",
-        children: [
-          (0, jsx.jsx)(motion.p, {
-            className: "chapter-number",
-            ...fadeIn(0, 0.55),
-            children: roman(e),
-          }),
-          (0, jsx.jsx)(motion.p, {
-            className: "chapter-title",
-            ...fadeIn(0.22, 0.65),
-            children: t.title,
-          }),
-          (0, jsx.jsx)("div", {
-            className: "chapter-lines",
-            children: t.lines.map((e, n) =>
-              (0, jsx.jsx)(
-                Lines,
-                {
-                  className: "chapter-line",
-                  text: e,
-                  delay: 0.75 + t.lines.slice(0, n).reduce((e, t) => e + readSeconds(t) * 0.72, 0),
-                },
-                e,
-              ),
+function ChapterBeat({ n: n }) {
+  let chapter = CHAPTERS[n - 1];
+  if (!chapter) return null;
+  let over = isFullBleed(n);
+  let form = formFor(n);
+  let lines = chapter.lines;
+
+  // Where each line lands, in seconds, reading the one before it first.
+  let at = (i, from = 0.75) =>
+    from + lines.slice(0, i).reduce((sum, line) => sum + readSeconds(line) * 0.72, 0);
+
+  let numberEl = (0, jsx.jsx)(motion.p, {
+    className: "chapter-number",
+    ...fadeIn(0, 0.55),
+    children: roman(n),
+  });
+  let titleEl = (0, jsx.jsx)(motion.p, {
+    className: "chapter-title",
+    ...fadeIn(0.22, 0.65),
+    children: chapter.title,
+  });
+  let lineEls = (from = 0.75, className = "chapter-line") =>
+    lines.map((line, i) =>
+      (0, jsx.jsx)(Lines, { className: className, text: line, delay: at(i, from) }, line),
+    );
+
+  let body;
+  switch (form) {
+    case "lead":
+      body = [
+        titleEl,
+        (0, jsx.jsx)("div", {
+          className: "chapter-lines",
+          children: [
+            (0, jsx.jsx)(Lines, { className: "chapter-line lead-line", text: lines[0], delay: 0.7 }, lines[0]),
+            ...lines.slice(1).map((line, i) =>
+              (0, jsx.jsx)(Lines, { className: "chapter-line after-line", text: line, delay: at(i + 1, 0.7) }, line),
             ),
-          }),
-        ],
+          ],
+        }),
+      ];
+      break;
+
+    case "stack":
+      body = [numberEl, titleEl, (0, jsx.jsx)("div", { className: "chapter-lines", children: lineEls() })];
+      break;
+
+    case "rule":
+      body = [
+        numberEl,
+        titleEl,
+        (0, jsx.jsx)(motion.span, {
+          className: "chapter-rule",
+          "aria-hidden": "true",
+          initial: { scaleX: 0 },
+          animate: { scaleX: 1 },
+          transition: { duration: isStill() ? 0.2 : 1.6, delay: 0.5, ease: EASE_OUT },
+        }),
+        (0, jsx.jsx)("div", { className: "chapter-lines", children: lineEls(0.95) }),
+      ];
+      break;
+
+    case "watermark":
+      body = [
+        (0, jsx.jsx)(motion.span, {
+          className: "chapter-ghost",
+          "aria-hidden": "true",
+          ...fadeIn(0.1, 2.4),
+          children: chapter.title,
+        }),
+        numberEl,
+        (0, jsx.jsx)("div", { className: "chapter-lines", children: lineEls(0.5) }),
+      ];
+      break;
+
+    case "subtitle":
+      body = [numberEl, (0, jsx.jsx)("div", { className: "chapter-lines", children: lineEls(0.4) })];
+      break;
+
+    case "drop": {
+      let [first, ...rest] = lines[0].split(" ");
+      body = [
+        titleEl,
+        (0, jsx.jsxs)("div", {
+          className: "chapter-lines",
+          children: [
+            (0, jsx.jsxs)(motion.p, {
+              className: "chapter-line",
+              ...fadeIn(0.7, 0.9),
+              children: [
+                (0, jsx.jsx)("span", { className: "chapter-drop", children: first }),
+                " " + rest.join(" "),
+              ],
+            }),
+            ...lines.slice(1).map((line, i) =>
+              (0, jsx.jsx)(Lines, { className: "chapter-line", text: line, delay: at(i + 1, 0.7) }, line),
+            ),
+          ],
+        }),
+      ];
+      break;
+    }
+
+    case "apart":
+      body = [
+        (0, jsx.jsx)("div", {
+          className: "chapter-apart-top",
+          children: (0, jsx.jsx)(Lines, { className: "chapter-line", text: lines[0], delay: 0.6 }),
+        }),
+        numberEl,
+        (0, jsx.jsx)("div", {
+          className: "chapter-apart-foot",
+          children: lines
+            .slice(1)
+            .map((line, i) =>
+              (0, jsx.jsx)(Lines, { className: "chapter-line", text: line, delay: at(i + 1, 0.6) }, line),
+            ),
+        }),
+      ];
+      break;
+
+    case "breath":
+      body = [
+        numberEl,
+        titleEl,
+        (0, jsx.jsx)("div", {
+          className: "chapter-lines",
+          children: [
+            (0, jsx.jsx)(Lines, { className: "chapter-line", text: lines[0], delay: 0.7 }, lines[0]),
+            // The pause is the point. Everything after it waits.
+            ...lines.slice(1).map((line, i) =>
+              (0, jsx.jsx)(Lines, { className: "chapter-line", text: line, delay: at(i + 1, 2.1) }, line),
+            ),
+          ],
+        }),
+      ];
+      break;
+
+    case "flare":
+      body = [
+        isStill()
+          ? null
+          : (0, jsx.jsx)(motion.div, {
+              className: "chapter-flare",
+              "aria-hidden": "true",
+              initial: { opacity: 0, scale: 0.8 },
+              animate: { opacity: [0, 0.44, 0.3], scale: [0.8, 1.08, 1] },
+              transition: { duration: 5.2, times: [0, 0.4, 1], ease: "easeInOut", delay: 0.5 },
+            }),
+        titleEl,
+        (0, jsx.jsx)("div", { className: "chapter-lines", children: lineEls(0.8) }),
+      ];
+      break;
+
+    case "corner":
+      body = [
+        (0, jsx.jsxs)(motion.p, {
+          className: "chapter-corner",
+          ...fadeIn(0.1, 0.7),
+          children: [roman(n), (0, jsx.jsx)("span", { children: chapter.title })],
+        }),
+        (0, jsx.jsx)("div", { className: "chapter-lines", children: lineEls(0.6) }),
+      ];
+      break;
+
+    case "twoup":
+      body = [
+        (0, jsx.jsxs)("div", {
+          className: "chapter-row",
+          children: [
+            titleEl,
+            (0, jsx.jsx)(Lines, { className: "chapter-line", text: lines[0], delay: 0.6 }, lines[0]),
+          ],
+        }),
+        (0, jsx.jsx)("div", {
+          className: "chapter-lines",
+          children: lines
+            .slice(1)
+            .map((line, i) =>
+              (0, jsx.jsx)(Lines, { className: "chapter-line", text: line, delay: at(i + 1, 0.6) }, line),
+            ),
+        }),
+      ];
+      break;
+
+    case "quiet":
+      body = [(0, jsx.jsx)("div", { className: "chapter-lines", children: lineEls(0.5) })];
+      break;
+
+    default:
+      body = [numberEl, titleEl, (0, jsx.jsx)("div", { className: "chapter-lines", children: lineEls() })];
+  }
+
+  return (0, jsx.jsxs)(Beat, {
+    full: over,
+    shot: shotFor(form),
+    children: [
+      over ? (0, jsx.jsx)(Still, { variant: lightFor(n), seconds: 6 }) : null,
+      (0, jsx.jsx)("div", {
+        className: over ? "chapter over-light" : "chapter",
+        "data-form": form,
+        children: body,
       }),
     ],
   });

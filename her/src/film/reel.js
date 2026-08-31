@@ -211,6 +211,101 @@ function isFullBleed(e) {
   let n = PARTS[t.part];
   return n ? (e - n.from) % 5 == 0 : false;
 }
+// ── the forms ────────────────────────────────────────────────────────────
+//
+// A hundred chapters laid out identically is a hundred slides. Each one is
+// given a form instead — a different way of standing on the screen — so that
+// turning the page is always worth doing.
+//
+// The walk uses a stride coprime with the list length, so it runs through
+// every form before repeating and two chapters in a row can never share one.
+var CHAPTER_FORMS = [
+  "plain", // number, title, lines, centred
+  "lead", // the first line large, the rest small beneath it
+  "stack", // left aligned, wide leading, number in the corner
+  "rule", // a hairline draws itself between the title and the lines
+  "watermark", // the title enormous and faint behind the words
+  "subtitle", // pinned to the lower third, like a subtitle
+  "drop", // a raised initial on the first word
+  "apart", // first line at the top of the frame, last at the bottom
+  "close", // small, tight, intimate
+  "breath", // a long pause between the first line and the rest
+  "flare", // light comes up behind the first line
+  "column", // a narrow measure, set like a poem
+  "corner", // title in the corner, the lines given the room
+  "wide", // letter-spaced, one line at a time
+  "twoup", // title and first line on the same row
+  "quiet", // no number, no title. Only the words.
+];
+
+// Over a still, most of the forms would fight the picture. These do not.
+var CALM_FORMS = ["subtitle", "quiet", "close", "plain"];
+
+function formSuits(form, chapter) {
+  let lines = chapter?.lines?.length ?? 0;
+  if (form === "apart" || form === "breath" || form === "twoup") return lines >= 2;
+  if (form === "drop") return !!chapter?.lines?.[0];
+  return true;
+}
+
+// The whole running order is worked out once, in one pass, rather than per
+// chapter. Computing each one independently gave an uneven spread and let a
+// still-backed chapter land on the same form as its neighbour.
+//
+// The cursor walks the list seven at a time — coprime with sixteen, so it
+// visits every form before returning — and only steps off that walk when a
+// form would repeat the one before it or does not suit the chapter.
+function buildChapterForms() {
+  let out = new Array(CHAPTERS.length + 1).fill("plain");
+  let cursor = 0;
+  let calm = 0;
+  let previous = null;
+  for (let n = 1; n <= CHAPTERS.length; n++) {
+    let over = isFullBleed(n);
+    let list = over ? CALM_FORMS : CHAPTER_FORMS;
+    let from = over ? calm : cursor;
+    let chapter = chapterAt(n);
+    let pick = null;
+    for (let step = 0; step < list.length; step++) {
+      let form = list[(from + step) % list.length];
+      if (form === previous) continue;
+      if (!formSuits(form, chapter)) continue;
+      pick = form;
+      break;
+    }
+    out[n] = pick ?? (previous === "plain" ? "close" : "plain");
+    previous = out[n];
+    if (over) calm = (calm + 1) % list.length;
+    else cursor = (cursor + 7) % list.length;
+  }
+  return out;
+}
+
+var CHAPTER_FORM_BY_N = buildChapterForms();
+
+function formFor(n) {
+  return CHAPTER_FORM_BY_N[n] ?? "plain";
+}
+
+// Some forms want a particular camera. The rest take whatever comes next.
+function shotFor(form) {
+  switch (form) {
+    case "apart":
+      return 4; // rise, so the gap between the lines opens
+    case "close":
+    case "flare":
+      return 0; // push in
+    case "subtitle":
+      return 1; // pull back
+    case "wide":
+      return 2; // drift
+    case "watermark":
+      return 5; // fall away
+    default:
+      return null;
+  }
+}
+
 function lightFor(e) {
   let t = PARTS[chapterAt(e)?.part ?? 0],
     n = t?.lights ?? [];

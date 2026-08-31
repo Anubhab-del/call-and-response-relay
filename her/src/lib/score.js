@@ -287,7 +287,7 @@ var score = new (class {
     !e ||
       !t ||
       (t.gain.cancelScheduledValues(e.currentTime),
-      t.gain.setTargetAtTime(this.muted ? 0 : BASE_GAIN * this.volume, e.currentTime, 0.2));
+      t.gain.setTargetAtTime(this.muted ? 0 : BASE_GAIN * this.volume * (this.hushed ? 0.42 : 1), e.currentTime, 0.2));
   }
   // ── the score ────────────────────────────────────────────────────────────
   //
@@ -397,6 +397,16 @@ var score = new (class {
   sound(offset = 0, level = 1) {
     let key = KEYS[this.keyIndex ?? 0] ?? KEYS[0];
     this.strike(key.root + 24 + offset, { level });
+  }
+
+  // While she is holding a beat, everything drops back. Not muted — lowered,
+  // the way you lower your voice for somebody who is thinking.
+  hushed = false;
+  hush(on) {
+    if (this.hushed === on || !this.ctx || !this.master) return;
+    this.hushed = on;
+    let target = this.muted ? 0 : BASE_GAIN * this.volume * (on ? 0.42 : 1);
+    this.master.gain.setTargetAtTime(target, this.ctx.currentTime, 0.45);
   }
 
   // Each beat sets three things: which key the hand is in, how long it waits

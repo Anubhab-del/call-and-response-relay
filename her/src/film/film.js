@@ -32,10 +32,16 @@ function Film({
     [l, u] = (0, React.useState)(() => Math.min(Math.max(0, startAt), o.length - 1)),
     [d, f] = (0, React.useState)(false),
     p = (0, React.useRef)(false),
-    m = (0, React.useRef)({
+    [holding, setHolding] = (0, React.useState)(false),
+    gesture = (0, React.useRef)({
       x: 0,
       y: 0,
       t: 0,
+      live: false,
+      moved: false,
+      dragging: false,
+      holding: false,
+      holdTimer: 0,
     }),
     h = o[l],
     g = weatherFor(h),
@@ -52,6 +58,10 @@ function Film({
     (0, React.useEffect)(() => {
       (score.setCue(cueFor(h)), h.type === "nameFlash" && score.whisperName());
     }, [h]),
+    // Holding quiets the room a little, the way you lower your voice.
+    (0, React.useEffect)(() => {
+      score.hush(holding);
+    }, [holding]),
     (0, React.useEffect)(() => {
       update((e) => {
         ((e.reelAt = l),
@@ -75,10 +85,11 @@ function Film({
     S = (0, React.useCallback)(() => x(l + 1), [x, l]),
     C = (0, React.useCallback)(() => x(l - 1), [x, l]);
   ((0, React.useEffect)(() => {
-    if (!showsHud(h) || d) return;
+    // Contents open, or her thumb down: the picture waits.
+    if (!showsHud(h) || d || holding) return;
     let e = window.setTimeout(() => u((e) => Math.min(o.length - 1, e + 1)), beatDuration(h));
     return () => window.clearTimeout(e);
-  }, [h, l, o.length, d]),
+  }, [h, l, o.length, d, holding]),
     (0, React.useEffect)(
       () => (
         document.documentElement.classList.toggle("reading-contents", d),
@@ -117,24 +128,116 @@ function Film({
       return (window.addEventListener("keydown", e), () => window.removeEventListener("keydown", e));
     }, [S, C, h.type, onEnterHouse, d]));
   let w = (l + 1) / o.length;
+
+  // ── her hand ─────────────────────────────────────────────────────────────
+  //
+  // A tap turns the page. Holding stops it turning — the picture waits with
+  // her for as long as she keeps her thumb down. Dragging sideways pulls the
+  // next chapter into view and lets her change her mind halfway. Swiping up
+  // opens the contents; swiping down leaves for the house. And wherever her
+  // thumb is, there is a little more light.
+  let frame = (0, React.useRef)(null);
+
+  let setVars = (x, y, drag) => {
+    let el = frame.current;
+    if (!el) return;
+    if (x != null) {
+      let box = el.getBoundingClientRect();
+      el.style.setProperty("--touch-x", `${((x - box.left) / box.width) * 100}%`);
+      el.style.setProperty("--touch-y", `${((y - box.top) / box.height) * 100}%`);
+    }
+    if (drag !== undefined) el.style.setProperty("--drag-x", `${drag}px`);
+  };
+
+  let endHold = (0, React.useCallback)(() => {
+    window.clearTimeout(gesture.current.holdTimer);
+    gesture.current.holdTimer = 0;
+    if (gesture.current.holding) {
+      gesture.current.holding = false;
+      setHolding(false);
+    }
+  }, []);
+
+  let onDown = (e) => {
+    if (e.target.closest(".hud, .contents, .film-tools, button, a, input")) return;
+    gesture.current = {
+      ...gesture.current,
+      x: e.clientX,
+      y: e.clientY,
+      t: performance.now(),
+      live: true,
+      moved: false,
+      dragging: false,
+    };
+    setVars(e.clientX, e.clientY);
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+    // Held long enough to mean it: the picture stops turning.
+    gesture.current.holdTimer = window.setTimeout(() => {
+      if (!gesture.current.live || gesture.current.moved) return;
+      gesture.current.holding = true;
+      setHolding(true);
+      tapTick();
+    }, 420);
+  };
+
+  let onMove = (e) => {
+    if (!gesture.current.live) return;
+    let dx = e.clientX - gesture.current.x;
+    let dy = e.clientY - gesture.current.y;
+    setVars(e.clientX, e.clientY);
+    if (!gesture.current.moved && Math.hypot(dx, dy) > 10) {
+      gesture.current.moved = true;
+      endHold();
+    }
+    if (gesture.current.moved && Math.abs(dx) > Math.abs(dy) * 1.4) {
+      gesture.current.dragging = true;
+      // Rubber band, so the frame follows her but never runs away with her.
+      setVars(null, null, Math.sign(dx) * Math.min(96, Math.abs(dx) * 0.42));
+    }
+  };
+
+  let onUp = (e) => {
+    if (!gesture.current.live) return;
+    let held = gesture.current.holding;
+    let dx = e.clientX - gesture.current.x;
+    let dy = e.clientY - gesture.current.y;
+    let ms = performance.now() - gesture.current.t;
+    gesture.current.live = false;
+    endHold();
+    setVars(null, null, 0);
+    if (held) return; // she was staying here. Do not take her anywhere.
+
+    let far = Math.hypot(dx, dy);
+    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 64) {
+      tapTick();
+      if (dy < 0) f(true);
+      else if (seenBefore || l > 2) onEnterHouse();
+      return;
+    }
+    if (gesture.current.dragging) {
+      if (Math.abs(dx) > 52) {
+        tapTick();
+        dx < 0 ? S() : C();
+      }
+      return;
+    }
+    if (far > 18 || ms > 700 || h.type === "doorway") return;
+    tapTick();
+    let box = e.currentTarget.getBoundingClientRect();
+    e.clientX - box.left < box.width * 0.14 ? C() : S();
+  };
+
   return (0, jsx.jsxs)("div", {
     className: "film",
-    onPointerDown: (e) => {
-      m.current = {
-        x: e.clientX,
-        y: e.clientY,
-        t: performance.now(),
-      };
-    },
-    onPointerUp: (e) => {
-      if (e.target.closest(".hud, .contents, button, a, input")) return;
-      let t = e.clientX - m.current.x,
-        n = e.clientY - m.current.y;
-      if (Math.hypot(t, n) > 18 || performance.now() - m.current.t > 700 || h.type === "doorway")
-        return;
-      tapTick();
-      let r = e.currentTarget.getBoundingClientRect();
-      e.clientX - r.left < r.width * 0.14 ? C() : S();
+    ref: frame,
+    "data-holding": holding ? "true" : void 0,
+    onPointerDown: onDown,
+    onPointerMove: onMove,
+    onPointerUp: onUp,
+    onPointerCancel: () => {
+      gesture.current.live = false;
+      endHold();
+      setVars(null, null, 0);
     },
     children: [
       (0, jsx.jsxs)(AnimatePresence, {
