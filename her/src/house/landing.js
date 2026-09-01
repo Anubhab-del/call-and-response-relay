@@ -40,7 +40,7 @@ var ROOMS = [
     sub: "Sound, motion, keeping a copy",
   },
 ];
-function Landing({ onGo: onGo, onOpenLetter: onOpenLetter, onBeginHour: onBeginHour, steppedOut: steppedOut }) {
+function Landing({ onGo: onGo, onOpenLetter: onOpenLetter, onAnswer: onAnswer, onBeginHour: onBeginHour, steppedOut: steppedOut }) {
   useMinuteTick();
   let t = useStore(),
     n = daysTogether(),
@@ -62,6 +62,9 @@ function Landing({ onGo: onGo, onOpenLetter: onOpenLetter, onBeginHour: onBeginH
     sleepless =
       isSmallHours() &&
       Date.now() - (t.opened["cannot-sleep"] ?? 0) > 6 * 60 * 60 * 1000;
+  // The same vocabulary as the room it came from: hold anything he wrote and
+  // it becomes a question waiting on her page.
+  let tonight = usePress({ onHold: () => onAnswer?.(r) });
   return (0, jsx.jsxs)("div", {
     className: "landing",
     children: [
@@ -235,7 +238,9 @@ function Landing({ onGo: onGo, onOpenLetter: onOpenLetter, onBeginHour: onBeginH
         : null,
       (0, jsx.jsxs)(motion.blockquote, {
         className: "tonight",
+        "data-holding": tonight.holding ? "true" : void 0,
         ...riseIn(0.65),
+        ...tonight.handlers,
         children: [
           (0, jsx.jsx)("p", {
             children: r.text,

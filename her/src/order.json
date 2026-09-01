@@ -22,6 +22,7 @@
   "film/type.js",
   "film/beats.js",
   "film/film.js",
+  "ui/gestures.js",
   "content/milestones.js",
   "house/visits.js",
   "house/hooks.js",

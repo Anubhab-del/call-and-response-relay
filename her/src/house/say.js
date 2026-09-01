@@ -99,8 +99,20 @@ function SayRoom({ answering: answering, onClearAnswering: onClearAnswering }) {
         f("Saved. Send him the file."),
         window.setTimeout(() => f(""), 5e3));
     };
+  // A swipe down anywhere on the page puts the keyboard away without losing a
+  // word — the draft is already saved on every keystroke.
+  let swipe = useSwipe({
+    onDown: () => h.current?.blur(),
+  });
+  // Escape means out of this, wherever she is. In a field it puts the keyboard
+  // away without touching a word of what she wrote; the house then takes the
+  // next escape as back, the way it does everywhere else.
+  let letGo = (e) => {
+    if (e.key === "Escape") (e.stopPropagation(), e.currentTarget.blur());
+  };
   return (0, jsx.jsxs)("div", {
     className: "say",
+    ...swipe,
     children: [
       (0, jsx.jsx)(motion.p, {
         className: "room-lede",
@@ -147,6 +159,7 @@ function SayRoom({ answering: answering, onClearAnswering: onClearAnswering }) {
           (0, jsx.jsx)("textarea", {
             ref: h,
             id: "say-text",
+            onKeyDown: letGo,
             value: r,
             onChange: (e) => i(e.target.value),
             placeholder: answering
@@ -211,6 +224,7 @@ function SayRoom({ answering: answering, onClearAnswering: onClearAnswering }) {
               (0, jsx.jsx)("input", {
                 id: "one-word",
                 type: "text",
+                onKeyDown: letGo,
                 value: p,
                 maxLength: 40,
                 placeholder: "one word",

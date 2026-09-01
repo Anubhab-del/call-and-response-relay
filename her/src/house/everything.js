@@ -1,4 +1,40 @@
-function EverythingRoom() {
+// One true thing. Held, it becomes a question — the room hands it to the page
+// that belongs to her, already quoted, with the cursor waiting.
+function Thing({ thing: thing, today: today, onAnswer: onAnswer }) {
+  let hold = usePress({ onHold: () => onAnswer?.(thing) });
+  return (0, jsx.jsxs)(motion.blockquote, {
+    className: today ? "thing today" : "thing",
+    "data-holding": hold.holding ? "true" : void 0,
+    ...(today
+      ? riseIn(0.15)
+      : {
+          initial: {
+            opacity: 0,
+            y: 12,
+          },
+          animate: {
+            opacity: 1,
+            y: 0,
+          },
+          transition: {
+            duration: 0.5,
+            ease: [0.16, 1, 0.3, 1],
+          },
+        }),
+    ...hold.handlers,
+    children: [
+      (0, jsx.jsx)("p", {
+        children: thing.text,
+      }),
+      today
+        ? (0, jsx.jsx)("cite", {
+            children: "today",
+          })
+        : null,
+    ],
+  });
+}
+function EverythingRoom({ onAnswer: onAnswer }) {
   let e = useStore(),
     t = todayNumber(),
     n = shardForDay(),
@@ -36,8 +72,16 @@ function EverythingRoom() {
         e.pulls[String(t)] = (e.pulls[String(t)] ?? 0) + 1;
       }));
   };
+  // The button is still there and always will be. This is only for the hand
+  // that would rather flick the page than aim at a word.
+  let swipe = useSwipe({
+    onUp: () => {
+      if (l > 0) f();
+    },
+  });
   return (0, jsx.jsxs)("div", {
     className: "everything",
+    ...swipe,
     children: [
       (0, jsx.jsxs)(motion.p, {
         className: "room-lede",
@@ -48,38 +92,17 @@ function EverythingRoom() {
           " of them, which is a year and a bit.",
         ],
       }),
-      (0, jsx.jsxs)(motion.blockquote, {
-        className: "thing today",
-        ...riseIn(0.15),
-        children: [
-          (0, jsx.jsx)("p", {
-            children: n.text,
-          }),
-          (0, jsx.jsx)("cite", {
-            children: "today",
-          }),
-        ],
+      (0, jsx.jsx)(Thing, {
+        thing: n,
+        today: true,
+        onAnswer: onAnswer,
       }),
       i.map((e, t) =>
         (0, jsx.jsx)(
-          motion.blockquote,
+          Thing,
           {
-            className: "thing",
-            initial: {
-              opacity: 0,
-              y: 12,
-            },
-            animate: {
-              opacity: 1,
-              y: 0,
-            },
-            transition: {
-              duration: 0.5,
-              ease: [0.16, 1, 0.3, 1],
-            },
-            children: (0, jsx.jsx)("p", {
-              children: e.text,
-            }),
+            thing: e,
+            onAnswer: onAnswer,
           },
           `${e.index}-${t}`,
         ),
@@ -113,6 +136,14 @@ function EverythingRoom() {
           children: l > 0 ? `one more (${l} left today)` : "that is all for today",
         }),
       }),
+      (0, jsx.jsx)(motion.p, {
+        className: "fine centre-text",
+        ...fadeIn(0.5, 0.7),
+        children:
+          l > 0
+            ? "Or flick the page upward. Hold any of them to answer it."
+            : "Hold any of them to answer it.",
+      }),
       (0, jsx.jsxs)("div", {
         className: "search",
         children: [
@@ -123,6 +154,9 @@ function EverythingRoom() {
           (0, jsx.jsx)("input", {
             id: "everything-search",
             type: "search",
+            onKeyDown: (e) => {
+              if (e.key === "Escape") (e.stopPropagation(), e.currentTarget.blur());
+            },
             value: o,
             placeholder: "a word you remember",
             onChange: (e) => s(e.target.value),

@@ -1,6 +1,78 @@
+// A vow is a row she can also just push. Rightward is he kept this — the
+// direction of a thing going in the ledger. Leftward takes it back out, in
+// case she was only being kind. Nothing here is undoable, and nothing here
+// counts anything: it is a record, not a score.
+function Vow({ vow: vow, index: index, kept: kept, onMark: onMark, children: children }) {
+  let [pushed, setPushed] = (0, React.useState)(0);
+  (0, React.useEffect)(() => {
+    if (!pushed) return;
+    let id = window.setTimeout(() => setPushed(0), 620);
+    return () => window.clearTimeout(id);
+  }, [pushed]);
+  let swipe = useSwipe({
+    min: 54,
+    onRight: () => {
+      if (kept) return;
+      (setPushed(1), onMark(vow.id, true));
+    },
+    onLeft: () => {
+      if (!kept) return;
+      (setPushed(-1), onMark(vow.id, false));
+    },
+  });
+  return (0, jsx.jsxs)(motion.li, {
+    initial: {
+      opacity: 0,
+      y: 10,
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+    },
+    transition: {
+      duration: 0.45,
+      delay: Math.min(0.4, index * 0.04),
+      ease: [0.16, 1, 0.3, 1],
+    },
+    "data-kept": kept ? "true" : void 0,
+    "data-pushed": pushed > 0 ? "in" : pushed < 0 ? "out" : void 0,
+    "data-swipe": "own",
+    ...swipe,
+    children: children,
+  });
+}
+// The head of a vow. A tap opens the small print — but only a tap that stayed
+// where it was put, so pushing the row does not also unfold it.
+function VowHead({ vow: vow, open: open, onToggle: onToggle }) {
+  let press = usePress({ onTap: onToggle });
+  return (0, jsx.jsxs)("button", {
+    type: "button",
+    className: "vow-head",
+    "aria-expanded": open,
+    ...press.handlers,
+    children: [
+      (0, jsx.jsx)("span", {
+        className: "vow-text",
+        children: vow.text,
+      }),
+      (0, jsx.jsxs)("span", {
+        className: "vow-date",
+        // A vow made on this exact date is being made tonight, which is the
+        // one night she can mark it as it happens.
+        children: isOnDate(vow.made, false) ? ["made tonight"] : ["made ", formatCivil(vow.made)],
+      }),
+    ],
+  });
+}
 function PromisesRoom() {
   let e = useStore(),
     [t, n] = (0, React.useState)(null);
+  let mark = (id, to) => {
+    (to ? tapOnce() : tapTick(),
+      update((state) => {
+        to ? (state.kept[id] = Date.now()) : delete state.kept[id];
+      }));
+  };
   return (0, jsx.jsxs)("div", {
     className: "promises",
     children: [
@@ -10,6 +82,12 @@ function PromisesRoom() {
         children:
           "Not wishes, and not things I hope to be. Twelve things I am on the hook for, in writing, where you can find them. You are the one who says when one has been kept — I do not get to mark my own homework.",
       }),
+      (0, jsx.jsx)(motion.p, {
+        className: "fine",
+        ...fadeIn(0.1, 0.6),
+        children:
+          "Open one to read the small print. Or push the whole row to the right, if I have done what I said I would.",
+      }),
 
       (0, jsx.jsx)("ul", {
         className: "vow-list",
@@ -17,44 +95,19 @@ function PromisesRoom() {
           let a = e.kept[r.id],
             o = t === r.id;
           return (0, jsx.jsxs)(
-            motion.li,
+            Vow,
             {
-              initial: {
-                opacity: 0,
-                y: 10,
-              },
-              animate: {
-                opacity: 1,
-                y: 0,
-              },
-              transition: {
-                duration: 0.45,
-                delay: Math.min(0.4, i * 0.04),
-                ease: [0.16, 1, 0.3, 1],
-              },
-              "data-kept": a ? "true" : void 0,
+              vow: r,
+              index: i,
+              kept: a,
+              onMark: mark,
               children: [
-                (0, jsx.jsxs)("button", {
-                  type: "button",
-                  className: "vow-head",
-                  onClick: () => {
+                (0, jsx.jsx)(VowHead, {
+                  vow: r,
+                  open: o,
+                  onToggle: () => {
                     (tapTick(), n(o ? null : r.id));
                   },
-                  "aria-expanded": o,
-                  children: [
-                    (0, jsx.jsx)("span", {
-                      className: "vow-text",
-                      children: r.text,
-                    }),
-                    (0, jsx.jsxs)("span", {
-                      className: "vow-date",
-                      // A vow made on this exact date is being made tonight,
-                      // which is the one night she can mark it as it happens.
-                      children: isOnDate(r.made, false)
-                        ? ["made tonight"]
-                        : ["made ", formatCivil(r.made)],
-                    }),
-                  ],
                 }),
                 o
                   ? (0, jsx.jsxs)(motion.div, {
@@ -79,12 +132,7 @@ function PromisesRoom() {
                         (0, jsx.jsx)("button", {
                           type: "button",
                           className: a ? "ghost" : "solid",
-                          onClick: () => {
-                            (tapOnce(),
-                              update((e) => {
-                                e.kept[r.id] ? delete e.kept[r.id] : (e.kept[r.id] = Date.now());
-                              }));
-                          },
+                          onClick: () => mark(r.id, !a),
                           children: a ? "not yet, actually" : "he kept this",
                         }),
                         a
@@ -222,12 +270,36 @@ function DaysRoom() {
     ],
   });
 }
+var DISTANCE_ARC = "M40 88 C 110 20, 210 20, 280 44";
 function DistanceRoom() {
   let e = CANON.kilometres,
     t = daysTogether(),
     n = Math.round(e / 30),
     r = Math.round((e / 55) * 10) / 10,
     i = Math.round((e / Math.max(1, t)) * 10) / 10;
+  // She can put a finger on his city and drag it to hers. The number counts
+  // down under her hand. It is the only honest way to show a distance: not as
+  // a fact on a card, but as something that closes because she closed it.
+  let arc = (0, React.useRef)(null);
+  let [along, setAlong] = (0, React.useState)(0);
+  let [crossed, setCrossed] = (0, React.useState)(false);
+  let dragging = (0, React.useRef)(false);
+  let at = (0, React.useMemo)(() => {
+    let path = arc.current;
+    if (!path?.getTotalLength) return { x: 40, y: 88 };
+    let p = path.getPointAtLength(path.getTotalLength() * along);
+    return { x: p.x, y: p.y };
+  }, [along]);
+  let left = Math.max(0, Math.round(e * (1 - along)));
+  let move = (ev) => {
+    let box = ev.currentTarget.getBoundingClientRect();
+    if (!box.width) return;
+    // The arc runs from x=40 to x=280 in a 320-wide viewBox.
+    let x = ((ev.clientX - box.left) / box.width) * 320;
+    let f = Math.min(1, Math.max(0, (x - 40) / 240));
+    (setAlong(f), tapWeighted(f * 0.5));
+    if (f > 0.985 && !crossed) (setCrossed(true), tapKept());
+  };
   return (0, jsx.jsxs)("div", {
     className: "distance-room",
     children: [
@@ -238,15 +310,16 @@ function DistanceRoom() {
       }),
       (0, jsx.jsxs)(motion.div, {
         className: "km",
+        "data-closing": along > 0.01 ? "true" : void 0,
         ...riseIn(0.15),
         children: [
           (0, jsx.jsx)("span", {
             className: "km-number",
-            children: formatNumber(e),
+            children: formatNumber(along > 0.01 ? left : e),
           }),
           (0, jsx.jsx)("span", {
             className: "km-unit",
-            children: "kilometres",
+            children: along > 0.01 ? (left === 0 ? "kilometres left" : "kilometres to go") : "kilometres",
           }),
         ],
       }),
@@ -255,9 +328,24 @@ function DistanceRoom() {
         viewBox: "0 0 320 120",
         "aria-hidden": "true",
         ...fadeIn(0.3, 0.8),
+        onPointerDown: (ev) => {
+          ((dragging.current = true), ev.currentTarget.setPointerCapture?.(ev.pointerId), move(ev));
+        },
+        onPointerMove: (ev) => {
+          if (dragging.current) move(ev);
+        },
+        onPointerUp: () => {
+          dragging.current = false;
+        },
+        onPointerCancel: () => {
+          dragging.current = false;
+        },
+        "data-swipe": "own",
+        "data-held": along > 0.01 ? "true" : void 0,
         children: [
           (0, jsx.jsx)(motion.path, {
-            d: "M40 88 C 110 20, 210 20, 280 44",
+            ref: arc,
+            d: DISTANCE_ARC,
             fill: "none",
             stroke: "currentColor",
             strokeWidth: "1",
@@ -274,6 +362,27 @@ function DistanceRoom() {
               ease: "easeInOut",
             },
           }),
+          along > 0.01
+            ? (0, jsx.jsx)("path", {
+                className: "map-crossed",
+                d: DISTANCE_ARC,
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: "1.4",
+                pathLength: "1",
+                strokeDasharray: "1",
+                strokeDashoffset: 1 - along,
+              })
+            : null,
+          along > 0.01
+            ? (0, jsx.jsx)("circle", {
+                className: "map-thumb",
+                cx: at.x,
+                cy: at.y,
+                r: "3.4",
+                fill: "currentColor",
+              })
+            : null,
           (0, jsx.jsx)("circle", {
             cx: "40",
             cy: "88",
@@ -349,6 +458,15 @@ function DistanceRoom() {
             ],
           }),
         ],
+      }),
+      (0, jsx.jsx)(motion.p, {
+        className: "map-drag-hint",
+        ...fadeIn(0.9, 0.8),
+        children: crossed
+          ? "There. That is all it ever was — a thing a hand can cross in a second and a half."
+          : along > 0.01
+            ? "Keep going."
+            : `Put a finger on ${CANON.hisCity} and drag it to me.`,
       }),
       (0, jsx.jsx)(motion.p, {
         className: "scene-under",

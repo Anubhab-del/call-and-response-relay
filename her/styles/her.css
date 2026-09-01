@@ -3150,3 +3150,208 @@ html.is-still .letterbox:after {
   right: clamp(14px, 5vw, 30px);
 }
 /*$vite$:1*/
+
+/* ── her hand, in the house ──────────────────────────────────────────────
+   Everything below is the house learning the gestures the picture already
+   knew. None of it replaces a button: every one of these has a tap that does
+   the same job, because a gesture nobody told her about is not an affordance,
+   it is a secret. */
+
+/* The same warm smudge under her thumb that the picture has, at a fraction of
+   the strength — a house is lit, not projected. */
+.house:before {
+  content: "";
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  background: radial-gradient(
+    circle at var(--touch-x, 50%) var(--touch-y, 50%),
+    #f2d9a610 0%,
+    #e8b9a409 26%,
+    #0000 52%
+  );
+  transition: opacity 1.2s var(--ease);
+  position: absolute;
+  inset: 0;
+}
+@media (hover: none) and (pointer: coarse) {
+  .house:before {
+    opacity: 1;
+  }
+}
+html.is-still .house:before {
+  display: none;
+}
+
+/* Anything that can be held says so while it is being held: it settles a
+   fraction, the way a real thing gives under a thumb. */
+.envelope[data-holding="true"],
+.thing[data-holding="true"],
+.part-list li button[data-holding="true"] {
+  transition:
+    scale 0.42s var(--ease),
+    background 0.42s ease,
+    border-color 0.42s ease;
+  scale: 0.986;
+  background: #f0d6aa14;
+}
+html.is-still .envelope[data-holding="true"],
+html.is-still .thing[data-holding="true"],
+html.is-still .part-list li button[data-holding="true"] {
+  scale: 1;
+}
+
+/* Held, an envelope says what it is without opening. The line sits under the
+   state, in his hand, dimmer than a letter she has actually been given. */
+.envelope-peek {
+  font-family: var(--display);
+  color: #e8d2acb0;
+  border-top: 1px solid var(--line-warm);
+  margin-top: 3px;
+  padding-top: 9px;
+  font-size: 0.92rem;
+  font-style: italic;
+  line-height: 1.55;
+  display: block;
+  overflow: hidden;
+}
+.envelope[data-look="true"] {
+  border-color: #e8c89452;
+}
+.envelope[data-look="true"] .envelope-flap {
+  opacity: 0.55;
+  transform: translateY(-5px);
+}
+.envelope[data-locked="true"][data-look="true"] {
+  opacity: 0.82;
+}
+
+/* A vow pushed rightward goes in the ledger; leftward takes it back. The row
+   leans the way she pushed it and then rights itself. */
+.vow-list li {
+  transition:
+    translate 0.5s var(--ease),
+    background 0.5s ease,
+    border-color 0.5s ease;
+  touch-action: pan-y;
+}
+.vow-list li[data-pushed="in"] {
+  translate: 7px 0;
+  background: #d8b8771c;
+}
+.vow-list li[data-pushed="out"] {
+  translate: -7px 0;
+}
+html.is-still .vow-list li[data-pushed] {
+  translate: 0;
+}
+
+/* The distance, closing under her finger. */
+.map {
+  touch-action: none;
+  cursor: ew-resize;
+}
+.map-crossed {
+  color: var(--lamp);
+  opacity: 0.85;
+  filter: drop-shadow(0 0 5px #d8b87766);
+}
+.map-thumb {
+  color: var(--lamp);
+  filter: drop-shadow(0 0 7px #d8b877a1);
+}
+.map[data-held="true"] .map-label {
+  fill: #d3c0aab3;
+}
+.map-drag-hint {
+  font-family: var(--display);
+  color: #d8b877a3;
+  margin-top: 2px;
+  font-size: 0.94rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+.km[data-closing="true"] .km-number {
+  color: var(--lamp);
+}
+
+/* A part of the picture, opened from the doorway. */
+.part-inside {
+  border-left: 1px solid var(--line-warm);
+  gap: 7px;
+  margin: 6px 0 2px 16px;
+  padding: 4px 0 4px 14px;
+  list-style: none;
+  display: grid;
+  overflow: hidden;
+}
+.part-inside li {
+  align-items: baseline;
+  gap: 10px;
+  display: flex;
+}
+.part-inside-n {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.14em;
+  color: #d8b87775;
+  flex: none;
+  width: 3.4em;
+  font-size: 0.56rem;
+}
+.part-inside-line {
+  font-family: var(--display);
+  color: var(--paper-dim);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+.part-list li[data-open="true"] button {
+  border-color: #e8c8945c;
+  background: #f0d6aa0e;
+}
+
+/* The one place the keys are written down. */
+.key-card-list {
+  border-top: 1px solid var(--line-warm);
+  grid-template-columns: auto 1fr;
+  gap: 9px 16px;
+  margin: 14px 0 16px;
+  padding-top: 14px;
+  display: grid;
+}
+.key-card-list dt {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #d8b877c4;
+  font-size: 0.58rem;
+  line-height: 1.7;
+}
+.key-card-list dd {
+  color: var(--paper-dim);
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+/* Focus follows the room, but quietly: she asked for the room, she does not
+   need a box drawn round the whole of it. Everything inside still rings. */
+.house-main:focus,
+.reading:focus {
+  outline: none;
+}
+
+/* Tonight's line, held. It is the same gesture as the room it came from. */
+.tonight[data-holding="true"] {
+  transition:
+    scale 0.42s var(--ease),
+    border-color 0.42s ease;
+  border-top-color: #e8c89452;
+  border-bottom-color: #e8c89452;
+  scale: 0.99;
+}
+html.is-still .tonight[data-holding="true"] {
+  scale: 1;
+}
+.promises .fine {
+  margin: -6px 0 16px;
+}

@@ -14,7 +14,9 @@ function House({ onWatch: onWatch, onBeginHour: onBeginHour, steppedOut: stepped
   let t = useStore(),
     [n, r] = (0, React.useState)("landing"),
     [i, a] = (0, React.useState)(null),
-    [openLetter, setOpenLetter] = (0, React.useState)(null);
+    [openLetter, setOpenLetter] = (0, React.useState)(null),
+    [keys, setKeys] = (0, React.useState)(false),
+    frame = (0, React.useRef)(null);
   ((0, React.useEffect)(() => {
     score.setCue(n === "letters" ? "letter" : "house");
   }, [n]),
@@ -32,17 +34,53 @@ function House({ onWatch: onWatch, onBeginHour: onBeginHour, steppedOut: stepped
           () => window.removeEventListener("popstate", e)
         );
     }, [n]));
-  let o = (e) => {
+  let o = (0, React.useCallback)((e) => {
     (tapTick(),
       r(e),
+      // The room scrolls, not the window — a room she has already read part of
+      // should not open half-way down.
+      frame.current?.querySelector(".house-main")?.scrollTo?.({ top: 0 }),
       window.scrollTo?.({
         top: 0,
       }));
-  };
+  }, []);
+  // Back is back, from anywhere: escape, the arrow before the first room, or
+  // a thumb dragged in from the left edge the way a phone expects.
+  let back = (0, React.useCallback)(() => {
+    if (n === "landing") return;
+    (tapTick(), r("landing"));
+  }, [n]);
+  useHouseKeys({
+    room: n,
+    onGo: o,
+    onBack: back,
+    onKeys: (0, React.useCallback)(() => setKeys((v) => !v), []),
+    enabled: !keys,
+  });
+  useThumbLight(frame);
+  // A room she asked for should also be the room her keyboard is in. Skipped
+  // on the first paint, so arriving at the front door does not put a focus
+  // ring on anything she did not touch.
+  let landed = (0, React.useRef)(false);
+  (0, React.useEffect)(() => {
+    if (!landed.current) {
+      landed.current = true;
+      return;
+    }
+    frame.current?.querySelector(".house-main")?.focus?.({ preventScroll: true });
+  }, [n]);
+  let edge = useSwipe({
+    fromEdge: true,
+    onRight: () => {
+      if (n !== "landing") back();
+    },
+  });
   return (0, jsx.jsxs)("div", {
     className: "house",
+    ref: frame,
     "data-night": isNightHours() ? "true" : void 0,
     "data-room": n,
+    ...edge,
     children: [
       (0, jsx.jsxs)("header", {
         className: "house-bar",
@@ -97,6 +135,8 @@ function House({ onWatch: onWatch, onBeginHour: onBeginHour, steppedOut: stepped
           motion.main,
           {
             className: "house-main",
+            tabIndex: -1,
+            "aria-label": n === "landing" ? CANON.title : ROOM_TITLES[n],
             initial: {
               opacity: 0,
               y: isStill() ? 0 : 14,
@@ -120,6 +160,13 @@ function House({ onWatch: onWatch, onBeginHour: onBeginHour, steppedOut: stepped
                     onOpenLetter: (id) => {
                       (setOpenLetter(id), o("letters"));
                     },
+                    onAnswer: (thing) => {
+                      (a({
+                        id: `thing-${thing.index}`,
+                        open: thing.text,
+                      }),
+                        o("say"));
+                    },
                   })
                 : null,
               n === "letters"
@@ -135,7 +182,17 @@ function House({ onWatch: onWatch, onBeginHour: onBeginHour, steppedOut: stepped
                     },
                   })
                 : null,
-              n === "everything" ? (0, jsx.jsx)(EverythingRoom, {}) : null,
+              n === "everything"
+                ? (0, jsx.jsx)(EverythingRoom, {
+                    onAnswer: (thing) => {
+                      (a({
+                        id: `thing-${thing.index}`,
+                        open: thing.text,
+                      }),
+                        o("say"));
+                    },
+                  })
+                : null,
               n === "promises" ? (0, jsx.jsx)(PromisesRoom, {}) : null,
               n === "days" ? (0, jsx.jsx)(DaysRoom, {}) : null,
               n === "distance" ? (0, jsx.jsx)(DistanceRoom, {}) : null,
@@ -166,6 +223,9 @@ function House({ onWatch: onWatch, onBeginHour: onBeginHour, steppedOut: stepped
             }),
           })
         : null,
+      (0, jsx.jsx)(AnimatePresence, {
+        children: keys ? (0, jsx.jsx)(KeyCard, { onClose: () => setKeys(false) }) : null,
+      }),
     ],
   });
 }
@@ -200,45 +260,96 @@ function ReelRoom({ onWatch: onWatch }) {
       }),
       (0, jsx.jsx)("ul", {
         className: "part-list",
-        children: PARTS.map((n) => {
-          let r = o.find((e) => e.part === n.index)?.at ?? 0,
-            i = a.filter((e) => e.part === n.index && e.at <= t.reelFurthest).length,
-            s = n.to - n.from + 1;
-          return (0, jsx.jsx)(
-            "li",
+        children: PARTS.map((part) =>
+          (0, jsx.jsx)(
+            PartCard,
             {
-              children: (0, jsx.jsxs)("button", {
-                type: "button",
-                onClick: () => onWatch(r),
-                children: [
-                  (0, jsx.jsx)("span", {
-                    className: "part-list-years",
-                    children: n.years,
-                  }),
-                  (0, jsx.jsx)("span", {
-                    className: "part-list-title",
-                    children: n.title,
-                  }),
-                  (0, jsx.jsx)("span", {
-                    className: "part-list-count",
-                    children: i === 0 ? `${s} chapters` : i >= s ? `all ${s} read` : `${i} of ${s}`,
-                  }),
-                ],
-              }),
+              part: part,
+              at: o.find((e) => e.part === part.index)?.at ?? 0,
+              read: a.filter((e) => e.part === part.index && e.at <= t.reelFurthest).length,
+              onWatch: onWatch,
             },
-            n.index,
-          );
-        }),
+            part.index,
+          ),
+        ),
       }),
       (0, jsx.jsxs)("p", {
         className: "fine centre-text",
         children: [
-          "Once it is playing, ",
+          "Hold a part to see what is in it. Once it is playing, ",
           (0, jsx.jsx)("em", {
             children: "contents",
           }),
           " at the bottom opens the whole thread and takes you to any chapter.",
         ],
+      }),
+    ],
+  });
+}
+// A part of the picture. Tapped, it plays from there. Held, it opens and
+// shows the chapters inside it, so she can decide from the doorway instead of
+// having to walk in and find out.
+function PartCard({ part: part, at: at, read: read, onWatch: onWatch }) {
+  let count = part.to - part.from + 1;
+  let [open, setOpen] = (0, React.useState)(false);
+  let hold = usePress({
+    onHold: () => setOpen((v) => !v),
+    onTap: () => onWatch(at),
+  });
+  let inside = (0, React.useMemo)(
+    () => CHAPTERS.filter((c) => c.n >= part.from && c.n <= part.to),
+    [part.from, part.to],
+  );
+  return (0, jsx.jsxs)("li", {
+    "data-open": open ? "true" : void 0,
+    children: [
+      (0, jsx.jsxs)("button", {
+        type: "button",
+        "data-holding": hold.holding ? "true" : void 0,
+        ...hold.handlers,
+        children: [
+          (0, jsx.jsx)("span", {
+            className: "part-list-years",
+            children: part.years,
+          }),
+          (0, jsx.jsx)("span", {
+            className: "part-list-title",
+            children: part.title,
+          }),
+          (0, jsx.jsx)("span", {
+            className: "part-list-count",
+            children: read === 0 ? `${count} chapters` : read >= count ? `all ${count} read` : `${read} of ${count}`,
+          }),
+        ],
+      }),
+      (0, jsx.jsx)(AnimatePresence, {
+        children: open
+          ? (0, jsx.jsx)(motion.ol, {
+              className: "part-inside",
+              initial: { opacity: 0, height: isStill() ? "auto" : 0 },
+              animate: { opacity: 1, height: "auto" },
+              exit: { opacity: 0, height: isStill() ? "auto" : 0 },
+              transition: { duration: isStill() ? 0.15 : 0.46, ease: EASE_OUT },
+              children: inside.map((c) =>
+                (0, jsx.jsxs)(
+                  "li",
+                  {
+                    children: [
+                      (0, jsx.jsx)("span", {
+                        className: "part-inside-n",
+                        children: roman(c.n),
+                      }),
+                      (0, jsx.jsx)("span", {
+                        className: "part-inside-line",
+                        children: c.title,
+                      }),
+                    ],
+                  },
+                  c.n,
+                ),
+              ),
+            })
+          : null,
       }),
     ],
   });

@@ -572,6 +572,205 @@ for (const mode of ["full", "lean"]) {
   await ctx.close();
 }
 
+// ── the house answers the same hand ───────────────────────────────────────
+{
+  const v = await visit("2026-09-15T15:00:00");
+  const { page } = v;
+  const room = () => page.evaluate(() => document.querySelector(".house")?.dataset.room);
+
+  // keys
+  await page.keyboard.press("3");
+  await page.waitForTimeout(600);
+  ok("a digit opens the third room", (await room()) === "everything", String(await room()));
+  await page.keyboard.press("ArrowRight");
+  await page.waitForTimeout(600);
+  ok("the arrow walks to the next room", (await room()) === "promises", String(await room()));
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(600);
+  ok("escape is back", (await room()) === "landing", String(await room()));
+  await page.keyboard.press("?");
+  await page.waitForTimeout(500);
+  ok("the key card is one keystroke away", (await page.locator(".key-card").count()) === 1);
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(500);
+  ok("and one keystroke gone", (await page.locator(".key-card").count()) === 0);
+
+  // the edge swipe
+  await page.keyboard.press("1");
+  await page.waitForTimeout(700);
+  ok("letters open on the first key", (await room()) === "letters", String(await room()));
+  await page.mouse.move(8, 500);
+  await page.mouse.down();
+  await page.mouse.move(150, 504, { steps: 10 });
+  await page.mouse.up();
+  await page.waitForTimeout(700);
+  ok("a thumb from the edge is back", (await room()) === "landing", String(await room()));
+
+  // a swipe that starts inside a room is not a swipe back
+  await page.keyboard.press("1");
+  await page.waitForTimeout(700);
+  await page.mouse.move(200, 500);
+  await page.mouse.down();
+  await page.mouse.move(340, 504, { steps: 10 });
+  await page.mouse.up();
+  await page.waitForTimeout(700);
+  ok("a swipe from the middle is not", (await room()) === "letters", String(await room()));
+  ok("and brushing past an envelope does not open it", (await page.locator(".reading").count()) === 0,
+    String(await page.locator(".reading").count()));
+
+  // holding an envelope says what it is, and does not open it
+  const shut = await page.locator('.envelope[data-locked="true"]').first();
+  await shut.hover();
+  await page.mouse.down();
+  await page.waitForTimeout(700);
+  await page.mouse.up();
+  await page.waitForTimeout(700);
+  ok("holding a sealed letter shows the day, not the letter",
+    (await page.locator(".envelope-peek").count()) >= 1 && (await page.locator(".reading").count()) === 0,
+    `${await page.locator(".envelope-peek").count()} peeks / ${await page.locator(".reading").count()} open`);
+  const peek = await page.locator(".envelope-peek").first().innerText();
+  ok("and the peek is the date it comes", /not yet/i.test(peek), peek.slice(0, 60));
+
+  // holding a once letter never spends it
+  const once = page.locator('.envelope[data-once="true"]').first();
+  if (await once.count()) {
+    await once.hover();
+    await page.mouse.down();
+    await page.waitForTimeout(700);
+    await page.mouse.up();
+    await page.waitForTimeout(600);
+    const spent = await page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).spentOnce);
+    ok("holding the once letter does not spend it", !spent, String(spent));
+  } else {
+    ok("holding the once letter does not spend it", false, "no once letter on the shelf");
+  }
+
+  // walking the shelf, and closing with a swipe down
+  await page.locator('.envelope:not([data-locked]):not([data-once])').first().click();
+  await page.waitForTimeout(900);
+  ok("a letter opens on a tap", (await page.locator(".reading").count()) === 1);
+  const first = await page.locator(".reading-open").innerText();
+  await page.keyboard.press("ArrowRight");
+  await page.waitForTimeout(900);
+  const second = await page.locator(".reading-open").innerText();
+  ok("the arrow walks to the letter next to it", first !== second, `${first} → ${second}`);
+  await page.mouse.move(195, 300);
+  await page.mouse.down();
+  await page.mouse.move(196, 470, { steps: 10 });
+  await page.mouse.up();
+  await page.waitForTimeout(700);
+  ok("a swipe down puts it back on the shelf", (await page.locator(".reading").count()) === 0);
+
+  // a vow, pushed
+  await page.keyboard.press("4");
+  await page.waitForTimeout(800);
+  const kept = () => page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem("her.v1")).kept ?? {}).length);
+  const before = await kept();
+  const vow = page.locator(".vow-list li").first();
+  const box = await vow.boundingBox();
+  await page.mouse.move(box.x + 30, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 160, box.y + box.height / 2 + 3, { steps: 10 });
+  await page.mouse.up();
+  await page.waitForTimeout(600);
+  ok("pushing a vow rightward marks it kept", (await kept()) === before + 1, `${before} → ${await kept()}`);
+  ok("and pushing a vow does not leave the room", (await room()) === "promises", String(await room()));
+  await page.mouse.move(box.x + 160, box.y + box.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 30, box.y + box.height / 2 + 3, { steps: 10 });
+  await page.mouse.up();
+  await page.waitForTimeout(600);
+  ok("and leftward takes it back out", (await kept()) === before, `${await kept()}`);
+
+  // one more true thing, by flick
+  await page.keyboard.press("3");
+  await page.waitForTimeout(800);
+  const things = () => page.locator(".thing").count();
+  const t0 = await things();
+  const card = await page.locator(".thing.today").boundingBox();
+  await page.mouse.move(card.x + card.width / 2, card.y + card.height - 8);
+  await page.mouse.down();
+  await page.mouse.move(card.x + card.width / 2 + 1, card.y + card.height - 130, { steps: 10 });
+  await page.mouse.up();
+  await page.waitForTimeout(700);
+  ok("a flick upward pulls one more", (await things()) === t0 + 1, `${t0} → ${await things()}`);
+
+  // holding a thing hands it to her page, quoted
+  await page.locator(".thing.today").hover();
+  await page.mouse.down();
+  await page.waitForTimeout(700);
+  await page.mouse.up();
+  await page.waitForTimeout(900);
+  ok("holding a true thing opens her page with it", (await room()) === "say"
+    && (await page.locator(".answering").count()) === 1, String(await room()));
+
+  // escape gets her out of a field without losing a word, and then out of the
+  // room — the same key, twice, meaning the same thing
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(300);
+  ok("escape in a field puts the keyboard away", await page.evaluate(() => document.activeElement?.id !== "say-text"),
+    String(await page.evaluate(() => document.activeElement?.id)));
+
+  // the distance closes under a finger
+  await page.keyboard.press("6");
+  await page.waitForTimeout(800);
+  ok("and the keys work again straight after", (await room()) === "distance", String(await room()));
+  const km = () => page.locator(".km-number").innerText();
+  const far = await km();
+  const map = await page.locator(".map").boundingBox();
+  await page.mouse.move(map.x + map.width * 0.14, map.y + map.height * 0.7);
+  await page.mouse.down();
+  await page.mouse.move(map.x + map.width * 0.55, map.y + map.height * 0.4, { steps: 12 });
+  await page.mouse.up();
+  await page.waitForTimeout(400);
+  const mid = await km();
+  ok("dragging the arc closes the distance", far !== mid && Number(mid.replace(/,/g, "")) < Number(far.replace(/,/g, "")), `${far} → ${mid}`);
+  await page.mouse.move(map.x + map.width * 0.55, map.y + map.height * 0.4);
+  await page.mouse.down();
+  await page.mouse.move(map.x + map.width * 0.95, map.y + map.height * 0.35, { steps: 12 });
+  await page.mouse.up();
+  await page.waitForTimeout(400);
+  ok("and it can be crossed", /that is all it ever was/i.test(await page.locator(".map-drag-hint").innerText()),
+    await page.locator(".map-drag-hint").innerText());
+
+  // a part of the picture, opened from the doorway
+  await page.keyboard.press("7");
+  await page.waitForTimeout(800);
+  await page.locator(".part-list li button").first().hover();
+  await page.mouse.down();
+  await page.waitForTimeout(700);
+  await page.mouse.up();
+  await page.waitForTimeout(800);
+  ok("holding a part shows its chapters without playing it",
+    (await page.locator(".part-inside li").count()) > 3 && (await page.evaluate(() => document.querySelector(".shell")?.dataset.mode)) === "house",
+    String(await page.locator(".part-inside li").count()));
+
+  ok("the house: nothing fetched by any of it", v.external.length === 0, v.external.join(" | "));
+  ok("the house: no errors from any of it", v.errors.length === 0, v.errors.join(" | "));
+  await v.close();
+}
+
+// ── none of it is required ────────────────────────────────────────────────
+{
+  // Every gesture has a button that does the same job. A gesture she is never
+  // told about must never be the only way through.
+  const v = await visit("2026-09-15T15:00:00");
+  const { page } = v;
+  const letters = await page.locator(".room-card").first();
+  await letters.click();
+  await page.waitForTimeout(800);
+  await page.locator('.envelope:not([data-locked]):not([data-once])').first().click();
+  await page.waitForTimeout(1000);
+  ok("a letter still closes on the button", (await page.getByRole("button", { name: "close it" }).count()) === 1);
+  await page.getByRole("button", { name: "close it" }).click();
+  await page.waitForTimeout(700);
+  ok("and it closed", (await page.locator(".reading").count()) === 0);
+  await page.getByRole("button", { name: /←/ }).first().click();
+  await page.waitForTimeout(700);
+  ok("back is still a button", (await page.evaluate(() => document.querySelector(".house")?.dataset.room)) === "landing");
+  await v.close();
+}
+
 // ── The Same Hour ─────────────────────────────────────────────────────────
 // The times below are read out of src/content/samehour.js rather than typed
 // in, so re-pacing the night can never quietly stop these from testing it.
