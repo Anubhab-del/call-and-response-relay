@@ -37,7 +37,13 @@
   --void: #08050a;
   --paper: #f4e9dc;
   --paper-dim: #ddccb89e;
-  --paper-faint: #d3c0aa61;
+  /* Measured, not eyeballed. At #d3c0aa61 every small label in the house sat
+     at 2.44:1 against the ground — a whisper on a lit screen, and she will not
+     only ever read this in the dark. Anything that carries meaning is now at
+     4.5:1; --paper-ghost is the 3:1 floor, and it is only for a word that
+     names the thing directly beside it. */
+  --paper-faint: #d3c0aa99;
+  --paper-ghost: #d3c0aa74;
   --tungsten: #f2ddbe;
   --tungsten-wash: #15100a;
   --dusk: #cdb0bb;
@@ -1504,7 +1510,7 @@ html.is-still .vignette {
 .ghost {
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: #bda89375;
+  color: #bda893af;
   border: 1px solid #bda89324;
   border-radius: 2px;
   padding: 7px 12px;
@@ -2165,10 +2171,13 @@ html.is-still .letterbox:after {
   font-size: clamp(1.9rem, 8vw, 2.7rem);
   line-height: 1;
 }
+/* "days", under a number that is already enormous, and the citation under a
+   quote it is naming. Both only repeat what is beside them, so both stay at
+   the 3:1 floor rather than competing with the thing they label. */
 .day-label {
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--paper-faint);
+  color: var(--paper-ghost);
   font-size: 0.55rem;
 }
 .days-ring {
@@ -2236,7 +2245,7 @@ html.is-still .letterbox:after {
   font-family: var(--ui-font);
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--paper-faint);
+  color: var(--paper-ghost);
   margin-top: 12px;
   font-size: 0.55rem;
   font-style: normal;
@@ -2415,7 +2424,7 @@ html.is-still .letterbox:after {
 }
 .envelope-date {
   font-family: var(--display);
-  color: #d8b87799;
+  color: #d8b877a8;
   font-size: 0.86rem;
   font-style: italic;
 }
@@ -2562,7 +2571,7 @@ html.is-still .letterbox:after {
   font-family: var(--ui-font);
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--paper-faint);
+  color: var(--paper-ghost);
   margin-top: 10px;
   font-size: 0.54rem;
   font-style: normal;
@@ -2650,6 +2659,10 @@ html.is-still .jar-level {
   border: 1px solid var(--line);
   background: #0000004d;
   border-radius: 3px;
+  /* Forty-three pixels, at every width, for want of one. She reads this in
+     bed, one-handed, in the dark; a field she has to aim at is a field she
+     writes less in. */
+  min-height: 44px;
   padding: 11px 13px;
   font-size: 0.92rem;
   transition: border-color 0.3s;
@@ -2942,16 +2955,23 @@ html.is-still .jar-level {
   font-size: 0.6rem;
   display: flex;
 }
+/* Keeping something to herself is the most consequential thing on this page
+   and it was a fourteen-pixel box. The label has always been the target — the
+   input sits inside it — but the row it lives in was shorter than a thumb, and
+   nothing about it looked like a thing you press. */
 .writer-private {
   cursor: pointer;
   align-items: center;
-  gap: 7px;
+  gap: 9px;
+  min-height: 44px;
+  padding: 0 2px;
   display: flex;
 }
 .writer-private input {
   accent-color: #d8b877e6;
-  width: 14px;
-  height: 14px;
+  flex: none;
+  width: 19px;
+  height: 19px;
 }
 .writer-row {
   flex-wrap: wrap;

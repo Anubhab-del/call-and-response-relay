@@ -63,7 +63,9 @@ purpose-built scene component instead of the default typesetting.
 
 ```
 npm install                 # esbuild, plus playwright for the checks
-node tools/check.mjs        # runs against dist/HER.html
+npm run check               # the suite — 199 checks against dist/HER.html
+npm run audit               # fit, touch targets and contrast, at three widths
+npm run read                # every sentence the house can build, over 3 years
 ```
 
 It opens the built file the way she will — `file://`, offline, 390×844, one
@@ -79,9 +81,30 @@ class, and two in the morning. It also:
 - runs the whole thing under `prefers-reduced-motion`;
 - switches all three motion modes and checks each one changes something;
 - serves the file over a local HTTP server and asserts the host is asked for
-  exactly one thing.
+  exactly one thing;
+- walks the whole thing forward to 2036 and reads it there, and opens a save
+  with ten years of writing in it;
+- at 320 px, asserts that nothing is smaller than a thumb, nothing that
+  carries meaning is under 4.5:1 against its own ground, and nothing reaches
+  past the frame.
 
 Nothing in it asserts on a screenshot. It asserts on what the house says.
+
+### The other two
+
+`npm run audit` is the same fit-and-contrast pass at 320, 390 and 430 px, and
+prints what it finds rather than asserting. Use it when moving type around.
+
+`npm run read` opens the house on seventy-eight different days spread over
+three years — every date it keeps, and the day either side of each — and reads
+every screen looking for the faults a spellchecker cannot see: "1 days", a
+sentence starting in lower case, a doubled word, a value that got out. It found
+"Three years in 1 days" on the eve of the third September, which is precisely
+the night it would have been read.
+
+`--paper-ghost` is a deliberate 3:1 floor and the checks know it. It is only
+for a word that repeats what is directly beside it — "days" under a number
+that is already enormous. Everything else owes 4.5:1.
 
 ## The vendor chunk
 

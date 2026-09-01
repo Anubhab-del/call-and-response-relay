@@ -585,6 +585,94 @@ for (const mode of ["full", "lean"]) {
   await ctx.close();
 }
 
+// ── nothing she has to aim at, nothing she has to squint at ───────────────
+{
+  // The smallest screen she is likely to hold, because if it fits there it
+  // fits everywhere. Two things are asserted for every room: no control is
+  // smaller than a thumb, and no text that carries meaning is a whisper.
+  const ctx = await browser.newContext({ viewport: { width: 320, height: 568 }, deviceScaleFactor: 2, offline: true });
+  const page = await ctx.newPage();
+  await page.addInitScript(() => {
+    if (localStorage.getItem("her.v1")) return;
+    localStorage.setItem("her.v1", JSON.stringify({ schema: 1, greeted: true, entered: true, watched: true,
+      reelAt: 0, reelFurthest: 0, opened: {}, spentOnce: false, kept: {}, collected: {}, pulls: {},
+      replies: [], words: {}, visits: [], sound: false, motion: "full", inbox: [], nameWritten: true,
+      firstOpen: 1, lastOpen: 1 }));
+  });
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForTimeout(1400);
+
+  const look = () => page.evaluate(() => {
+    const f = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+    const lum = (c) => 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]);
+    const parse = (c) => (c.match(/[\d.]+/g) ?? []).map(Number);
+    const over = (fg, bg) => { const a = fg[3] ?? 1; return [0, 1, 2].map((i) => fg[i] * a + bg[i] * (1 - a)); };
+    const groundOf = (el) => {
+      const stack = [];
+      for (let n = el; n; n = n.parentElement) {
+        const c = parse(getComputedStyle(n).backgroundColor);
+        if ((c[3] ?? 1) <= 0.001) continue;
+        stack.push(c);
+        if ((c[3] ?? 1) >= 0.999) break;
+      }
+      let g = [7, 8, 12];
+      for (let i = stack.length - 1; i >= 0; i--) g = over(stack[i], g);
+      return g;
+    };
+    const ghost = "rgba(211, 192, 170, 0.455)";
+    const main = document.querySelector(".house-main");
+    const out = { small: [], faint: [], wide: [] };
+    if (!main) return out;
+    const box = main.getBoundingClientRect();
+    for (const el of main.querySelectorAll("*")) {
+      if (el.closest(".sr-only")) continue;
+      const r = el.getBoundingClientRect();
+      if (!r.width && !r.height) continue;
+      if (r.right > box.right + 1 || r.left < box.left - 1)
+        out.wide.push(`${el.className || el.tagName}`);
+      if (el.children.length || !el.textContent.trim()) continue;
+      const cs = getComputedStyle(el);
+      const g = groundOf(el);
+      const size = parseFloat(cs.fontSize);
+      const l1 = lum(over(parse(cs.color), g)) + 0.05;
+      const l2 = lum(g) + 0.05;
+      const ratio = Math.max(l1, l2) / Math.min(l1, l2);
+      const need = size >= 24 || cs.color === ghost ? 3 : 4.5;
+      if (ratio < need) out.faint.push(`${el.className || el.tagName} ${size.toFixed(0)}px ${ratio.toFixed(2)}`);
+    }
+    for (const el of main.querySelectorAll("button, a, input, textarea, select")) {
+      if (el.closest(".sr-only")) continue;
+      const r = el.getBoundingClientRect();
+      if (!r.width && !r.height) continue;
+      const label = el.closest("label");
+      if (label && label !== el && label.getBoundingClientRect().height >= 44) continue;
+      const after = getComputedStyle(el, "::after");
+      let grow = 0;
+      if (after.content !== "none" && after.position === "absolute")
+        grow = -((parseFloat(after.top) || 0) + (parseFloat(after.bottom) || 0));
+      if (r.height + Math.max(0, grow) < 43.5) out.small.push(`${el.className || el.tagName} ${Math.round(r.height)}`);
+    }
+    return out;
+  });
+
+  const small = [];
+  const faint = [];
+  const wide = [];
+  for (let i = 0; i <= ROOM_ORDER.length; i++) {
+    if (i > 0) { await page.keyboard.press(String(i)); await page.waitForTimeout(600); }
+    const room = await page.evaluate(() => document.querySelector(".house")?.dataset.room);
+    const seen = await look();
+    for (const x of seen.small) small.push(`${room}:${x}`);
+    for (const x of seen.faint) faint.push(`${room}:${x}`);
+    for (const x of seen.wide) wide.push(`${room}:${x}`);
+    if (i > 0) { await page.keyboard.press("Escape"); await page.waitForTimeout(400); }
+  }
+  ok("320px: nothing she has to aim at", small.length === 0, [...new Set(small)].slice(0, 5).join(" | "));
+  ok("320px: nothing she has to squint at", faint.length === 0, [...new Set(faint)].slice(0, 5).join(" | "));
+  ok("320px: nothing reaches past the frame", wide.length === 0, [...new Set(wide)].slice(0, 5).join(" | "));
+  await ctx.close();
+}
+
 // ── ten years on ──────────────────────────────────────────────────────────
 {
   // Everything in this file has to still be true in 2036. Not "still open" —

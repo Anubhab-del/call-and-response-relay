@@ -250,12 +250,17 @@ function DaysRoom() {
           }),
           (0, jsx.jsxs)("p", {
             className: "milestones-now",
-            children: [formatNumber(e), " days, as of tonight"],
+            children: [formatNumber(e), e === 1 ? " day, as of tonight" : " days, as of tonight"],
           }),
           r
             ? (0, jsx.jsxs)("p", {
                 className: "milestones-next",
-                children: [r.label, " in ", formatNumber(r.at - e), " days"],
+                // "Three years in 1 days" — on the eve of the third September,
+                // which is exactly the night it would have been read.
+                children:
+                  r.at - e === 0
+                    ? [r.label, ", today"]
+                    : [r.label, " in ", formatNumber(r.at - e), r.at - e === 1 ? " day" : " days"],
               })
             : null,
           (0, jsx.jsx)("ul", {
