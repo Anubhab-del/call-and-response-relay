@@ -418,8 +418,19 @@ async function visit(iso, { entered = true, viewport = { width: 390, height: 844
   const before = (await page.locator("#root").innerText()).replace(/\s+/g, " ").trim();
   await page.reload({ waitUntil: "load" });
   await page.waitForSelector(".film", { timeout: 10000 });
-  await page.waitForTimeout(600);
-  const at = await page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).reelAt);
+  // Wait for the place to be restored rather than for a number of
+  // milliseconds. A fixed delay made this flaky, and a flaky check is worse
+  // than no check: it cannot tell me whether the file is broken.
+  //
+  // This does not soften the assertion. If the picture resumed at the
+  // projector it would start counting up from zero and never arrive at where
+  // she left it, so the wait would run out and the check would fail.
+  let at = 0;
+  for (let i = 0; i < 40; i++) {
+    at = await page.evaluate(() => JSON.parse(localStorage.getItem("her.v1")).reelAt);
+    if (at === left) break;
+    await page.waitForTimeout(100);
+  }
   const after = (await page.locator("#root").innerText()).replace(/\s+/g, " ").trim();
   ok("and starts there again, not at the projector", at === left, `${at} vs ${left}`);
   ok("the same beat is on screen", after.slice(0, 60) === before.slice(0, 60), after.slice(0, 70));
@@ -571,6 +582,112 @@ for (const mode of ["full", "lean"]) {
   await page.waitForTimeout(2200);
   ok("swiping down goes in to the house", (await page.evaluate(() => document.querySelector(".shell")?.dataset.mode)) === "house");
   ok("no errors from any of it", errors.length === 0, errors.join(" | "));
+  await ctx.close();
+}
+
+// ── ten years on ──────────────────────────────────────────────────────────
+{
+  // Everything in this file has to still be true in 2036. Not "still open" —
+  // still true: the numbers, the ordering, the tense of every sentence.
+  const v = await visit("2036-11-20T20:00:00");
+  const home = await v.text();
+  ok("2036: the house opens", /DAYS/.test(home), home.slice(0, 80));
+  ok("2036: no console errors", v.errors.length === 0, v.errors.join(" | "));
+  ok("2036: thirteen years of days", /4,\d\d\d DAYS/.test(home), home.match(/[\d,]+ DAYS/)?.[0] ?? "");
+
+  const days = await v.room("Your days");
+  // What is coming, then what has been. Never the oldest thing first.
+  const order = [...days.matchAll(/(IN [\d,]+ DAYS|[\d,]+ DAYS AGO|TODAY)/g)].map((m) => m[1]);
+  const firstPast = order.findIndex((x) => /AGO/.test(x));
+  const lastAhead = order.map((x) => !/AGO/.test(x)).lastIndexOf(true);
+  ok("2036: what is coming is above what has been",
+    firstPast === -1 || lastAhead < firstPast, order.join(" | "));
+  ok("2036: and something is still coming", firstPast !== 0, order.slice(0, 3).join(" | "));
+  ok("2036: the counting still names the next one",
+    /(SEPTEMBER|YEARS|THOUSAND DAYS) IN [\d,]+ DAYS/i.test(days),
+    (days.match(/[^.]{0,60} IN [\d,]+ DAYS/i) ?? [""])[0]);
+  ok("2036: nothing reads as an unfinished ordinal", !/\d(1th|2th|3th|1nd|1rd)\b/.test(days), days.slice(0, 120));
+
+  const letters = await v.room("Letters");
+  // Everything with a year on it has opened for good by now. The one that is
+  // still sealed is the birthday, which is not waiting — it comes round.
+  ok("2036: the only thing still sealed is the one that comes round",
+    /One of them is still sealed\./.test(letters) && /on your birthday/i.test(letters),
+    (letters.match(/There are [^.]*\.[^.]*\./) ?? [""])[0]);
+  ok("2036: and the count reads like a sentence", !/\. [a-z]/.test(letters.split("Hold one")[0]),
+    letters.slice(0, 130));
+  ok("2036: the picture is still about the first three years",
+    /the first three years of us/i.test(await v.room("The picture")));
+  await v.close();
+}
+
+// ── a save with ten years in it ───────────────────────────────────────────
+{
+  // Every day for ten years: a word, a note, a visit, and every true thing
+  // found. If the house is going to fall over under its own history, it should
+  // do it here and not on her phone.
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(String(e.message)));
+  page.on("console", (m) => m.type() === "error" && errors.push(m.text()));
+  await page.addInitScript(fakeClock("2036-11-20T20:00:00"));
+  const bytes = await page.addInitScript(() => {
+    const words = {};
+    const replies = [];
+    const collected = {};
+    const opened = {};
+    const kept = {};
+    const day = Math.round(Date.now() / 86400000);
+    for (let i = 0; i < 3650; i++) {
+      words[String(day - i)] = "still";
+      replies.push({ id: `r${i}`, at: Date.now() - i * 86400000, text: "Something I wanted to tell you and did not have anywhere else to put." });
+    }
+    for (let i = 0; i < 372; i++) collected[String(i)] = Date.now();
+    for (let i = 0; i < 30; i++) opened[`l${i}`] = Date.now();
+    for (let i = 0; i < 12; i++) kept[`v${i}`] = Date.now();
+    const sameHour = {};
+    for (let y = 2026; y <= 2036; y++) sameHour[String(y)] = { doneAt: Date.now(), answer: "Yes." };
+    localStorage.setItem("her.v1", JSON.stringify({ schema: 1, greeted: true, entered: true,
+      watched: true, reelAt: 0, reelFurthest: 116, opened, spentOnce: true, kept, collected,
+      pulls: {}, replies, words, visits: Array.from({ length: 365 }, (_, i) => day - i),
+      sound: false, motion: "full", inbox: [], nameWritten: true, firstOpen: 1, lastOpen: 1, sameHour }));
+  });
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForTimeout(2200);
+  const size = await page.evaluate(() => (localStorage.getItem("her.v1") ?? "").length);
+  ok("ten years of writing fits in a save", size > 400000 && size < 4000000, `${Math.round(size / 1024)} kB`);
+  ok("and the house opens on it", (await page.locator(".house").count()) === 1);
+  ok("and nothing threw", errors.length === 0, errors.slice(0, 2).join(" | "));
+
+  const home = (await page.locator("#root").innerText()).replace(/\s+/g, " ");
+  ok("and it opens with what she earned, not the clock", /We were both here at nine/i.test(home),
+    home.slice(0, 90));
+
+  // The copy she can keep still builds out of it.
+  const built = await page.evaluate(() => {
+    const t0 = performance.now();
+    try {
+      const html = window.__heirloom ? window.__heirloom() : null;
+      return { ms: performance.now() - t0, len: html ? html.length : -1 };
+    } catch (e) {
+      return { error: String(e) };
+    }
+  });
+  // No hook is exported, so do it the way she would: through the fuse box.
+  await page.keyboard.press("8");
+  await page.waitForTimeout(900);
+  const save = page.getByRole("button", { name: "save everything" });
+  ok("the fuse box still offers the copy", (await save.count()) === 1, JSON.stringify(built));
+  const download = page.waitForEvent("download", { timeout: 30000 });
+  await save.click();
+  const file = await download;
+  const kept = path.join(os.tmpdir(), `her-longrun-${Date.now()}.html`);
+  await file.saveAs(kept);
+  const copy = readFileSync(kept, "utf8");
+  ok("and the copy carries ten years of it", copy.length > 300000, `${Math.round(copy.length / 1024)} kB`);
+  ok("and every September she stood in", (copy.match(/2026|2036/g) ?? []).length >= 2);
+  ok("still with nothing in it that runs", !/<script(?![^>]*type="application\/json")/i.test(copy));
   await ctx.close();
 }
 

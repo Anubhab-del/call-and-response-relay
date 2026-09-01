@@ -280,7 +280,13 @@ var ORDINAL_WORDS = [
 ];
 
 function ordinalWord(n) {
-  return ORDINAL_WORDS[n] ?? `${n}th`;
+  if (ORDINAL_WORDS[n]) return ORDINAL_WORDS[n];
+  // Past the twelfth the words get clumsy, so it goes back to figures — but
+  // properly. The fallback used to read "21th September", which is the sort of
+  // thing that only ever shows up years after anybody is watching.
+  let tens = n % 100;
+  if (tens >= 11 && tens <= 13) return `${n}th`;
+  return `${n}${["th", "st", "nd", "rd"][n % 10] ?? "th"}`;
 }
 // Small counts belong in words. "There are 24. 5 of them are sealed" reads as
 // twenty-four point five before it reads as two sentences, and a shelf of
@@ -294,4 +300,8 @@ var CARDINAL_WORDS = [
 ];
 function numberWord(n) {
   return CARDINAL_WORDS[n] ?? formatNumber(n);
+}
+// A count that starts a sentence has to look like it starts a sentence.
+function upperFirst(text) {
+  return text ? text[0].toUpperCase() + text.slice(1) : text;
 }

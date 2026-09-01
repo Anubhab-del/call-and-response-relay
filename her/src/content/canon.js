@@ -21,8 +21,11 @@ var INVITATION_COPY = {
   lines: [
     "Headphones, if you have them. I made it quiet on purpose.",
     "The lights off, if you can. It looks better in the dark, and so do most true things.",
-    "Thirty-six minutes, read at the speed I wrote it. I have had three years. You can give me half an hour and a bit.",
   ],
+  // The third line has a number in it that has to still be true in ten years,
+  // so it is worked out when she reads it rather than written down here.
+  time: (years) =>
+    `Thirty-six minutes, read at the speed I wrote it. I have had ${years <= 1 ? "a year" : `${numberWord(years)} years`}. You can give me half an hour and a bit.`,
   button: "I am ready",
 };
 // What the house says first. One per hour band, picked by the day so the same

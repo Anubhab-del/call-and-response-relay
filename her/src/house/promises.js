@@ -157,6 +157,12 @@ function DaysRoom() {
   useMinuteTick();
   let e = daysTogether(),
     t = timeLeftToday(),
+    // Sorted by how far off it is, ascending — which was right in 2026, when
+    // everything here was still ahead. By 2029 the wedding and her first class
+    // are behind us, and an ascending sort put the oldest of them at the top:
+    // the room opened on the thing furthest in the past.
+    //
+    // What is coming, soonest first. Then what has been, most recent first.
     n = MILESTONES.map((e) => {
       let t = nextOccurrence(e.on, !!e.annual),
         n = daysBetween(civilToday(), t);
@@ -166,8 +172,13 @@ function DaysRoom() {
         away: n,
         isNow: isOnDate(e.on, !!e.annual),
       };
-    }).sort((e, t) => e.away - t.away),
-    r = ANNIVERSARIES.find((t) => t.at > e),
+    }).sort((e, t) => {
+      let ahead = e.away >= 0,
+        theirs = t.away >= 0;
+      if (ahead !== theirs) return ahead ? -1 : 1;
+      return ahead ? e.away - t.away : t.away - e.away;
+    }),
+    r = nextAnniversary(e),
     i = ANNIVERSARIES.filter((t) => t.at <= e);
   return (0, jsx.jsxs)("div", {
     className: "her-days",

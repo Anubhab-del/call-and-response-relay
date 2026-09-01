@@ -180,7 +180,7 @@ function LettersRoom({ onOpenReply: onOpenReply, openId: openId, onOpened: onOpe
           numberWord(shelf.length),
           ". ",
           sealedLeft > 0
-            ? `${numberWord(sealedLeft)} of them ${sealedLeft === 1 ? "is" : "are"} still sealed.`
+            ? `${upperFirst(numberWord(sealedLeft))} of them ${sealedLeft === 1 ? "is" : "are"} still sealed.`
             : "None of them are sealed any more.",
           " Hold one to hear how it starts — holding never opens anything.",
         ],

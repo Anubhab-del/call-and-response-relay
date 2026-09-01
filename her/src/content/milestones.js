@@ -95,3 +95,19 @@ var ANNIVERSARIES = [
     line: e.line,
   }))
   .sort((e, t) => e.at - t.at);
+
+// The list stops at five thousand days, which is somewhere in our fourteenth
+// year. After that the counting section had nothing ahead of it and simply
+// went quiet — which is the one thing this house must never do. Past the end
+// of what I wrote down, the next thing coming is the next September, and it
+// is named rather than numbered.
+function nextAnniversary(days = daysTogether()) {
+  let listed = ANNIVERSARIES.find((a) => a.at > days);
+  if (listed) return listed;
+  let years = yearsTogether() + 1;
+  return {
+    at: daysToAnniversary(years),
+    label: `${ordinalWord(years)} September`,
+    line: "Still here.",
+  };
+}

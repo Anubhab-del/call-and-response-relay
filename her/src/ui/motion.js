@@ -122,16 +122,17 @@ function Invitation({ onReady: onReady }) {
         }),
         (0, jsx.jsx)("div", {
           className: "stack",
-          children: INVITATION_COPY.lines.map((e, t) =>
-            (0, jsx.jsx)(
-              motion.p,
-              {
-                className: "invite-line",
-                ...fadeIn(1 + t * 0.8, 0.9),
-                children: e,
-              },
-              e,
-            ),
+          children: [...INVITATION_COPY.lines, INVITATION_COPY.time(yearsTogether())].map(
+            (e, t) =>
+              (0, jsx.jsx)(
+                motion.p,
+                {
+                  className: "invite-line",
+                  ...fadeIn(1 + t * 0.8, 0.9),
+                  children: e,
+                },
+                t,
+              ),
           ),
         }),
         (0, jsx.jsx)(motion.button, {
