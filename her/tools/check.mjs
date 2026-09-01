@@ -1229,12 +1229,20 @@ const nightAt = (seconds) => {
     ok("after the name there is silence", (await v.text(".hour-stage")) === "", JSON.stringify(await v.text(".hour-stage")));
     ok("and the room is turned down for it",
        (await v.page.evaluate(() => document.querySelector(".shell")?.dataset.address)) === "true");
+    // The silence is not a gap before the address — it is the first twenty
+    // seconds of it. Nothing may be on the screen but the lamp. This carried
+    // "he is reading this now" and "step out" the whole way through, which is
+    // the one place in the file that must be empty.
+    ok("and nothing at all is on it but the lamp",
+      (await v.page.locator(".hour-slip, .hour-together, .hour button").count()) === 0,
+      `slip+together+buttons ${await v.page.locator(".hour-slip, .hour-together, .hour button").count()}`);
     await v.close();
   }
   {
     const v = await hourVisit(nightAt(beatAt((b) => b.kind === "address") + 4));
     ok("the silence breaks on the anniversary", /^Happy anniversary\.$/.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
-    ok("nothing else is on screen with it", (await v.page.locator(".hour-slip, .hour-together").count()) === 0);
+    ok("nothing else is on screen with it",
+      (await v.page.locator(".hour-slip, .hour-together, .hour button").count()) === 0);
     await v.close();
   }
   {

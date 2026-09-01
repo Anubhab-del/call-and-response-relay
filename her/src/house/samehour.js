@@ -207,16 +207,22 @@ function SameHour({ startedAt: startedAt, together: together, onLeave: onLeave, 
     );
   }
 
-  // The shell turns the room down while the address is on screen.
+  // From the moment the room turns down, there is nothing on the screen but
+  // the lamp and what he has to say to her. The silence is not a gap before
+  // the address — it is the first twenty seconds of it, and it was carrying
+  // "he is reading this now" across the top and "step out" across the bottom
+  // the whole way through.
+  let alone = beat?.kind === "still" || beat?.kind === "address" || beat?.kind === "close";
+
+  // The shell turns the room down for all of it.
   (0, React.useEffect)(() => {
-    let saying = beat?.kind === "address" || beat?.kind === "still" || beat?.kind === "close";
     let shell = document.querySelector(".shell");
     if (shell) {
-      if (saying) shell.setAttribute("data-address", "true");
+      if (alone) shell.setAttribute("data-address", "true");
       else shell.removeAttribute("data-address");
     }
     return () => document.querySelector(".shell")?.removeAttribute("data-address");
-  }, [beat?.kind]);
+  }, [alone]);
 
   return (0, jsx.jsxs)(motion.div, {
     className: "hour",
@@ -225,7 +231,7 @@ function SameHour({ startedAt: startedAt, together: together, onLeave: onLeave, 
     exit: { opacity: 0 },
     transition: { duration: 1.6 },
     children: [
-      together && beat?.kind !== "address" && beat?.kind !== "close"
+      together && !alone
         ? (0, jsx.jsx)(motion.p, {
             className: "hour-together",
             ...fadeIn(1.2, 2),
@@ -247,7 +253,7 @@ function SameHour({ startedAt: startedAt, together: together, onLeave: onLeave, 
           `${index}-${kept}`,
         ),
       }),
-      beat?.kind === "ask" || beat?.kind === "address" || beat?.kind === "close"
+      beat?.kind === "ask" || alone
         ? null
         : (0, jsx.jsx)("button", {
             type: "button",
