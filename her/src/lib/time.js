@@ -305,3 +305,43 @@ function numberWord(n) {
 function upperFirst(text) {
   return text ? text[0].toUpperCase() + text.slice(1) : text;
 }
+
+// ── the third September, hour by hour ────────────────────────────────────
+//
+// One door an hour, and the day's own light. All of it worked out from the
+// clock, like everything else here: no server knows it is her anniversary.
+
+// Which hour of the day it is, but only on the day. Null every other day of
+// the year, which is what keeps this out of the other three hundred and
+// sixty-four.
+function theDayHour(when = new Date()) {
+  return isSeptemberSecond(when) ? when.getHours() : null;
+}
+
+// A door is open once its hour has begun, and never closes again that day.
+function theDayOpen(hour, when = new Date()) {
+  let now = theDayHour(when);
+  return now != null && hour <= now;
+}
+
+// How far through the day it is, for the hand on the dial.
+function theDayProgress(when = new Date()) {
+  return (when.getHours() * 3600 + when.getMinutes() * 60 + when.getSeconds()) / 86400;
+}
+
+// The light of the hour. The house only runs the sun on the second — every
+// other day it keeps its own weather, because a room that changes colour all
+// day is a novelty and a room that does it once a year is a memory.
+function dayLight(when = new Date()) {
+  if (!isSeptemberSecond(when)) return null;
+  let h = when.getHours();
+  if (h < 4) return "deepnight";
+  if (h < 6) return "smallhours";
+  if (h < 8) return "dawn";
+  if (h < 11) return "morning";
+  if (h < 15) return "noon";
+  if (h < 17) return "afternoon";
+  if (h < 19) return "gold";
+  if (h < 21) return "dusk";
+  return "night";
+}

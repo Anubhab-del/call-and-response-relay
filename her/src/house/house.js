@@ -14,6 +14,8 @@ var ROOM_DOORS = {
   days: { from: { y: 18 }, to: { y: -8 } },
   distance: { from: { scale: 1.018 }, to: { scale: 0.996 } },
   reel: { from: { scale: 1.03, y: 6 }, to: { scale: 0.99 } },
+  // The day arrives the way a day does: from underneath, slowly.
+  theday: { from: { y: 26, scale: 0.985 }, to: { y: -10 } },
   settings: { from: { y: 10 }, to: { y: -6 } },
   inbox: { from: { y: 14 }, to: { y: -8 } },
   landing: { from: { y: 14 }, to: { y: -8 } },
@@ -41,6 +43,7 @@ var ROOM_TITLES = {
   distance: "The distance",
   say: "Say something",
   reel: "The picture",
+  theday: "The third September",
   settings: "The fuse box",
   inbox: "What arrived",
 };
@@ -218,6 +221,7 @@ function House({ onWatch: onWatch, onBeginHour: onBeginHour, steppedOut: stepped
                     },
                   })
                 : null,
+              n === "theday" ? (0, jsx.jsx)(TheDayRoom, {}) : null,
               n === "everything"
                 ? (0, jsx.jsx)(EverythingRoom, {
                     onAnswer: (thing) => {

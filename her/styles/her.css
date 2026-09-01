@@ -448,9 +448,26 @@ html.is-still .letterbox[data-cut="true"] {
 /* The address. Not a line of the film — a thing said to her, once, at the
    last breath of the night. Bigger than anything else in the house, on
    nothing, with no chrome anywhere near it. */
+/* The address. Two sizes, on purpose: the line that breaks the silence and
+   the line that closes the night are enormous and bloom out of the dark; the
+   passage between them is set at a size a sentence can actually be read at.
+   A twenty-six word paragraph at three and a half rem is not reverence, it is
+   a wall. */
 .hour-address {
   font-family: var(--display);
   color: #fdf5e8;
+  text-wrap: balance;
+  max-width: 21ch;
+  margin: 0 auto;
+  font-size: clamp(1.32rem, 5.9vw, 1.94rem);
+  line-height: 1.42;
+  text-shadow:
+    0 0 3px #f2d9a63d,
+    0 0 26px #f2d9a642,
+    0 0 78px #e8b9a42e;
+}
+.hour-address-bloom {
+  max-width: 15ch;
   font-size: clamp(2rem, 9.4vw, 3.4rem);
   line-height: 1.22;
   text-shadow:
@@ -3713,4 +3730,215 @@ html.is-still .motion-look-cam {
 }
 html.is-still .writer-count em {
   animation-duration: 0.2s;
+}
+
+/* ── the third September ─────────────────────────────────────────────────
+   One day a year the house becomes a day. */
+
+/* The front door carries the hour it is, on the day it is. */
+.day-door {
+  text-align: left;
+  border: 1px solid #e8c89466;
+  background: linear-gradient(150deg, #f0d6aa1c, #f0d6aa07);
+  border-radius: 3px;
+  gap: 8px;
+  width: 100%;
+  max-width: 34rem;
+  padding: 18px 20px 16px;
+  display: grid;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.5s ease, background 0.5s ease;
+}
+.day-door:hover,
+.day-door:focus-visible {
+  border-color: #e8c894a3;
+  background: linear-gradient(150deg, #f0d6aa2b, #f0d6aa0d);
+}
+.day-door-kicker {
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #d8b877d6;
+  font-size: 0.58rem;
+}
+.day-door-line {
+  font-family: var(--display);
+  color: var(--paper);
+  text-wrap: balance;
+  font-size: clamp(1.1rem, 4.8vw, 1.42rem);
+  line-height: 1.4;
+}
+.day-door-more {
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+  font-size: 0.55rem;
+}
+
+/* The dial. Twenty-four marks, nine o'clock at the crown, and a hand that is
+   wherever the day actually is. */
+.the-day {
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
+}
+.dial-wrap {
+  place-items: center;
+  margin: clamp(10px, 3vh, 22px) auto clamp(14px, 4vh, 26px);
+  display: grid;
+  position: relative;
+  width: min(320px, 82vw);
+}
+.dial {
+  touch-action: none;
+  cursor: grab;
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+.dial-wrap[data-turning="true"] .dial {
+  cursor: grabbing;
+}
+.dial-ring {
+  fill: none;
+  stroke: #e8c9a41f;
+  stroke-width: 0.6;
+}
+.dial-hand {
+  stroke: #d8b87747;
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  transition: all 6s linear;
+}
+.dial-mark line {
+  stroke: #e8c9a42e;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  transition: stroke 0.5s ease, stroke-width 0.5s ease;
+}
+.dial-mark[data-open="true"] line {
+  stroke: #f0d6aa8c;
+}
+.dial-mark[data-crown="true"] line {
+  stroke-width: 1.7;
+  stroke: #d8b87775;
+}
+.dial-mark[data-crown="true"][data-open="true"] line {
+  stroke: var(--lamp);
+}
+.dial-mark[data-here="true"] line {
+  stroke: #fdf5e8;
+  stroke-width: 2.2;
+}
+.dial-mark[data-now="true"] line {
+  animation: dial-breathe 4.6s var(--ease) infinite;
+}
+@keyframes dial-breathe {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.42;
+  }
+}
+.dial-stood {
+  fill: #d8b877b8;
+}
+/* The hour she has turned to, in the middle of the ring. */
+.dial-face {
+  pointer-events: none;
+  place-items: center;
+  gap: 4px;
+  display: grid;
+  position: absolute;
+  inset: 0;
+  place-content: center;
+}
+.dial-kicker {
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+  font-size: 0.54rem;
+}
+.dial-hour {
+  font-family: var(--display);
+  color: var(--ember);
+  text-wrap: balance;
+  max-width: 9.5ch;
+  font-size: clamp(1.2rem, 5.6vw, 1.62rem);
+  font-style: italic;
+  line-height: 1.15;
+}
+
+/* What the hour says. */
+.door {
+  border-top: 1px solid var(--line-warm);
+  max-width: 34ch;
+  margin: 0 auto;
+  padding-top: clamp(16px, 4vw, 24px);
+  display: grid;
+  gap: 12px;
+}
+.door-line {
+  font-family: var(--display);
+  color: var(--paper);
+  text-wrap: balance;
+  font-size: clamp(1.18rem, 5.2vw, 1.6rem);
+  line-height: 1.42;
+}
+.door-under {
+  color: var(--paper-dim);
+  text-wrap: pretty;
+  font-size: 0.94rem;
+  line-height: 1.66;
+}
+.door-stood {
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #d8b877c4;
+  font-size: 0.55rem;
+}
+.door[data-shut="true"] .door-line {
+  color: var(--paper-faint);
+  font-style: italic;
+}
+
+/* The sun, once a year. The room passes through the actual day: deep blue
+   before four, grey at six, warm at noon, gold at six, dark by nine. It is
+   never a colour the picture has not already shown her. */
+.shell[data-sun] .house-frame {
+  transition: background 90s linear;
+}
+.shell[data-sun="deepnight"] .house-frame {
+  background: radial-gradient(120% 92% at 50% 8%, #0d1018 0%, #080a10 56%, #05060a 100%);
+}
+.shell[data-sun="smallhours"] .house-frame {
+  background: radial-gradient(120% 92% at 50% 8%, #121422 0%, #0a0b12 56%, #06070c 100%);
+}
+.shell[data-sun="dawn"] .house-frame {
+  background: radial-gradient(120% 92% at 50% 4%, #1d1820 0%, #100d13 56%, #08070a 100%);
+}
+.shell[data-sun="morning"] .house-frame {
+  background: radial-gradient(120% 92% at 50% 2%, #201a15 0%, #14100c 56%, #0a0806 100%);
+}
+.shell[data-sun="noon"] .house-frame {
+  background: radial-gradient(120% 92% at 50% 0%, #241d14 0%, #16110b 56%, #0b0805 100%);
+}
+.shell[data-sun="afternoon"] .house-frame {
+  background: radial-gradient(120% 92% at 50% 6%, #221a12 0%, #150f09 56%, #0a0705 100%);
+}
+.shell[data-sun="gold"] .house-frame {
+  background: radial-gradient(120% 92% at 50% 12%, #2a1c0e 0%, #170f07 56%, #0a0604 100%);
+}
+.shell[data-sun="dusk"] .house-frame {
+  background: radial-gradient(120% 92% at 50% 18%, #201408 0%, #120b05 56%, #080503 100%);
+}
+.shell[data-sun="night"] .house-frame {
+  background: radial-gradient(120% 90% at 50% 20%, #1a1108 0%, #0e0905 56%, #060403 100%);
+}
+html.is-still .dial-mark[data-now="true"] line,
+html.is-still .dial-hand {
+  animation: none;
+  transition: none;
 }

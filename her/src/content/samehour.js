@@ -121,12 +121,38 @@ var SAME_HOUR_BEATS = [
   // Then nothing at all. Twenty seconds is long enough to stop being a pause
   // and start being a room. The lamp is the only weather in it.
   { at: 543, kind: "still", text: "" },
-  // Two lines. There is no third, and there is no button.
-  { at: 563, kind: "address", text: "Happy anniversary." },
-  { at: 571, kind: "address", text: "Miss wife." },
+  // The address. Not lines of the film any more — him, speaking to her, once a
+  // year, with nothing else on the screen and no way to hurry it.
+  //
+  // It opens on the name he only calls her tonight, then it says the thing
+  // three years is actually for, and it lands on the one promise that closes
+  // every thread in this file at once: the hour, the distance, and the room.
+  { at: 563, kind: "address", bloom: true, text: "Happy anniversary, miss wife." },
+  {
+    at: 583,
+    kind: "address",
+    text: "Three years is not the size of this. It is the beginning of it.",
+  },
+  {
+    at: 601,
+    kind: "address",
+    text: "I do not want only the good days. I want every single one — the dull ones, the bad ones, the ones where nothing whatsoever happens.",
+  },
+  {
+    at: 625,
+    kind: "address",
+    text: "Away from the crowd. Away from everybody's opinion of us, which we never needed and never once asked for.",
+  },
+  {
+    at: 647,
+    kind: "address",
+    text: "Just you and me, going through it, one ordinary day after the next, for as long as there are days.",
+  },
+  // A breath, and then the last thing said on the third September.
+  { at: 673, kind: "address", bloom: true, text: "Same hour. Every year. Until it is the same room." },
   // Held. Then the house comes back on its own, ordinary again, except it is
   // not: after tonight it greets her differently for the rest of her life.
-  { at: 631, kind: "close" },
+  { at: 733, kind: "close" },
 ];
 
 var SAME_HOUR_NAME = {

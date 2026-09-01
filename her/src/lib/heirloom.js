@@ -47,6 +47,33 @@ function heirloomSections(state) {
         .join("\n")}</section>`);
   }
 
+  // The hours of each third September she was awake for, and what he said in
+  // them. The copy she keeps should hold the day as well as the night.
+  let days = Object.entries(state.theDay ?? {}).sort((a, b) => Number(b[0]) - Number(a[0]));
+  if (days.length) {
+    out.push(`<section><h2>The hours of the third September</h2>
+      ${days
+        .map(([year, hours]) => {
+          let kept = Object.keys(hours ?? {})
+            .map(Number)
+            .filter((h) => Number.isFinite(h) && h >= 0 && h < 24)
+            .sort((a, b) => a - b);
+          if (!kept.length) return "";
+          return `<article><h3>${escapeHtml(year)}</h3>
+            ${kept
+              .map((h) => {
+                let door = THE_DAY[h];
+                if (!door) return "";
+                return `<p class="hour"><span class="mark">${escapeHtml(door.kicker)}</span> ${escapeHtml(
+                  door.line,
+                )}${door.under ? ` ${escapeHtml(door.under)}` : ""}</p>`;
+              })
+              .join("\n")}</article>`;
+        })
+        .filter(Boolean)
+        .join("\n")}</section>`);
+  }
+
   let written = (state.replies ?? []).filter((note) => note?.text?.trim());
   if (written.length) {
     out.push(`<section><h2>What she wrote</h2>

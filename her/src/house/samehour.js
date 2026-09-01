@@ -130,12 +130,18 @@ function SameHour({ startedAt: startedAt, together: together, onLeave: onLeave, 
     // Nothing. On purpose, and for a long time.
     body = null;
   } else if (beat.kind === "address") {
-    // Not a line of the film. An address, spoken to her, once.
+    // Not a line of the film. An address, spoken to her, once a year.
+    //
+    // The two lines that carry the whole thing — the one that breaks the
+    // silence and the one that closes it — bloom out of the dark over three
+    // and a half seconds. The passage between them arrives at a reading pace,
+    // because a paragraph that takes four seconds to become legible is not
+    // reverent, it is slow.
     body = (0, jsx.jsx)(motion.p, {
-      className: "hour-address",
+      className: beat.bloom ? "hour-address hour-address-bloom" : "hour-address",
       initial: { opacity: 0 },
       animate: { opacity: 1 },
-      transition: { duration: isStill() ? 0.3 : 3.4, ease: "easeOut" },
+      transition: { duration: isStill() ? 0.3 : beat.bloom ? 3.4 : 1.5, ease: "easeOut" },
       children: beat.text,
     });
   } else if (beat.kind === "close") {

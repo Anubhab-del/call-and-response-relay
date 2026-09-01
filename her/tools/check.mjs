@@ -585,6 +585,117 @@ for (const mode of ["full", "lean"]) {
   await ctx.close();
 }
 
+// ── the third September, hour by hour ─────────────────────────────────────
+{
+  // The day exists only on the day, opens one door an hour, never closes one,
+  // and is not there at all on the other three hundred and sixty-four.
+  const dayAt = async (iso) => {
+    const v = await visit(iso);
+    return v;
+  };
+  {
+    const v = await dayAt("2026-09-15T15:00:00");
+    ok("no day on an ordinary day", (await v.page.locator(".day-door").count()) === 0);
+    ok("and the house is not running the sun",
+      (await v.page.evaluate(() => document.querySelector(".shell")?.dataset.sun)) === undefined);
+    await v.close();
+  }
+  {
+    // Two minutes past midnight: the day has one door in it and it is the turn
+    // of the day itself.
+    const v = await dayAt("2026-09-02T00:02:00");
+    const { page } = v;
+    ok("two minutes past midnight, the day has begun",
+      (await page.locator(".day-door").count()) === 1);
+    const card = await page.locator(".day-door").innerText();
+    ok("and the front door is already carrying the hour", /It is the second of September/i.test(card),
+      card.replace(/\s+/g, " ").slice(0, 90));
+    ok("and the room is the colour of three in the morning",
+      (await page.evaluate(() => document.querySelector(".shell")?.dataset.sun)) === "deepnight");
+
+    await page.locator(".day-door").click();
+    await page.waitForTimeout(1100);
+    ok("the dial has twenty-four hours on it", (await page.locator(".dial-mark").count()) === 24);
+    ok("and exactly one of them has opened",
+      (await page.locator('.dial-mark[data-open="true"]').count()) === 1,
+      String(await page.locator('.dial-mark[data-open="true"]').count()));
+    ok("nine o'clock is the crown of it",
+      (await page.locator('.dial-mark[data-crown="true"]').count()) === 1);
+
+    // An hour that has not come says when it will, and does not leak its line.
+    await page.keyboard.press("ArrowRight");
+    await page.waitForTimeout(700);
+    const shut = await page.locator(".door").innerText();
+    ok("an hour that has not come is shut", /Not yet/i.test(shut), shut.replace(/\s+/g, " ").slice(0, 70));
+    ok("and it says when it opens", /opens at one in the morning/i.test(shut),
+      shut.replace(/\s+/g, " ").slice(0, 90));
+    ok("and it does not leak what it will say",
+      !/four hours in/i.test(shut), shut.replace(/\s+/g, " ").slice(0, 90));
+    ok("the arrows turn the dial rather than leaving the room",
+      (await page.evaluate(() => document.querySelector(".house")?.dataset.room)) === "theday");
+    ok("the day: nothing fetched", v.external.length === 0, v.external.join(" | "));
+    ok("the day: no errors", v.errors.length === 0, v.errors.join(" | "));
+    await v.close();
+  }
+  {
+    // Four in the morning is the hour it happened, and it says so.
+    const v = await dayAt("2026-09-02T04:10:00");
+    await v.page.locator(".day-door").click();
+    await v.page.waitForTimeout(1100);
+    const door = (await v.page.locator(".door").innerText()).replace(/\s+/g, " ");
+    ok("four in the morning knows what it is", /This is the hour/i.test(door), door.slice(0, 70));
+    ok("and says what happened in it", /gave up being sensible/i.test(door), door.slice(0, 140));
+    ok("five hours have opened", (await v.page.locator('.dial-mark[data-open="true"]').count()) === 5,
+      String(await v.page.locator('.dial-mark[data-open="true"]').count()));
+    ok("and the hour she is awake for is marked",
+      (await v.page.locator(".dial-stood").count()) >= 1,
+      String(await v.page.locator(".dial-stood").count()));
+    // Never a count, never a score, nowhere.
+    const whole = (await v.page.locator("#root").innerText()).replace(/\s+/g, " ");
+    ok("and nothing anywhere counts the hours she missed",
+      !/\b\d+ of 24\b|\bhours? missed\b|\bstreak\b/i.test(whole), whole.slice(0, 60));
+    await v.close();
+  }
+  {
+    // Late in the day everything behind her is open and none of it has closed.
+    const v = await dayAt("2026-09-02T23:40:00");
+    await v.page.locator(".day-door").click();
+    await v.page.waitForTimeout(1100);
+    ok("by the last hour the whole day is open",
+      (await v.page.locator('.dial-mark[data-open="true"]').count()) === 24,
+      String(await v.page.locator('.dial-mark[data-open="true"]').count()));
+    const door = (await v.page.locator(".door").innerText()).replace(/\s+/g, " ");
+    ok("and the last hour points at the next day", /third of September/i.test(door), door.slice(0, 120));
+    // Every hour has its own line — asserted against the source, where all
+    // twenty-four can be compared at once rather than read off a crossfade.
+    const daySrc = readFileSync(path.join(root, "src", "content", "theday.js"), "utf8");
+    const lines = [...daySrc.matchAll(/^\s*line:\s*"((?:[^"\\]|\\.)*)",?$/gm)].map((m) => m[1]);
+    ok("the day has twenty-four hours written for it", lines.length === 24, String(lines.length));
+    ok("and every one of them says something different",
+      new Set(lines).size === 24, String(new Set(lines).size));
+    // And the dial really does change what is on the screen — walked slowly
+    // enough to clear the crossfade, which is 0.5s out and 0.5s back in.
+    const seen = new Set();
+    for (let i = 0; i < 5; i++) {
+      await v.page.waitForTimeout(1100);
+      seen.add((await v.page.locator(".door-line").innerText()).trim());
+      await v.page.keyboard.press("ArrowRight");
+    }
+    ok("and turning the dial really changes it", seen.size === 5, [...seen].map((x) => x.slice(0, 18)).join(" | "));
+    await v.close();
+  }
+  {
+    // The sun goes round once and only on the day.
+    const bands = [];
+    for (const h of ["01", "05", "07", "09", "13", "16", "18", "20", "22"]) {
+      const v = await dayAt(`2026-09-02T${h}:30:00`);
+      bands.push(await v.page.evaluate(() => document.querySelector(".shell")?.dataset.sun));
+      await v.close();
+    }
+    ok("the house passes through the day", new Set(bands).size >= 7, bands.join(" "));
+  }
+}
+
 // ── nothing she has to aim at, nothing she has to squint at ───────────────
 {
   // The smallest screen she is likely to hold, because if it fits there it
@@ -1154,10 +1265,18 @@ for (const mode of ["full", "lean"]) {
 // The times below are read out of src/content/samehour.js rather than typed
 // in, so re-pacing the night can never quietly stop these from testing it.
 const hourBeats = (() => {
+  // The array is read out of src/content/samehour.js and evaluated, not
+  // pattern-matched. Two regexes in a row got this wrong — one dropped every
+  // beat carrying a `bloom` flag, the next dropped every single-line beat —
+  // and a parser that silently drops beats is a suite that silently stops
+  // testing the ending. It is our own source; read it as source.
   const src = readFileSync(path.join(root, "src", "content", "samehour.js"), "utf8");
-  const list = src.slice(src.indexOf("var SAME_HOUR_BEATS"), src.indexOf("var SAME_HOUR_NAME"));
-  return [...list.matchAll(/at:\s*(\d+),\s*\n?\s*kind:\s*"(\w+)"(?:,\s*\n?\s*text:\s*"((?:[^"\\]|\\.)*)")?/g)]
-    .map((m) => ({ at: Number(m[1]), kind: m[2], text: m[3] ?? "" }));
+  const from = src.indexOf("var SAME_HOUR_BEATS");
+  const open = src.indexOf("[", from);
+  const close = src.indexOf("\n];", open);
+  const beats = new Function(`return ${src.slice(open, close + 2)}`)();
+  if (!Array.isArray(beats) || beats.length < 20) throw new Error(`beats: ${beats?.length}`);
+  return beats.map((b) => ({ ...b, text: b.text ?? "" }));
 })();
 const beatAt = (match) => {
   const found = typeof match === "string"
@@ -1240,16 +1359,39 @@ const nightAt = (seconds) => {
   }
   {
     const v = await hourVisit(nightAt(beatAt((b) => b.kind === "address") + 4));
-    ok("the silence breaks on the anniversary", /^Happy anniversary\.$/.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
+    ok("the silence breaks on the anniversary",
+      /^Happy anniversary, miss wife\.$/.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
     ok("nothing else is on screen with it",
       (await v.page.locator(".hour-slip, .hour-together, .hour button").count()) === 0);
     await v.close();
   }
   {
-    const v = await hourVisit(nightAt(hourBeats.filter((b) => b.kind === "address")[1].at + 4));
-    ok("then the address, alone", /^Miss wife\.$/.test(await v.text(".hour-stage")), await v.text(".hour-stage"));
-    ok("there is no third line and no button", (await v.page.locator(".hour button").count()) === 0);
-    await v.close();
+    // The passage. Every line of it alone on the screen, in order, with the
+    // room still turned down and nothing to press.
+    const said = hourBeats.filter((b) => b.kind === "address");
+    ok("the address is more than one breath", said.length >= 5, String(said.length));
+    for (let i = 1; i < said.length; i++) {
+      const v = await hourVisit(nightAt(said[i].at + 6));
+      const on = await v.text(".hour-stage");
+      ok(`the address goes on, ${i} of ${said.length - 1}`, on === said[i].text, `${on} ≠ ${said[i].text}`);
+      ok(`and nothing is on it with line ${i}`,
+        (await v.page.locator(".hour-slip, .hour-together, .hour button").count()) === 0);
+      const fits = await v.page.evaluate(() => {
+        const el = document.querySelector(".hour-address");
+        if (!el) return false;
+        const r = el.getBoundingClientRect();
+        return r.right <= innerWidth + 1 && r.left >= -1 && r.top >= -1 && r.bottom <= innerHeight + 1;
+      });
+      ok(`and line ${i} fits on the screen`, fits);
+      await v.close();
+    }
+    // It ends on the promise that closes the hour, the distance and the room
+    // at once — and that is the last thing said.
+    const last = said[said.length - 1];
+    ok("it ends on the same room", /Until it is the same room\.$/.test(last.text), last.text);
+    ok("and that line is held for a full minute",
+      hourBeats.find((b) => b.kind === "close").at - last.at >= 55,
+      String(hourBeats.find((b) => b.kind === "close").at - last.at));
   }
   {
     // The night ends by itself and the house is permanently altered.

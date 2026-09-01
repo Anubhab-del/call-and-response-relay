@@ -56,8 +56,16 @@ for (const spec of days) {
   await page.evaluate((v) => localStorage.setItem("__clock", v), `${iso}T20:30:00`);
   await page.reload({ waitUntil: "load" });
   await page.waitForTimeout(320);
-  for (const key of ["", "1", "4", "5", "7"]) {
-    if (key) { await page.keyboard.press(key); await page.waitForTimeout(200); }
+  // On the second of September there is a room that exists only that day, and
+  // it is reached from the front door rather than from a key.
+  const day = await page.locator(".day-door").count();
+  for (const key of ["", "1", "4", "5", "7", ...(day ? ["day"] : [])]) {
+    if (key === "day") {
+      await page.locator(".day-door").click();
+      await page.waitForTimeout(700);
+    } else if (key) {
+      (await page.keyboard.press(key), await page.waitForTimeout(200));
+    }
     const text = (await page.locator("#root").innerText()).replace(/ /g, " ");
     read += 1;
     for (const [re, label] of FAULTS) {
@@ -65,6 +73,21 @@ for (const spec of days) {
       if (!hit || found.has(hit[0])) continue;
       const at = text.indexOf(hit[0]);
       found.set(hit[0], `${iso} · ${label} · …${text.slice(Math.max(0, at - 48), at + hit[0].length + 26).replace(/\n/g, " ")}…`);
+    }
+    if (key === "day") {
+      // Every hour of it, not only the one that is lit.
+      for (let h = 0; h < 24; h++) {
+        await page.keyboard.press("ArrowRight");
+        await page.waitForTimeout(90);
+        const on = (await page.locator("#root").innerText());
+        read += 1;
+        for (const [re, label] of FAULTS) {
+          const hit = on.match(re);
+          if (!hit || found.has(hit[0])) continue;
+          const at = on.indexOf(hit[0]);
+          found.set(hit[0], `${iso} · ${label} · …${on.slice(Math.max(0, at - 48), at + hit[0].length + 26).replace(/\n/g, " ")}…`);
+        }
+      }
     }
     if (key) { await page.keyboard.press("Escape"); await page.waitForTimeout(150); }
   }

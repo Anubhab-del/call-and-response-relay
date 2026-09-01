@@ -23,6 +23,9 @@ var EMPTY_STATE = {
   lastOpen: 0,
   // One entry per September: when the hour was kept, and what she wrote.
   sameHour: {},
+  // The hours of the third September she was awake for. Not a count and never
+  // shown as one — a record of one night, the same as the Septembers above.
+  theDay: {},
 };
 var storageBroken = false;
 function probeStorage() {
@@ -59,6 +62,9 @@ function normaliseState(e) {
     },
     words: {
       ...(t.words ?? {}),
+    },
+    theDay: {
+      ...(t.theDay ?? {}),
     },
     replies: Array.isArray(t.replies) ? t.replies.filter(isNote) : [],
     inbox: Array.isArray(t.inbox) ? t.inbox.filter(isNote) : [],
@@ -228,6 +234,14 @@ function importState(text) {
           years[year] = (mine.answeredAt ?? 0) <= (theirs.answeredAt ?? 0) ? mine : theirs;
       }
       state.sameHour = years;
+
+      // The hours of any third September. Both copies keep all of them, and an
+      // hour kept on both takes the earlier stamp.
+      let hours = { ...(copy.theDay ?? {}) };
+      for (let [year, mine] of Object.entries(state.theDay ?? {})) {
+        hours[year] = earliest(hours[year] ?? {}, mine ?? {});
+      }
+      state.theDay = hours;
 
       // Counts and reach: whichever went further.
       state.pulls = highest(copy.pulls, state.pulls);

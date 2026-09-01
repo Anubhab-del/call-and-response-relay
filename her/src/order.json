@@ -37,6 +37,8 @@
   "house/say.js",
   "house/settings.js",
   "lib/heirloom.js",
+  "content/theday.js",
+  "house/theday.js",
   "house/samehour.js",
   "house/house.js",
   "app.js"

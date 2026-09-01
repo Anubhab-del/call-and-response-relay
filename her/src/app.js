@@ -19,6 +19,9 @@ function App() {
     // it is the same all of that day and gone by the next. Rare enough that
     // she will never be certain she saw it.
     [nameFell, setNameFell] = (0, React.useState)(false),
+    // So the sun below can move. One state change a minute, and only the shell
+    // re-renders; on every day but the second it changes nothing at all.
+    minute = useMinuteTick(),
     [a, o] = (0, React.useState)({
       close: false,
       pulse: 0,
@@ -179,6 +182,11 @@ function App() {
     className: "shell",
     "data-mode": inHour ? "hour" : t,
     "data-anniversary": ee ? "true" : void 0,
+    // One day a year the room runs the actual sun: deep blue at three in the
+    // morning, grey at six, warm at noon, gold at six, and dark by nine. Every
+    // other day it keeps its own weather — a room that changes colour all day
+    // is a novelty; a room that does it once a year is a memory.
+    "data-sun": dayLight() ?? void 0,
     children: (0, jsx.jsxs)("div", {
       className: "room",
       "data-weather": w,

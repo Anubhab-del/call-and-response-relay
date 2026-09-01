@@ -10,16 +10,17 @@ const beats = [...src.matchAll(/\{\s*at:\s*(\d+),\s*kind:\s*"(\w+)"(?:,\s*text:\
   .map((m) => ({ at: +m[1], kind: m[2], text: m[3] }));
 const b = (k, n = 0) => beats.filter((x) => x.kind === k)[n].at;
 const moments = [
-  ["name", b("name") + 8], ["silence", b("still") + 10],
-  ["anniversary", b("address", 0) + 4], ["between", b("address", 1) - 1],
-  ["misswife", b("address", 1) + 5], ["held", b("address", 1) + 40],
+  ["name", b("name") + 8],
+  ["silence", b("still") + 10],
+  ...beats.filter((x) => x.kind === "address").map((x, i) => [`address-${i}`, x.at + 8]),
+  ["held", beats.filter((x) => x.kind === "address").pop().at + 45],
   ["closing", b("close") + 2],
 ];
 const browser = await chromium.launch({ executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 for (const [name, sec] of moments) {
   const at = new Date(Date.UTC(2026, 8, 2, 21, 0, 0) + sec * 1000);
   const iso = `2026-09-02T${String(21 + Math.floor(sec / 3600)).padStart(2, "0")}:${String(Math.floor(sec / 60) % 60).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
-  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, offline: true });
+  const ctx = await browser.newContext({ viewport: { width: Number(process.env.W ?? 390), height: Number(process.env.H ?? 844) }, deviceScaleFactor: 2, offline: true });
   const page = await ctx.newPage();
   await page.addInitScript(`(() => {
     const target = new Date(${JSON.stringify(iso)}).getTime();
@@ -33,12 +34,18 @@ for (const [name, sec] of moments) {
   await page.goto("file://" + FILE, { waitUntil: "load" });
   await page.waitForTimeout(2600);
   const stage = await page.evaluate(() => (document.querySelector(".hour-stage")?.innerText ?? "«no stage»").trim());
+  const fits = await page.evaluate(() => {
+    const el = document.querySelector(".hour-address");
+    if (!el) return "—";
+    const r = el.getBoundingClientRect();
+    return `${Math.round(r.width)}x${Math.round(r.height)} ${r.right <= innerWidth + 1 && r.left >= -1 && r.bottom <= innerHeight + 1 ? "fits" : "OVERFLOWS"}`;
+  });
   const extras = await page.evaluate(() => ({
     buttons: document.querySelectorAll(".hour button").length,
     slip: document.querySelectorAll(".hour-slip, .hour-together").length,
     address: document.querySelector(".shell")?.dataset.address ?? "",
   }));
-  console.log(`${iso}  ${name.padEnd(12)} "${stage}"  buttons:${extras.buttons} slip:${extras.slip} address:${extras.address}`);
+  console.log(`${iso}  ${name.padEnd(12)} ${fits.padEnd(16)} b:${extras.buttons} s:${extras.slip}  "${stage.slice(0, 76)}"`);
   if (OUT) await page.screenshot({ path: `${OUT}/moment-${name}.png` });
   await ctx.close();
 }

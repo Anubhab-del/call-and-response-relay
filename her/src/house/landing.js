@@ -65,6 +65,12 @@ function Landing({ onGo: onGo, onOpenLetter: onOpenLetter, onAnswer: onAnswer, o
   // The same vocabulary as the room it came from: hold anything he wrote and
   // it becomes a question waiting on her page.
   let tonight = usePress({ onHold: () => onAnswer?.(r) });
+  // The third September, on the third September. Whatever hour it is, the
+  // front door is already carrying that hour's line — she does not have to go
+  // looking for the day on the day.
+  useDayPresence();
+  let dayHour = theDayHour(),
+    dayDoor = dayHour == null ? null : THE_DAY[dayHour];
   return (0, jsx.jsxs)("div", {
     className: "landing",
     children: [
@@ -78,6 +84,22 @@ function Landing({ onGo: onGo, onOpenLetter: onOpenLetter, onAnswer: onAnswer, o
             className: "streak",
             ...fadeIn(0.25, 0.7),
             children: returnLine(),
+          })
+        : null,
+      dayDoor
+        ? (0, jsx.jsxs)(motion.button, {
+            type: "button",
+            className: "day-door",
+            onClick: () => onGo("theday"),
+            ...riseIn(0.18),
+            children: [
+              (0, jsx.jsx)("span", { className: "day-door-kicker", children: dayDoor.kicker }),
+              (0, jsx.jsx)("span", { className: "day-door-line", children: dayDoor.line }),
+              (0, jsx.jsx)("span", {
+                className: "day-door-more",
+                children: dayHour === 0 ? "the whole day is in here" : "every hour so far",
+              }),
+            ],
           })
         : null,
       isSameHourEve()
