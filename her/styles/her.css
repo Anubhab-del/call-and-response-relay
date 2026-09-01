@@ -3959,8 +3959,12 @@ html.is-still .dial-hand {
   pointer-events: none;
   z-index: 6;
   opacity: 0;
-  mix-blend-mode: soft-light;
-  /* The axis is near-vertical, so the bars fall near-horizontal with a slight
+  will-change: transform;
+  /* Soft-light over the whole frame is a full-screen blend on every composite;
+     on a dark ground plain alpha lands within a shade of it for a fraction of
+     the cost. The slats are rgba black and nothing is blended.
+
+     The axis is near-vertical, so the bars fall near-horizontal with a slight
      rake — light through a slatted blind. At ninety-nine degrees they came out
      vertical, which is not a blind, it is a cell. */
   background: repeating-linear-gradient(
@@ -4004,19 +4008,26 @@ html.is-still .dial-hand {
 .smoke {
   pointer-events: none;
   z-index: 7;
-  mix-blend-mode: screen;
   position: absolute;
   inset: 0;
   overflow: hidden;
 }
+/* No blur here, and no blend.
+   A radial gradient is already soft — blurring one is paying twice for the
+   same edge, and it was the single most expensive thing in the file: forty-two
+   pixels of blur on two large elements, re-evaluated every frame because they
+   are also being transformed. On a phone throttled to a quarter speed it cost
+   six frames a second on its own, and screen-blending a full-frame layer over
+   a near-black ground cost several more for a difference nobody can see. The
+   alphas are raised to land in the same place. */
 .smoke span {
   display: block;
   position: absolute;
   border-radius: 50%;
-  filter: blur(42px);
+  will-change: transform;
 }
 .smoke span:first-child {
-  background: radial-gradient(circle, #f0dcba1a 0%, #f0dcba08 44%, #0000 72%);
+  background: radial-gradient(circle, #f0dcba26 0%, #f0dcba0d 44%, #0000 72%);
   width: 78%;
   height: 62%;
   top: -14%;
@@ -4024,7 +4035,7 @@ html.is-still .dial-hand {
   animation: smoke-a 71s ease-in-out infinite alternate;
 }
 .smoke span:last-child {
-  background: radial-gradient(circle, #cbb9d117 0%, #cbb9d106 46%, #0000 74%);
+  background: radial-gradient(circle, #cbb9d121 0%, #cbb9d10a 46%, #0000 74%);
   width: 66%;
   height: 54%;
   bottom: -16%;
@@ -4073,4 +4084,26 @@ html.is-still .smoke span {
 }
 html.is-still .smoke {
   opacity: 0.4;
+}
+
+/* ── what a phone is asked to composite ──────────────────────────────────
+   Eight full-frame layers is eight full-frame layers, and no single one of
+   them is the problem — measured, each costs two or three frames a second on
+   throttled hardware. On the small screen the two that carry the least get
+   dropped: a static sheen nobody has ever noticed, and the second of the two
+   masses in the air, which only exists to keep the first from looking placed.
+   Everything that reads as the room — the blinds, the rain, the grain, the
+   leak, the vignette — stays exactly as it is. */
+@media (width <= 560px) {
+  .glass-film {
+    display: none;
+  }
+  .smoke span:last-child {
+    display: none;
+  }
+  .smoke span:first-child {
+    width: 104%;
+    height: 78%;
+    background: radial-gradient(circle, #f0dcba24 0%, #e9cfd10d 42%, #0000 74%);
+  }
 }

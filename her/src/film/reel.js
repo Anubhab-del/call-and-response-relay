@@ -315,7 +315,15 @@ function buildChapterForms() {
     let from = over ? calm : cursor;
     let chapter = chapterAt(n);
     let pick = null;
-    for (let step = 0; step < list.length; step++) {
+    // What the chapter itself asks for, first — unless the one before it just
+    // used that shape, or the shape does not suit the number of lines it has.
+    // Over a still, only the four calm forms are available at all.
+    for (let asked of formsWanted(chapter)) {
+      if (asked === previous || !formSuits(asked, chapter) || !list.includes(asked)) continue;
+      pick = asked;
+      break;
+    }
+    for (let step = 0; !pick && step < list.length; step++) {
       let form = list[(from + step) % list.length];
       if (form === previous) continue;
       if (!formSuits(form, chapter)) continue;
@@ -351,6 +359,66 @@ function buildChapterForms() {
 // this file — the walk below runs at load, so it keeps its own count of them.
 // beats.js asserts the two agree.
 var SHOT_COUNT = 6;
+
+// ── the form answers the words ───────────────────────────────────────────
+//
+// The walk below spreads sixteen forms evenly across a hundred chapters, which
+// is the right answer to "no two look alike" and the wrong answer to what a
+// form is for. A chapter about going quiet should be set quiet. A chapter
+// about eleven hundred kilometres should have its first line at the top of the
+// frame and its last at the bottom. A chapter about a voice should lead with
+// one large line, because that is what a voice is.
+//
+// So each chapter is read first, and asks for the shape that suits it. Only
+// when it asks for nothing — or asks for something the chapter before it just
+// used — does it fall back to the even walk. That keeps the guarantee (no two
+// in a row alike, every form used) and spends it on meaning.
+var FORM_FOR_WORDS = [
+  // Silence, and things not said.
+  [/\bsilen|\bquiet|said nothing|not say|unsaid|without a word|stopped talking\b/i, "quiet"],
+  // The distance itself: two ends and the gap between them.
+  [/\bkilometre|\bmiles?\b|\bdistance|\bfar\b|\bapart\b|\baway\b|two cities|train|airport|platform/i, "apart"],
+  // A voice, a call, a thing heard.
+  [/\bvoice|\bcall(ed|ing)?\b|\bphone\b|\bheard\b|\blisten|\bsaid\b|\btold\b|\bspoke\b/i, "lead"],
+  // Light, and the times of day that carry it.
+  [/\blight\b|\bmorning|\bdawn\b|\bsun\b|\bwindow|\blamp\b|\bgold|\bglow|\bburn/i, "flare"],
+  // Night, sleep, and the small hours.
+  [/\bnight\b|\bsleep|\bawake\b|\bbed\b|\bdark\b|four in the morning|\btired\b|\bdream/i, "close"],
+  // Counting: years, days, the hour.
+  [/\byears?\b|\bdays?\b|\bhours?\b|\bcounting\b|\bSeptember\b|\banniversar/i, "wide"],
+  // Her name, and the pieces of her.
+  [/\bSmruti\b|your name|handwriting|your face|your hands|your laugh/i, "watermark"],
+  // The two of us, paired.
+  [/\bwe\b.*\bboth\b|you and me|the two of us|\bus\b.*\btogether\b|\bmarried\b|\bwedding\b/i, "twoup"],
+  // A first, a turn, a thing beginning.
+  [/\bfirst time\b|the first\b|\bbegan\b|\bstarted\b|\bmoment\b|\bthe day (I|you|we)\b/i, "drop"],
+  // A question, or a thing being weighed.
+  [/\?|\bwonder|\bwhether\b|\bif I\b|\bwhat if\b|\bmaybe\b|\bperhaps\b/i, "breath"],
+  // A place with things in it.
+  [/\broom\b|\btable\b|\bkitchen|\bhouse\b|\bhome\b|\bdoor\b|\bchair|\bfloor\b|\bstreet/i, "corner"],
+  // A line being drawn, a thing written down.
+  [/\bwrote\b|\bwriting\b|\bwritten\b|\bletter\b|\blist\b|\bpaper\b|\bink\b|\bpage\b/i, "rule"],
+  // An aside, said under the breath.
+  [/\bbriefly\b|\bactually\b|\bI admit|\bconfess|\bto be fair|\bsmall\b|\bnothing much/i, "subtitle"],
+  // Ordinary, plural, one thing after another.
+  [/\bordinary\b|\bevery day\b|\bagain\b|\bhabit|\broutine|\bTuesday|\bgroceries|\bwashing/i, "stack"],
+  // Something short and shaped like a poem.
+  [/\bstill\b|\balways\b|\bnever\b|\bforever\b|\bthe whole\b/i, "column"],
+];
+// Every shape the chapter's own words ask for, best first. A chapter is rarely
+// about one thing: "the first silence" is a silence and a first, and if the
+// chapter before it was already set quiet it should fall to its second reading
+// rather than all the way back to the mechanical walk.
+function formsWanted(chapter) {
+  if (!chapter) return [];
+  let words = `${chapter.title} ${chapter.lines.join(" ")}`;
+  let out = [];
+  for (let [pattern, form] of FORM_FOR_WORDS) if (pattern.test(words) && !out.includes(form)) out.push(form);
+  return out;
+}
+function formWanted(chapter) {
+  return formsWanted(chapter)[0] ?? null;
+}
 
 // Some forms want a particular camera. The rest take whatever comes next.
 function wantsShot(form) {

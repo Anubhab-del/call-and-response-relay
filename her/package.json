@@ -9,7 +9,8 @@
     "audit": "node tools/audit.mjs",
     "read": "node tools/plurals.mjs",
     "listen": "node tools/listen.mjs",
-    "rehearse": "node build.mjs --rehearse"
+    "rehearse": "node build.mjs --rehearse",
+    "smooth": "node tools/smooth.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",
