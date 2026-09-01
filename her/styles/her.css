@@ -2572,7 +2572,35 @@ html.is-still .letterbox:after {
   border-left-color: #d8b877b8;
 }
 .jar {
+  align-items: center;
+  gap: 14px;
   margin: 22px 0 12px;
+  display: flex;
+}
+/* A jar, not a progress bar. A bar says how much is left to do; a jar just
+   has some in it, and the level is only interesting because it went up. */
+.jar-glass {
+  border: 1px solid var(--line-warm);
+  border-top-color: #e8c8941a;
+  border-radius: 2px 2px 4px 4px;
+  flex: none;
+  width: 20px;
+  height: 34px;
+  position: relative;
+  overflow: hidden;
+}
+.jar-level {
+  background: linear-gradient(#f0d6aa4d, #d8b8772e);
+  border-top: 1px solid #f0d6aa5c;
+  transition: height 1.4s var(--ease);
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+html.is-still .jar-level {
+  transition: none;
 }
 .jar-bar {
   background: #e8c9a41a;
@@ -3147,7 +3175,10 @@ html.is-still .letterbox:after {
   font-style: italic;
   position: absolute;
   bottom: clamp(58px, 12vh, 96px);
-  right: clamp(14px, 5vw, 30px);
+  /* An italic overhangs its own box on the right, and the parallax moves it
+     another few pixels: at her width the last letter of her name was touching
+     the edge of the frame and reading as clipped. */
+  right: clamp(22px, 7vw, 42px);
 }
 /*$vite$:1*/
 
@@ -3429,4 +3460,237 @@ html.is-holding .letterbox .grain {
 }
 html.is-holding .letterbox .light-leak {
   opacity: 0.55;
+}
+
+/* ── each room its own place ─────────────────────────────────────────────
+   Eight rooms that all stood on the same ground. The house keeps one voice —
+   the same type, the same hairlines, the same warmth — but the light is not
+   the same in every room of a house, and it should not be here either.
+
+   Each is a wash laid over the house's own dark, drawn from the same palette
+   the picture uses, so nothing here is a colour the film has never shown her.
+   Nothing louder than a lamp moved to the other side of the room. */
+.house-frame {
+  transition: background 1.6s var(--ease);
+}
+.house:before,
+.house:after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
+.house:after {
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 1.4s var(--ease), background 1.4s var(--ease);
+  background: radial-gradient(120% 78% at 50% 0%, var(--room-light, #0000) 0%, #0000 68%);
+}
+.house[data-room]:after {
+  opacity: 1;
+}
+/* The front door: the lamp is directly overhead and warm. */
+.house[data-room="landing"] {
+  --room-light: #d8b87730;
+}
+/* Letters — paper on a desk under a reading lamp, pulled to one side. */
+.house[data-room="letters"] {
+  --room-light: #f0d6aa33;
+}
+.house[data-room="letters"]:after {
+  background: radial-gradient(90% 60% at 22% 6%, var(--room-light), #0000 62%);
+}
+/* Say something — hers, and the warmest the house gets outside the hour. */
+.house[data-room="say"] {
+  --room-light: #eec9bf38;
+}
+.house[data-room="say"]:after {
+  background: radial-gradient(120% 82% at 50% 100%, var(--room-light), #0000 66%);
+}
+/* Everything — cool and open, a window rather than a lamp. */
+.house[data-room="everything"] {
+  --room-light: #cdb0bb2b;
+}
+/* Promises — level and plain. A table with a document on it. */
+.house[data-room="promises"] {
+  --room-light: #f6ebdd22;
+}
+.house[data-room="promises"]:after {
+  background: linear-gradient(#f6ebdd18, #0000 46%);
+}
+/* Your days — deep, and lit from below, the way a calendar on a wall is. */
+.house[data-room="days"] {
+  --room-light: #d8b87730;
+}
+.house[data-room="days"]:after {
+  background: radial-gradient(110% 70% at 50% 108%, var(--room-light), #0000 62%);
+}
+/* The distance — wide, pale and cold at the edges. */
+.house[data-room="distance"] {
+  --room-light: #b9c6d42e;
+}
+.house[data-room="distance"]:after {
+  background:
+    radial-gradient(80% 46% at 8% 34%, #b9c6d42a, #0000 64%),
+    radial-gradient(80% 46% at 92% 22%, #f0d6aa2c, #0000 64%);
+}
+/* The picture — a booth. Almost nothing, so the reel is the brightest thing. */
+.house[data-room="reel"] {
+  --room-light: #0000;
+}
+.house[data-room="reel"]:after {
+  background: radial-gradient(150% 100% at 50% 50%, #0000 30%, #000000a8 100%);
+}
+/* The fuse box — a bare bulb. No romance in a cupboard. */
+.house[data-room="settings"] {
+  --room-light: #e8e2d624;
+}
+.house[data-room="settings"]:after {
+  background: radial-gradient(52% 30% at 50% -4%, var(--room-light), #0000 70%);
+}
+/* What arrived — her light, coming the other way. */
+.house[data-room="inbox"] {
+  --room-light: #eec9bf30;
+}
+.house[data-room="inbox"]:after {
+  background: radial-gradient(90% 60% at 78% 6%, var(--room-light), #0000 62%);
+}
+/* Both washes are positioned, so the room's own content has to be positioned
+   too or it would paint underneath them. The thumb light sits above the room
+   light; the room she is in sits above both. */
+.house:before {
+  z-index: 0;
+}
+.house-main {
+  position: relative;
+  z-index: 1;
+}
+html.is-still .house:after {
+  transition: none;
+}
+
+/* The line the whole room is for. It sits between the facts and the closing
+   note, and it is the only place in the house that says the same number twice
+   on purpose. */
+.distance-rhyme {
+  font-family: var(--display);
+  color: var(--paper);
+  text-wrap: balance;
+  border-top: 1px solid var(--line-warm);
+  max-width: 34ch;
+  margin: 4px auto 14px;
+  padding-top: 18px;
+  font-size: clamp(1.02rem, 4.4vw, 1.24rem);
+  font-style: italic;
+  line-height: 1.55;
+}
+
+/* The fuse box shows what it is doing: a little letterboxed frame with the
+   picture's two moving parts in it — the camera, always drifting, and the
+   weather on the glass. The whole storm has both. Less of it keeps the
+   weather and stops the camera. Still stops everything and loses nothing. */
+.motion-look {
+  border: 1px solid var(--line-warm);
+  background: linear-gradient(150deg, #100b07, #0a0705);
+  border-radius: 3px;
+  width: 100%;
+  aspect-ratio: 2.35;
+  max-height: 78px;
+  margin: 12px 0 10px;
+  position: relative;
+  overflow: hidden;
+}
+.motion-look i {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.motion-look-cam {
+  border: 1px solid #f0d6aa2e;
+  inset: 22% 26%;
+  animation: look-cam 9s ease-in-out infinite alternate;
+}
+.motion-look-cam:after {
+  content: "";
+  background: #f0d6aa14;
+  position: absolute;
+  inset: 0;
+}
+.motion-look-rain {
+  opacity: 0.5;
+  background: repeating-linear-gradient(
+    76deg,
+    #f0d6aa00 0 6px,
+    #f0d6aa3d 6px 7px,
+    #f0d6aa00 7px 15px
+  );
+  animation: look-rain 1.9s linear infinite;
+}
+/* Under "less of it" the weather stays and everything else stops: the frame
+   says so by holding the camera exactly still while the glass keeps running. */
+.motion-look-lean {
+  opacity: 0;
+  background: radial-gradient(60% 80% at 50% 50%, #f0d6aa0f, #0000 70%);
+}
+@keyframes look-cam {
+  from {
+    inset: 24% 30%;
+  }
+  to {
+    inset: 16% 18%;
+  }
+}
+@keyframes look-rain {
+  from {
+    transform: translate3d(0, -15px, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+.motion-look[data-mode="lean"] .motion-look-cam {
+  animation: none;
+  inset: 20% 24%;
+}
+.motion-look[data-mode="lean"] .motion-look-lean {
+  opacity: 1;
+}
+.motion-look[data-mode="still"] .motion-look-cam {
+  animation: none;
+  inset: 20% 24%;
+}
+.motion-look[data-mode="still"] .motion-look-rain {
+  animation: none;
+  opacity: 0.3;
+}
+html.is-still .motion-look-cam,
+html.is-still .motion-look-rain {
+  animation: none;
+}
+html.is-still .motion-look-cam {
+  inset: 20% 24%;
+}
+
+/* The word count says the draft is safe once she stops typing. It never says
+   "saved" — nothing here was ever going anywhere to be saved from. */
+.writer-count {
+  gap: 3px;
+  display: grid;
+}
+.writer-count em {
+  color: #d8b87796;
+  font-size: 0.92em;
+  font-style: italic;
+  animation: safe-in 0.7s var(--ease) both;
+}
+@keyframes safe-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+html.is-still .writer-count em {
+  animation-duration: 0.2s;
 }

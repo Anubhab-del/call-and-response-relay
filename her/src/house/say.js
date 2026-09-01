@@ -14,10 +14,20 @@ function SayRoom({ answering: answering, onClearAnswering: onClearAnswering }) {
     [d, f] = (0, React.useState)(""),
     [p, m] = (0, React.useState)(() => n.words[String(todayNumber())] ?? ""),
     h = (0, React.useRef)(null);
+  let [safe, setSafe] = (0, React.useState)(false);
   ((0, React.useEffect)(() => {
     try {
       localStorage.setItem(DRAFT_KEY, r);
     } catch {}
+    // Nothing here is ever lost, and she has no way of knowing that unless the
+    // page says so. A hairline under the box, once, after she stops typing —
+    // not a badge, not a tick, not a toast.
+    if (!r.trim()) {
+      setSafe(false);
+      return;
+    }
+    let id = window.setTimeout(() => setSafe(true), 900);
+    return () => window.clearTimeout(id);
   }, [r]),
     (0, React.useEffect)(() => {
       answering && h.current?.focus();
@@ -171,9 +181,17 @@ function SayRoom({ answering: answering, onClearAnswering: onClearAnswering }) {
           (0, jsx.jsxs)("div", {
             className: "writer-foot",
             children: [
-              (0, jsx.jsx)("span", {
+              (0, jsx.jsxs)("span", {
                 className: "writer-count",
-                children: g === 0 ? "nothing yet" : `${g} words`,
+                "data-safe": safe ? "true" : void 0,
+                children: [
+                  g === 0 ? "nothing yet" : `${g} ${g === 1 ? "word" : "words"}`,
+                  safe
+                    ? (0, jsx.jsx)("em", {
+                        children: "kept as you go — closing this loses nothing",
+                      })
+                    : null,
+                ],
               }),
               (0, jsx.jsxs)("label", {
                 className: "writer-private",

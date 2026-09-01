@@ -282,3 +282,16 @@ var ORDINAL_WORDS = [
 function ordinalWord(n) {
   return ORDINAL_WORDS[n] ?? `${n}th`;
 }
+// Small counts belong in words. "There are 24. 5 of them are sealed" reads as
+// twenty-four point five before it reads as two sentences, and a shelf of
+// letters is not a place for digits anyway.
+var CARDINAL_WORDS = [
+  "none", "one", "two", "three", "four", "five", "six", "seven", "eight",
+  "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
+  "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "twenty-one",
+  "twenty-two", "twenty-three", "twenty-four", "twenty-five", "twenty-six",
+  "twenty-seven", "twenty-eight", "twenty-nine", "thirty",
+];
+function numberWord(n) {
+  return CARDINAL_WORDS[n] ?? formatNumber(n);
+}

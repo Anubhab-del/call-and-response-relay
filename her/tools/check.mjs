@@ -13,6 +13,8 @@ const FILE = process.argv[2] ?? path.join(root, "dist", "HER.html");
 const CHROME = process.env.CHROME ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 
 const results = [];
+// The order the rooms are on the landing, which is also the order of the keys.
+const ROOM_ORDER = ["letters", "say", "everything", "promises", "days", "distance", "reel", "settings"];
 const ok = (name, pass, detail = "") => results.push({ name, pass, detail });
 
 // Pretend it is a given local wall-clock moment, without freezing timers.
@@ -572,6 +574,89 @@ for (const mode of ["full", "lean"]) {
   await ctx.close();
 }
 
+// ── each room is its own place ────────────────────────────────────────────
+{
+  const houseSrc = readFileSync(path.join(root, "src", "house", "house.js"), "utf8");
+  const doors = houseSrc.match(/var ROOM_DOORS = \{[\s\S]*?\n\};/);
+  const shapes = doors ? [...doors[0].matchAll(/^  (\w+): (\{.*\}),$/gm)].map((m) => [m[1], m[2]]) : [];
+  ok("every room has its own way of opening", shapes.length >= 9, String(shapes.length));
+  ok("and no two of the eight open the same way",
+    new Set(shapes.filter(([id]) => id !== "landing" && id !== "inbox").map(([, v]) => v)).size >= 6,
+    shapes.map(([id]) => id).join(" "));
+
+  const cssSrc = readFileSync(path.join(root, "styles", "her.css"), "utf8");
+  const lights = [...cssSrc.matchAll(/\.house\[data-room="(\w+)"\] \{\s*--room-light: (#[0-9a-f]+);/g)]
+    .map((m) => [m[1], m[2]]);
+  ok("every room has its own light", lights.length >= 9, lights.map((l) => l.join("=")).join(" "));
+  ok("and the lights are not all the same",
+    new Set(lights.map(([, v]) => v)).size >= 6, String(new Set(lights.map(([, v]) => v)).size));
+
+  const v = await visit("2026-09-15T15:00:00");
+  const { page } = v;
+  const room = () => page.evaluate(() => document.querySelector(".house")?.dataset.room);
+  for (const [id] of lights) {
+    if (id === "landing" || id === "inbox") continue;
+    const at = ROOM_ORDER.indexOf(id);
+    if (at < 0) continue;
+    await page.keyboard.press(String(at + 1));
+    await page.waitForTimeout(500);
+    if ((await room()) !== id) { ok(`the ${id} room opens on its key`, false, String(await room())); break; }
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(400);
+  }
+  ok("every room opens on its own key", (await room()) === "landing", String(await room()));
+
+  // A room remembers where she was in it, for as long as the house is open.
+  await page.keyboard.press("1");
+  await page.waitForTimeout(800);
+  await page.evaluate(() => { document.querySelector(".house-main").scrollTop = 520; });
+  await page.waitForTimeout(300);
+  const down = await page.evaluate(() => document.querySelector(".house-main").scrollTop);
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(700);
+  ok("the front door is at the top", (await page.evaluate(() => document.querySelector(".house-main").scrollTop)) === 0);
+  await page.keyboard.press("1");
+  await page.waitForTimeout(800);
+  const back = await page.evaluate(() => document.querySelector(".house-main").scrollTop);
+  ok("and the shelf is where she left it", down > 100 && back === down, `${down} → ${back}`);
+
+  // The distance stopped arguing with its own number.
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(500);
+  await page.keyboard.press("6");
+  await page.waitForTimeout(900);
+  const far = await page.locator(".distance-room").innerText();
+  ok("the distance says the flight, not the train", /hours in the air/i.test(far) && !/on a train/i.test(far),
+    (far.match(/[\d.]+ ?\n?hours[^,]*/i) ?? [""])[0]);
+  ok("and two hours means two hours in both places",
+    /\b2\b[\s\S]{0,40}hours in the air/i.test(far) && /Two hours to fly it/i.test(far),
+    far.slice(far.indexOf("Two hours"), far.indexOf("Two hours") + 80));
+
+  // The fuse box shows what it is doing.
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(500);
+  await page.keyboard.press("8");
+  await page.waitForTimeout(900);
+  const camMode = async () => page.evaluate(() => {
+    const el = document.querySelector(".motion-look-cam");
+    return el ? getComputedStyle(el).animationName : null;
+  });
+  await page.getByRole("button", { name: "the whole storm" }).click();
+  await page.waitForTimeout(500);
+  const whole = await camMode();
+  await page.getByRole("button", { name: "less of it" }).click();
+  await page.waitForTimeout(500);
+  const less = await camMode();
+  ok("the fuse box shows the camera moving on the whole storm", whole === "look-cam", String(whole));
+  ok("and holding still on less of it", less === "none", String(less));
+  await page.getByRole("button", { name: "the whole storm" }).click();
+  await page.waitForTimeout(400);
+
+  ok("the rooms: nothing fetched", v.external.length === 0, v.external.join(" | "));
+  ok("the rooms: no errors", v.errors.length === 0, v.errors.join(" | "));
+  await v.close();
+}
+
 // ── the picture moves inside an act ───────────────────────────────────────
 {
   // An act used to be one colour from its first chapter to its last. Walk the
@@ -965,7 +1050,7 @@ const nightAt = (seconds) => {
     await v.page.waitForTimeout(900);
     const shelf = await v.text(".letters");
     ok("a letter is on the shelf that was not there before", /on the third September/i.test(shelf));
-    ok("and the shelf count knows it", /There are 25/.test(shelf), shelf.slice(0, 90));
+    ok("and the shelf count knows it", /There are twenty-five/i.test(shelf), shelf.slice(0, 120));
     await v.close();
   }
   {
@@ -990,7 +1075,7 @@ const nightAt = (seconds) => {
     await v.page.waitForTimeout(900);
     const shelf = await v.text(".letters");
     ok("before the night it is not there, not even sealed", !/on the third September/i.test(shelf));
-    ok("and the shelf counts 24", /There are 24/.test(shelf), shelf.slice(0, 80));
+    ok("and the shelf counts twenty-four", /There are twenty-four/i.test(shelf), shelf.slice(0, 120));
     await v.close();
   }
   {

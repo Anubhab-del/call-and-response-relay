@@ -275,7 +275,13 @@ function DistanceRoom() {
   let e = CANON.kilometres,
     t = daysTogether(),
     n = Math.round(e / 30),
-    r = Math.round((e / 55) * 10) / 10,
+    // It used to say the train: twenty-three hours, described as "nothing,
+    // which is the maddening part". Twenty-three hours is not nothing, and the
+    // line was arguing with its own number. The flight is the honest one — and
+    // it is exactly as long as every hour we have ever spent in one room.
+    // 640 km/h is the honest block speed for a sector this length once taxi,
+    // climb and descent are in it — not the cruise number.
+    r = Math.round((e / 640) * 10) / 10,
     i = Math.round((e / Math.max(1, t)) * 10) / 10;
   // She can put a finger on his city and drag it to hers. The number counts
   // down under her hand. It is the only honest way to show a distance: not as
@@ -291,6 +297,9 @@ function DistanceRoom() {
     return { x: p.x, y: p.y };
   }, [along]);
   let left = Math.max(0, Math.round(e * (1 - along)));
+  // The number arrives rather than appearing. It is the one figure in the
+  // house that is worth watching land.
+  let counted = useCountUp(e, 1700);
   let move = (ev) => {
     let box = ev.currentTarget.getBoundingClientRect();
     if (!box.width) return;
@@ -315,7 +324,7 @@ function DistanceRoom() {
         children: [
           (0, jsx.jsx)("span", {
             className: "km-number",
-            children: formatNumber(along > 0.01 ? left : e),
+            children: formatNumber(along > 0.01 ? left : counted),
           }),
           (0, jsx.jsx)("span", {
             className: "km-unit",
@@ -433,7 +442,7 @@ function DistanceRoom() {
                 children: r,
               }),
               (0, jsx.jsx)("em", {
-                children: "hours on a train, which is nothing, which is the maddening part",
+                children: "hours in the air, which is nothing, which is the maddening part",
               }),
             ],
           }),
@@ -469,8 +478,14 @@ function DistanceRoom() {
             : `Put a finger on ${CANON.hisCity} and drag it to me.`,
       }),
       (0, jsx.jsx)(motion.p, {
+        className: "distance-rhyme",
+        ...fadeIn(1, 0.8),
+        children:
+          "Two hours to fly it. Two hours is also every minute we have ever spent in one room. I have never once got that arithmetic to sit still.",
+      }),
+      (0, jsx.jsx)(motion.p, {
         className: "scene-under",
-        ...fadeIn(1.1, 0.8),
+        ...fadeIn(1.25, 0.8),
         children: "It is a number. It is not an argument.",
       }),
     ],

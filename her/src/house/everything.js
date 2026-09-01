@@ -111,18 +111,28 @@ function EverythingRoom({ onAnswer: onAnswer }) {
         className: "jar",
         ...fadeIn(0.4, 0.7),
         children: [
+          // It was a hairline with a fill on it, which is a progress bar, and a
+          // progress bar tells her she is behind on something. A jar is not
+          // that: it is a thing that has some in it, and the level is only
+          // interesting because it went up.
           (0, jsx.jsx)("div", {
-            className: "jar-bar",
+            className: "jar-glass",
             "aria-hidden": "true",
             children: (0, jsx.jsx)("span", {
+              className: "jar-level",
               style: {
-                transform: `scaleX(${Math.min(1, c / EVERYTHING.length)})`,
+                height: `${Math.max(2, Math.min(100, (c / EVERYTHING.length) * 100))}%`,
               },
             }),
           }),
           (0, jsx.jsxs)("p", {
             className: "jar-text",
-            children: [c, " of ", EVERYTHING.length, " found"],
+            children: [
+              formatNumber(c),
+              " of ",
+              formatNumber(EVERYTHING.length),
+              c === EVERYTHING.length ? " — all of them" : " found",
+            ],
           }),
         ],
       }),

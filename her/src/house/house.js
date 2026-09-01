@@ -1,3 +1,37 @@
+// ── each room its own place ──────────────────────────────────────────────
+//
+// Eight rooms that all arrived the same way, on the same fourteen pixels of
+// rise, over the same ground. That is not a house — it is one page with the
+// words swapped out. Each room now has its own light (in the stylesheet, keyed
+// off data-room) and its own way of opening, and the two agree: the shelf of
+// letters pulls out like a drawer, the picture comes up out of black the way a
+// booth does, the distance widens, her own page rises to meet her.
+var ROOM_DOORS = {
+  letters: { from: { y: 22 }, to: { y: -10 } },
+  say: { from: { y: 16, scale: 0.994 }, to: { y: -6 } },
+  everything: { from: { y: -12 }, to: { y: 10 } },
+  promises: { from: { y: 12 }, to: { y: -8 } },
+  days: { from: { y: 18 }, to: { y: -8 } },
+  distance: { from: { scale: 1.018 }, to: { scale: 0.996 } },
+  reel: { from: { scale: 1.03, y: 6 }, to: { scale: 0.99 } },
+  settings: { from: { y: 10 }, to: { y: -6 } },
+  inbox: { from: { y: 14 }, to: { y: -8 } },
+  landing: { from: { y: 14 }, to: { y: -8 } },
+};
+function roomEntrance(room) {
+  if (isStill())
+    return {
+      initial: { opacity: 0 },
+      animate: { opacity: 1, transition: T_FAST },
+      exit: { opacity: 0, transition: T_FAST },
+    };
+  let door = ROOM_DOORS[room] ?? ROOM_DOORS.landing;
+  return {
+    initial: { opacity: 0, y: 0, scale: 1, ...door.from },
+    animate: { opacity: 1, y: 0, scale: 1, transition: T_ROOM_IN },
+    exit: { opacity: 0, y: 0, scale: 1, ...door.to, transition: T_ROOM_OUT },
+  };
+}
 var ROOM_TITLES = {
   landing: "",
   letters: "Letters",
@@ -34,22 +68,28 @@ function House({ onWatch: onWatch, onBeginHour: onBeginHour, steppedOut: stepped
           () => window.removeEventListener("popstate", e)
         );
     }, [n]));
+  // Where she was in each room, for as long as the house is open. The shelf of
+  // letters is twenty-four deep and the days are longer than a screen: coming
+  // back to a room she was half-way down and being put at the top again is the
+  // house forgetting something she did not.
+  //
+  // It is deliberately not saved to disk. Tomorrow she should get the top of
+  // the room, the way you get the top of the stairs.
+  let seat = (0, React.useRef)({});
   let o = (0, React.useCallback)((e) => {
-    (tapTick(),
-      r(e),
-      // The room scrolls, not the window — a room she has already read part of
-      // should not open half-way down.
-      frame.current?.querySelector(".house-main")?.scrollTo?.({ top: 0 }),
-      window.scrollTo?.({
-        top: 0,
-      }));
+    tapTick();
+    let main = frame.current?.querySelector(".house-main");
+    if (main) seat.current[roomNow.current] = main.scrollTop;
+    (r(e), window.scrollTo?.({ top: 0 }));
   }, []);
+  let roomNow = (0, React.useRef)(n);
+  roomNow.current = n;
   // Back is back, from anywhere: escape, the arrow before the first room, or
   // a thumb dragged in from the left edge the way a phone expects.
   let back = (0, React.useCallback)(() => {
-    if (n === "landing") return;
-    (tapTick(), r("landing"));
-  }, [n]);
+    if (roomNow.current === "landing") return;
+    o("landing");
+  }, [o]);
   useHouseKeys({
     room: n,
     onGo: o,
@@ -58,17 +98,25 @@ function House({ onWatch: onWatch, onBeginHour: onBeginHour, steppedOut: stepped
     enabled: !keys,
   });
   useThumbLight(frame);
-  // A room she asked for should also be the room her keyboard is in. Skipped
-  // on the first paint, so arriving at the front door does not put a focus
-  // ring on anything she did not touch.
+  // The rooms cross-fade, so when the state changes the room she is leaving is
+  // still on screen: anything done to "the main element" at that moment is done
+  // to the wrong one. Both the seat and the focus are set on the new room as it
+  // mounts instead, which is the only moment either is true.
+  //
+  // Held in a callback keyed on the room so React does not re-run it on every
+  // render — that would put her back at the top each time she scrolled.
   let landed = (0, React.useRef)(false);
-  (0, React.useEffect)(() => {
-    if (!landed.current) {
+  let mainRef = (0, React.useCallback)(
+    (el) => {
+      if (!el) return;
+      el.scrollTop = seat.current[n] ?? 0;
+      // Not on the first paint: arriving at the front door should not put a
+      // focus ring on anything she did not touch.
+      if (landed.current) el.focus?.({ preventScroll: true });
       landed.current = true;
-      return;
-    }
-    frame.current?.querySelector(".house-main")?.focus?.({ preventScroll: true });
-  }, [n]);
+    },
+    [n],
+  );
   let edge = useSwipe({
     fromEdge: true,
     onRight: () => {
@@ -135,22 +183,10 @@ function House({ onWatch: onWatch, onBeginHour: onBeginHour, steppedOut: stepped
           motion.main,
           {
             className: "house-main",
+            ref: mainRef,
             tabIndex: -1,
             "aria-label": n === "landing" ? CANON.title : ROOM_TITLES[n],
-            initial: {
-              opacity: 0,
-              y: isStill() ? 0 : 14,
-            },
-            animate: {
-              opacity: 1,
-              y: 0,
-              transition: isStill() ? T_FAST : T_ROOM_IN,
-            },
-            exit: {
-              opacity: 0,
-              y: isStill() ? 0 : -8,
-              transition: isStill() ? T_FAST : T_ROOM_OUT,
-            },
+            ...roomEntrance(n),
             children: [
               n === "landing"
                 ? (0, jsx.jsx)(Landing, {

@@ -91,10 +91,27 @@ function SettingsRoom() {
               ),
             ),
           }),
+          // A setting she cannot see the effect of is a setting she has to
+          // guess at. This is the same three layers the picture runs, at the
+          // level the chosen mode would give her, moving now.
+          (0, jsx.jsxs)("div", {
+            className: "motion-look",
+            "data-mode": e.motion,
+            "aria-hidden": "true",
+            children: [
+              (0, jsx.jsx)("i", { className: "motion-look-rain" }),
+              (0, jsx.jsx)("i", { className: "motion-look-cam" }),
+              (0, jsx.jsx)("i", { className: "motion-look-lean" }),
+            ],
+          }),
           (0, jsx.jsx)("p", {
             className: "fine",
             children:
-              "Less keeps the weather and drops the rest. Still is easier on an old phone and on a bad night.",
+              e.motion === "still"
+                ? "Nothing moves. Nothing fades in behind anything. The letters and the picture are all still here — they simply arrive."
+                : e.motion === "lean"
+                  ? "The weather stays. The parallax, the drifting camera and the long dissolves go."
+                  : "The whole storm: the rain on the glass, the camera always moving, and the room leaning when you do.",
           }),
         ],
       }),

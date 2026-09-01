@@ -177,10 +177,10 @@ function LettersRoom({ onOpenReply: onOpenReply, openId: openId, onOpened: onOpe
         ...fadeIn(0.15, 0.6),
         children: [
           "There are ",
-          shelf.length,
+          numberWord(shelf.length),
           ". ",
           sealedLeft > 0
-            ? `${sealedLeft} of them are still sealed.`
+            ? `${numberWord(sealedLeft)} of them ${sealedLeft === 1 ? "is" : "are"} still sealed.`
             : "None of them are sealed any more.",
           " Hold one to hear how it starts — holding never opens anything.",
         ],
