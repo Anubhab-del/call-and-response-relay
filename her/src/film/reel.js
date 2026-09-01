@@ -76,12 +76,43 @@ function beatKey(e, t) {
 function chapterAt(e) {
   return CHAPTERS[e - 1];
 }
+// ── the light inside an act ──────────────────────────────────────────────
+//
+// An act used to be one colour from its first chapter to its last: twenty-five
+// chapters, four or five minutes, and the room never moved. The part still has
+// its own light — that is what makes an act an act — but it passes through it
+// rather than sitting in it, the way an evening does.
+//
+// Each act carries four stretches. The first and the third are the act's own
+// weather, so it always comes home; the second and the fourth lean somewhere
+// the act has a reason to go. The rain, the lightning and the wash of the
+// whole frame all follow, because they all read from the same word.
+var ACT_LIGHT = [
+  // The year I loved a voice — a lamp, then the dark she was talking out of,
+  // the lamp again, and her.
+  ["tungsten", "silence", "tungsten", "hers"],
+  // The year of ordinary love — evening, a kitchen light, evening, an answer.
+  ["dusk", "tungsten", "dusk", "reply"],
+  // The year you became real — held still, an evening, her, still again.
+  ["still", "dusk", "hers", "still"],
+  // Everything still coming — embers, the quiet after, embers, her.
+  ["ember", "still", "ember", "hers"],
+];
+function actLight(n) {
+  let chapter = chapterAt(n);
+  let part = PARTS[chapter?.part ?? 0];
+  let list = ACT_LIGHT[chapter?.part ?? 0];
+  if (!part || !list) return part?.weather ?? "void";
+  let span = Math.max(1, part.to - part.from + 1);
+  let through = (n - part.from) / span;
+  return list[Math.min(list.length - 1, Math.floor(through * list.length))];
+}
 function weatherFor(e) {
   switch (e.type) {
     case "part":
       return PARTS[e.part]?.weather ?? "void";
     case "chapter":
-      return PARTS[chapterAt(e.n)?.part ?? 0]?.weather ?? "void";
+      return actLight(e.n);
     case "scene":
       return e.scene === "twohours"
         ? "still"
@@ -272,9 +303,12 @@ function formSuits(form, chapter) {
 // form would repeat the one before it or does not suit the chapter.
 function buildChapterForms() {
   let out = new Array(CHAPTERS.length + 1).fill("plain");
+  let shots = new Array(CHAPTERS.length + 1).fill(null);
   let cursor = 0;
   let calm = 0;
+  let camera = 0;
   let previous = null;
+  let previousShot = -1;
   for (let n = 1; n <= CHAPTERS.length; n++) {
     let over = isFullBleed(n);
     let list = over ? CALM_FORMS : CHAPTER_FORMS;
@@ -289,21 +323,37 @@ function buildChapterForms() {
       break;
     }
     out[n] = pick ?? (previous === "plain" ? "close" : "plain");
+    // The camera is decided in the same pass, for the same reason the form is.
+    // A form that wants a particular move gets it — unless the chapter before
+    // it just used that move, in which case the form takes the next camera on
+    // the walk instead. Two chapters running never share a camera, even when
+    // two different forms both ask for the push.
+    let wanted = wantsShot(out[n]);
+    let shot = wanted;
+    if (shot == null || shot === previousShot) {
+      // The free walk keeps its own place and is never reset by a form that
+      // asked for something: resetting it was what left two of the six cameras
+      // carrying a quarter of the picture each while two others barely ran.
+      camera = (camera + 1) % SHOT_COUNT;
+      if (camera === previousShot) camera = (camera + 1) % SHOT_COUNT;
+      shot = camera;
+    }
+    shots[n] = shot;
+    previousShot = shot;
     previous = out[n];
     if (over) calm = (calm + 1) % list.length;
     else cursor = (cursor + 7) % list.length;
   }
-  return out;
+  return { forms: out, shots: shots };
 }
 
-var CHAPTER_FORM_BY_N = buildChapterForms();
-
-function formFor(n) {
-  return CHAPTER_FORM_BY_N[n] ?? "plain";
-}
+// The camera list itself lives with the beats, which are concatenated after
+// this file — the walk below runs at load, so it keeps its own count of them.
+// beats.js asserts the two agree.
+var SHOT_COUNT = 6;
 
 // Some forms want a particular camera. The rest take whatever comes next.
-function shotFor(form) {
+function wantsShot(form) {
   switch (form) {
     case "apart":
       return 4; // rise, so the gap between the lines opens
@@ -319,6 +369,17 @@ function shotFor(form) {
     default:
       return null;
   }
+}
+
+var CHAPTER_WALK = buildChapterForms();
+var CHAPTER_FORM_BY_N = CHAPTER_WALK.forms;
+var CHAPTER_SHOT_BY_N = CHAPTER_WALK.shots;
+
+function formFor(n) {
+  return CHAPTER_FORM_BY_N[n] ?? "plain";
+}
+function shotFor(n) {
+  return CHAPTER_SHOT_BY_N[n] ?? null;
 }
 
 function lightFor(e) {

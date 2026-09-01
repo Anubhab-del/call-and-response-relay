@@ -28,6 +28,7 @@ function Film({
 }) {
   let o = (0, React.useMemo)(() => buildReel(), []),
     s = (0, React.useMemo)(() => chapterMarks(o), [o]),
+    acts = (0, React.useMemo)(() => partMarks(o), [o]),
     c = (0, React.useMemo)(() => new Map(s.map((e) => [e.n, e.at])), [s]),
     [l, u] = (0, React.useState)(() => Math.min(Math.max(0, startAt), o.length - 1)),
     [d, f] = (0, React.useState)(false),
@@ -58,9 +59,13 @@ function Film({
     (0, React.useEffect)(() => {
       (score.setCue(cueFor(h)), h.type === "nameFlash" && score.whisperName());
     }, [h]),
-    // Holding quiets the room a little, the way you lower your voice.
+    // Holding quiets the room a little, the way you lower your voice. The
+    // score drops, and the flag goes on the document so the weather can ease
+    // off too — the layers are siblings of the frame, not children of it.
     (0, React.useEffect)(() => {
       score.hush(holding);
+      document.documentElement.classList.toggle("is-holding", holding);
+      return () => document.documentElement.classList.remove("is-holding");
     }, [holding]),
     (0, React.useEffect)(() => {
       update((e) => {
@@ -149,6 +154,26 @@ function Film({
     if (drag !== undefined) el.style.setProperty("--drag-x", `${drag}px`);
   };
 
+  // A page she has committed to is carried the rest of the way rather than
+  // snapping back under her finger: the frame keeps going in her direction,
+  // the new one is placed just off the other edge, and then it settles. All of
+  // it on the compositor, none of it if she has asked for stillness.
+  let throwing = (0, React.useRef)(0);
+  let throwPage = (0, React.useCallback)((dir) => {
+    let el = frame.current;
+    if (!el || isStill()) return;
+    window.clearTimeout(throwing.current);
+    setVars(null, null, dir * 132);
+    throwing.current = window.setTimeout(() => {
+      el.dataset.throw = "on";
+      setVars(null, null, dir * -46);
+      void el.offsetWidth;
+      delete el.dataset.throw;
+      setVars(null, null, 0);
+    }, 120);
+  }, []);
+  (0, React.useEffect)(() => () => window.clearTimeout(throwing.current), []);
+
   let endHold = (0, React.useCallback)(() => {
     window.clearTimeout(gesture.current.holdTimer);
     gesture.current.holdTimer = 0;
@@ -216,8 +241,7 @@ function Film({
     }
     if (gesture.current.dragging) {
       if (Math.abs(dx) > 52) {
-        tapTick();
-        dx < 0 ? S() : C();
+        (tapTick(), throwPage(Math.sign(dx)), dx < 0 ? S() : C());
       }
       return;
     }
@@ -301,22 +325,59 @@ function Film({
         transit: transitFor(h),
         at: l,
       }),
-      (0, jsx.jsx)("div", {
+      (0, jsx.jsxs)("div", {
         className: "ribbon",
         "aria-hidden": "true",
-        children: (0, jsx.jsx)("span", {
-          className: "ribbon-fill",
-          style: {
-            transform: `scaleX(${w})`,
-          },
-        }),
+        children: [
+          // Four notches, where the acts change. A plain bar told her how far
+          // through she was; this tells her what shape the thing is.
+          acts.map((mark) =>
+            (0, jsx.jsx)(
+              "i",
+              {
+                className: "ribbon-notch",
+                "data-past": l >= mark.at ? "true" : void 0,
+                style: {
+                  left: `${(mark.at / o.length) * 100}%`,
+                },
+              },
+              mark.part,
+            ),
+          ),
+          (0, jsx.jsx)("span", {
+            className: "ribbon-fill",
+            style: {
+              transform: `scaleX(${w})`,
+            },
+          }),
+        ],
       }),
       b > 0 && !d
         ? (0, jsx.jsxs)("p", {
             className: "where",
             "aria-live": "off",
             children: [
-              roman(b),
+              // The numeral used to swap. Now it turns over, the way a counter
+              // on a projector does: the one she was on lifts away and the new
+              // one settles into its place.
+              (0, jsx.jsx)("span", {
+                className: "where-tick",
+                children: (0, jsx.jsx)(AnimatePresence, {
+                  initial: false,
+                  children: (0, jsx.jsx)(
+                    motion.span,
+                    {
+                      className: "where-n",
+                      initial: isStill() ? { opacity: 0 } : { opacity: 0, y: -7 },
+                      animate: { opacity: 1, y: 0 },
+                      exit: isStill() ? { opacity: 0 } : { opacity: 0, y: 7 },
+                      transition: { duration: isStill() ? 0.18 : 0.34, ease: EASE_OUT },
+                      children: roman(b),
+                    },
+                    b,
+                  ),
+                }),
+              }),
               " ",
               (0, jsx.jsxs)("span", {
                 children: ["/ ", roman(CHAPTER_COUNT)],

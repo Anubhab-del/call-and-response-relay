@@ -3355,3 +3355,78 @@ html.is-still .tonight[data-holding="true"] {
 .promises .fine {
   margin: -6px 0 16px;
 }
+
+/* ── the picture, deeper ─────────────────────────────────────────────────
+   The act notches, the counter that turns over, the gate coming back up on a
+   new reel, and the room settling under her thumb. */
+
+/* Four notches on the ribbon, where the acts change. She can see the shape of
+   the whole thing without opening the contents. */
+.ribbon-notch {
+  z-index: 1;
+  background: #e8c9a43d;
+  width: 1px;
+  height: 4px;
+  transition: background 0.8s ease, height 0.8s var(--ease);
+  position: absolute;
+  bottom: 0;
+}
+.ribbon-notch[data-past="true"] {
+  background: #f5dfc07a;
+  height: 6px;
+}
+
+/* The chapter number turns over rather than swapping. The slot holds its
+   width so the total beside it never shifts. */
+.where-tick {
+  text-align: right;
+  min-width: 3.4em;
+  height: 1.1em;
+  display: inline-block;
+  position: relative;
+  vertical-align: baseline;
+}
+.where-n {
+  display: block;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+/* A new act is a new reel: the booth goes dark and the gate comes back up in
+   two or three frames before the picture is properly there. */
+.gate-flicker {
+  pointer-events: none;
+  background: linear-gradient(#f6e6c81f, #f6e6c80a 38%, #0000 72%);
+  mix-blend-mode: screen;
+  position: absolute;
+  inset: 0;
+}
+
+/* A page she has committed to is carried the rest of the way. For the one
+   frame the new page is placed off the far edge, the frame must not animate. */
+.film[data-throw="on"] {
+  transition: none;
+}
+
+/* Holding does not only stop the picture turning: the room around it settles.
+   The rain eases, the dust thins, the grain lifts. Opacity only, so it is a
+   quieting rather than a stall, and it is just as true with motion off. */
+.letterbox .dust,
+.letterbox .rain-glass,
+.letterbox .grain,
+.letterbox .light-leak {
+  transition: opacity 1.4s var(--ease);
+}
+html.is-holding .letterbox .rain-glass {
+  opacity: 0.07;
+}
+html.is-holding .letterbox .dust {
+  opacity: 0.3;
+}
+html.is-holding .letterbox .grain {
+  opacity: 0.026;
+}
+html.is-holding .letterbox .light-leak {
+  opacity: 0.55;
+}

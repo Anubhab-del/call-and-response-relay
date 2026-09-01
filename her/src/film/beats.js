@@ -12,6 +12,10 @@ var SHOTS = [
   { from: { scale: 1.02, x: "0%", y: "1.4%" }, to: { scale: 1.06, x: "0%", y: "-0.4%" } }, // rise
   { from: { scale: 1.06, x: "-0.9%", y: "-0.8%" }, to: { scale: 1.015, x: "0.9%", y: "0.8%" } }, // fall away
 ];
+// reel.js walks the cameras at load, before this file exists, so it carries
+// its own count. If a camera is ever added here and not there, the walk would
+// silently stop using it.
+if (SHOTS.length !== SHOT_COUNT) throw new Error("camera count");
 var shotTurn = 0;
 
 function nextShot() {
@@ -133,10 +137,15 @@ function OvertureBeat() {
     }),
   });
 }
+// Each act arrives on its own move, and keeps it: the first pushes in, the
+// second drifts, the third rises, the last pulls back and lets go. Four cards
+// that used to take whatever camera happened to be next on the walk.
+var ACT_CAMERA = [0, 3, 4, 1];
 function PartBeat({ part: part }) {
   let t = PARTS[part];
   return t
     ? (0, jsx.jsx)(Beat, {
+        shot: ACT_CAMERA[part % ACT_CAMERA.length],
         children: (0, jsx.jsxs)("div", {
           className: "centre part-card",
           children: [
@@ -364,7 +373,7 @@ function ChapterBeat({ n: n }) {
 
   return (0, jsx.jsxs)(Beat, {
     full: over,
-    shot: shotFor(form),
+    shot: shotFor(n),
     children: [
       over ? (0, jsx.jsx)(Still, { variant: lightFor(n), seconds: 6 }) : null,
       (0, jsx.jsx)("div", {

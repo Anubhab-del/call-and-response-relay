@@ -1,13 +1,28 @@
 function transitFor(e) {
   switch (e.type) {
     case "part":
-      return "black";
+      // A new act is a new reel. The booth goes dark, the gate flickers, and
+      // the picture comes back up.
+      return "reel";
     case "vow":
       return "flash";
     case "title":
       return "slow";
     case "scene":
-      return e.scene === "hold" ? "slow" : e.scene === "twohours" ? "flash" : "dissolve";
+      // Every named scene has its own way in. Sleep and the distance fade
+      // down, because both are about something being far off; the two hours
+      // arrive as a flash, because that is how they arrived.
+      switch (e.scene) {
+        case "hold":
+        case "sleep":
+          return "slow";
+        case "distance":
+          return "black";
+        case "twohours":
+          return "flash";
+        default:
+          return "dissolve";
+      }
     case "care":
     case "last":
     case "codaStill":
@@ -29,6 +44,13 @@ function transitSpec(e) {
         down: 0.55,
         hold: 0.34,
         up: 0.85,
+        to: "#000",
+      };
+    case "reel":
+      return {
+        down: 0.6,
+        hold: 0.5,
+        up: 1,
         to: "#000",
       };
     case "flash":
@@ -82,7 +104,7 @@ function Transit({ transit: transit, at: at }) {
     return null;
   let a = transitSpec(n.transit),
     o = a.down + a.hold + a.up;
-  return (0, jsx.jsx)(
+  return (0, jsx.jsxs)(
     motion.div,
     {
       className: "curtain",
@@ -102,6 +124,24 @@ function Transit({ transit: transit, at: at }) {
       },
       onAnimationComplete: () => r(null),
       "aria-hidden": "true",
+      children: [
+        // The gate coming back up on a new reel: two frames of light before
+        // the picture is properly there.
+        n.transit === "reel"
+          ? (0, jsx.jsx)(motion.span, {
+              className: "gate-flicker",
+              initial: { opacity: 0 },
+              animate: { opacity: [0, 0, 0.5, 0.06, 0.34, 0.02, 0.18, 0] },
+              transition: {
+                duration: o,
+                times: [0, (a.down + a.hold) / o, (a.down + a.hold + 0.06) / o,
+                  (a.down + a.hold + 0.12) / o, (a.down + a.hold + 0.2) / o,
+                  (a.down + a.hold + 0.28) / o, (a.down + a.hold + 0.38) / o, 1],
+                ease: "linear",
+              },
+            })
+          : null,
+      ],
     },
     n.key,
   );

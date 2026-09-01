@@ -21,7 +21,7 @@ var INVITATION_COPY = {
   lines: [
     "Headphones, if you have them. I made it quiet on purpose.",
     "The lights off, if you can. It looks better in the dark, and so do most true things.",
-    "About half an hour, read at the speed I wrote it. I have had three years. You can give me thirty minutes.",
+    "Thirty-six minutes, read at the speed I wrote it. I have had three years. You can give me half an hour and a bit.",
   ],
   button: "I am ready",
 };

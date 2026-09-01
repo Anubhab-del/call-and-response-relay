@@ -572,6 +572,95 @@ for (const mode of ["full", "lean"]) {
   await ctx.close();
 }
 
+// ── the picture moves inside an act ───────────────────────────────────────
+{
+  // An act used to be one colour from its first chapter to its last. Walk the
+  // whole reel from the source and count what actually changes.
+  const reelSrc = readFileSync(path.join(root, "src", "film", "reel.js"), "utf8");
+  const acts = reelSrc.match(/var ACT_LIGHT = \[[\s\S]*?\n\];/);
+  const rows = acts ? [...acts[0].matchAll(/\[([^\]]+)\]/g)].map((m) => m[1].match(/"[a-z]+"/g) ?? []) : [];
+  ok("every act carries more than one light", rows.length === 4 && rows.every((r) => new Set(r).size >= 2),
+    rows.map((r) => r.join(",")).join(" | "));
+  const own = [...readFileSync(path.join(root, "src", "content", "film.js"), "utf8")
+    .matchAll(/^=== [^|]+\|[^|]+\|\s*([a-z]+)/gm)].map((m) => `"${m[1]}"`);
+  ok("and every act keeps coming home to its own light",
+    own.length === 4 && rows.length === 4
+      && rows.every((r, i) => r[0] === own[i] && r.filter((w) => w === own[i]).length >= 2),
+    rows.map((r, i) => `${own[i]}: ${r.join(",")}`).join(" | "));
+
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(String(e.message)));
+  await page.addInitScript(() => localStorage.setItem("her.v1", JSON.stringify({ schema: 1, greeted: true,
+    entered: true, watched: false, reelAt: 5, reelFurthest: 300, sound: false, motion: "full", nameWritten: true })));
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForSelector(".film", { timeout: 10000 });
+  await page.waitForTimeout(900);
+
+  // Step through the first act by keyboard and watch the wash.
+  const lit = new Set();
+  const shots = [];
+  for (let i = 0; i < 30; i++) {
+    await page.keyboard.press("ArrowRight");
+    await page.waitForTimeout(120);
+    const seen = await page.evaluate(() => {
+      const box = document.querySelector(".letterbox");
+      const beat = document.querySelector(".beat");
+      return { weather: box?.dataset.weather, transform: beat ? getComputedStyle(beat).transform : "" };
+    });
+    if (seen.weather) lit.add(seen.weather);
+    if (seen.transform && seen.transform !== "none") shots.push(seen.transform);
+  }
+  ok("the light moves as an act runs", lit.size >= 3, [...lit].join(" "));
+  ok("and every beat is on a camera", shots.length > 20, String(shots.length));
+
+  // The ribbon carries the four acts.
+  ok("the ribbon shows where the acts change", (await page.locator(".ribbon-notch").count()) === 4,
+    String(await page.locator(".ribbon-notch").count()));
+
+  // Holding settles the room, not just the frame.
+  const eased = async () => page.evaluate(() => {
+    const rain = document.querySelector(".letterbox .rain-glass");
+    return rain ? Number(getComputedStyle(rain).opacity) : null;
+  });
+  const loud = await eased();
+  await page.mouse.move(195, 620);
+  await page.mouse.down();
+  await page.waitForTimeout(2200);
+  const quiet = await eased();
+  ok("holding eases the weather as well as the picture", quiet != null && quiet < loud,
+    `${loud} → ${quiet}`);
+  ok("and the document says so, so every layer can hear it",
+    await page.evaluate(() => document.documentElement.classList.contains("is-holding")));
+  await page.mouse.up();
+  await page.waitForTimeout(1800);
+  ok("letting go brings it back", (await eased()) > quiet, `${quiet} → ${await eased()}`);
+  ok("nothing threw", errors.length === 0, errors.join(" | "));
+  await ctx.close();
+}
+
+// ── the counter turns over ────────────────────────────────────────────────
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true });
+  const page = await ctx.newPage();
+  await page.addInitScript(() => localStorage.setItem("her.v1", JSON.stringify({ schema: 1, greeted: true,
+    entered: true, watched: false, reelAt: 6, reelFurthest: 300, sound: false, motion: "full", nameWritten: true })));
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForSelector(".where", { timeout: 10000 });
+  await page.waitForTimeout(600);
+  const before = await page.locator(".where").innerText();
+  await page.keyboard.press("ArrowRight");
+  await page.waitForTimeout(60);
+  const both = await page.locator(".where-n").count();
+  await page.waitForTimeout(700);
+  const after = await page.locator(".where").innerText();
+  ok("the chapter number changes", before !== after, `${before} → ${after}`);
+  ok("and it turns over rather than swapping", both === 2, String(both));
+  ok("and settles back to one", (await page.locator(".where-n").count()) === 1);
+  await ctx.close();
+}
+
 // ── the house answers the same hand ───────────────────────────────────────
 {
   const v = await visit("2026-09-15T15:00:00");
