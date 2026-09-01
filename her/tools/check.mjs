@@ -518,6 +518,67 @@ for (const mode of ["full", "lean"]) {
   ok("the light leaks are gradients, not blurs", !leakBlur);
 }
 
+// ── the picture is a graphic novel ────────────────────────────────────────
+{
+  // Not "it is dark and there is rain". A page: a hard-ruled panel that lands,
+  // the chapter number on a corner tab, screentone across it, one sodium key
+  // raking in, and the narration in caption boxes rather than floating on the
+  // picture. This is the form the whole reel is in, so it is asserted rather
+  // than admired.
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true, reducedMotion: "reduce" });
+  const page = await ctx.newPage();
+  const errors = [];
+  page.on("pageerror", (e) => errors.push(String(e.message)));
+  await page.addInitScript(() => localStorage.setItem("her.v1", JSON.stringify({ schema: 1, greeted: true,
+    entered: true, watched: false, reelAt: 26, reelFurthest: 300, sound: false, motion: "still", nameWritten: true })));
+  await page.goto("file://" + FILE, { waitUntil: "load" });
+  await page.waitForSelector(".film", { timeout: 10000 });
+  await page.waitForTimeout(1000);
+
+  // Walk until a chapter is up, then read the page it is on.
+  let seen = null;
+  for (let i = 0; i < 10 && !seen; i++) {
+    seen = await page.evaluate(() => {
+      const el = document.querySelector(".page");
+      if (!el) return null;
+      const box = el.getBoundingClientRect();
+      return {
+        form: el.dataset.form ?? "",
+        tab: document.querySelector(".panel-tab")?.textContent ?? "",
+        tone: !!document.querySelector(".panel-tone"),
+        key: !!document.querySelector(".panel-key"),
+        boxes: document.querySelectorAll(".page .chapter-line").length,
+        // A caption box is a box: it has a ground of its own and a rule down
+        // one edge. Floating text over the picture is the thing this replaced.
+        opaque: [...document.querySelectorAll(".page .chapter-line")].every((n) => {
+          const cs = getComputedStyle(n);
+          const a = Number((cs.backgroundColor.match(/[\d.]+/g) ?? [0, 0, 0, 0])[3] ?? 1);
+          return a > 0.5 && parseFloat(cs.borderLeftWidth) >= 1;
+        }),
+        inside: [...document.querySelectorAll(".page .chapter-line")].every((n) => {
+          const r = n.getBoundingClientRect();
+          return r.left >= box.left - 1 && r.right <= box.right + 1;
+        }),
+        wide: box.width,
+        tall: box.height,
+      };
+    });
+    if (!seen) { await page.mouse.click(195, 760, { force: true }); await page.waitForTimeout(500); }
+  }
+  ok("a chapter is a panel on a page", !!seen, String(seen));
+  if (seen) {
+    ok("the panel carries the chapter number on a tab", /^[IVXLC]+$/.test(seen.tab.trim()), seen.tab);
+    ok("it has screentone and a key light", seen.tone && seen.key);
+    ok("the words are in caption boxes, not floating", seen.boxes >= 1 && seen.opaque,
+      `${seen.boxes} boxes`);
+    ok("and every box is inside the panel", seen.inside);
+    ok("the panel takes the page", seen.tall >= 300 && seen.wide >= 300,
+      `${Math.round(seen.wide)}x${Math.round(seen.tall)}`);
+  }
+  ok("the page threw nothing", errors.length === 0, errors.join(" | "));
+  await ctx.close();
+}
+
 // ── no two chapters in a row look alike ───────────────────────────────────
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, offline: true, reducedMotion: "reduce" });

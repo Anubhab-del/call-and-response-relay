@@ -371,15 +371,53 @@ function ChapterBeat({ n: n }) {
       body = [numberEl, titleEl, (0, jsx.jsx)("div", { className: "chapter-lines", children: lineEls() })];
   }
 
+  // ── the page ─────────────────────────────────────────────────────────
+  //
+  // Max Payne did not tell its story in cutscenes. It told it in a graphic
+  // novel: hard-ruled panels dropping onto the page one at a time, the
+  // narration in a caption box in the corner, ink and halftone, everything
+  // cold except the one sodium light in the frame.
+  //
+  // That is a form, not an atmosphere — which is what was missing. Blinds and
+  // smoke over a warm serif is film noir in general. This is the specific
+  // thing.
+  //
+  // The sixteen chapter forms are untouched and still decide the shape of the
+  // words. They now happen *inside* a panel, on a page, and the panel is what
+  // she sees first: it lands, the ink settles, and then the words arrive in
+  // it. The number goes to the corner tab, where a chapter number goes.
   return (0, jsx.jsxs)(Beat, {
     full: over,
     shot: shotFor(n),
     children: [
       over ? (0, jsx.jsx)(Still, { variant: lightFor(n), seconds: 6 }) : null,
-      (0, jsx.jsx)("div", {
-        className: over ? "chapter over-light" : "chapter",
+      (0, jsx.jsxs)(motion.div, {
+        className: "page",
         "data-form": form,
-        children: body,
+        "data-over": over ? "true" : void 0,
+        // The panel does not fade in. It lands. Anything softer than this and
+        // it is a slide again.
+        initial: isStill() ? { opacity: 0 } : { opacity: 0, scale: 1.035, y: -6 },
+        animate: {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          transition: isStill() ? { duration: 0.2 } : { duration: 0.44, ease: [0.16, 1, 0.3, 1] },
+        },
+        children: [
+          (0, jsx.jsx)("span", {
+            className: "panel-tab",
+            "aria-hidden": "true",
+            children: roman(n),
+          }),
+          (0, jsx.jsx)("span", { className: "panel-tone", "aria-hidden": "true" }),
+          (0, jsx.jsx)("span", { className: "panel-key", "aria-hidden": "true" }),
+          (0, jsx.jsx)("div", {
+            className: over ? "chapter over-light" : "chapter",
+            "data-form": form,
+            children: body,
+          }),
+        ],
       }),
     ],
   });

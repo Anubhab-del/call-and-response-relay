@@ -4107,3 +4107,134 @@ html.is-still .smoke {
     background: radial-gradient(circle, #f0dcba24 0%, #e9cfd10d 42%, #0000 74%);
   }
 }
+
+/* ── the page ────────────────────────────────────────────────────────────
+   A graphic novel, not a slideshow.
+
+   Hard-ruled panel with a real gutter around it, a corner tab carrying the
+   chapter number the way a panel carries one, screentone across the whole
+   thing, one sodium key light raking in from the side, and ink everywhere
+   else. The panel lands rather than fading, because a panel that fades is a
+   slide with a border on it. */
+.page {
+  --ink: #05070b;
+  --panel: #0b0f16;
+  --rule: #cbd6e21f;
+  --sodium: #f0b968;
+  position: relative;
+  width: min(100%, 640px);
+  /* A panel, not a card: it takes the page. */
+  min-height: min(58vh, 480px);
+  margin: 0 auto;
+  display: grid;
+  align-content: center;
+  padding: clamp(26px, 7vw, 48px) clamp(18px, 5vw, 38px) clamp(26px, 7vw, 48px);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background:
+    linear-gradient(163deg, #131a25 0%, #0b0f16 46%, #070a0f 100%);
+  box-shadow:
+    inset 0 1px #ffffff0a,
+    inset 0 0 0 1px #00000059,
+    0 18px 46px #000000a6;
+  isolation: isolate;
+  overflow: hidden;
+}
+/* The corner tab. Where a panel puts its number. */
+.panel-tab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  padding: 5px 11px 6px;
+  font-family: var(--ui-font);
+  font-size: 0.55rem;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  text-transform: uppercase;
+  color: #0a0d13;
+  background: var(--sodium);
+  border-bottom-right-radius: 2px;
+  pointer-events: none;
+}
+/* Screentone. Not a texture photograph — a dot grid, which is what a
+   halftone is, at a size that reads as print rather than as noise. */
+.panel-tone {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: radial-gradient(#ffffff14 0.5px, #0000 0.6px);
+  background-size: 5px 5px;
+}
+/* The one warm light in a cold frame — a hard sodium rake from the upper
+   left, falling off fast. Everything the panel contains sits on top of it. */
+.panel-key {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(78% 58% at 12% -6%, #f0b96826 0%, #f0b96809 34%, #0000 68%),
+    linear-gradient(101deg, #7fa2c918 0%, #0000 32% 70%, #05070b8c 100%);
+}
+.page .chapter {
+  position: relative;
+  z-index: 2;
+}
+
+/* The narration box. This is the thing that makes it Max Payne rather than
+   "a dark website": the words are not floating on the picture, they are in a
+   box that has been laid on top of it. */
+.page .chapter-line {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  padding: 0.42em 0.72em 0.5em;
+  background: #060910d1;
+  border-left: 2px solid var(--sodium);
+  box-shadow: 0 2px 14px #00000073;
+  text-align: left;
+  text-wrap: pretty;
+}
+.page .chapter[data-form="stack"] .chapter-line,
+.page .chapter[data-form="corner"] .chapter-line,
+.page .chapter[data-form="subtitle"] .chapter-line {
+  margin-inline: 0;
+}
+.page .chapter-lines {
+  gap: clamp(9px, 2.4vw, 14px);
+  display: grid;
+  justify-items: center;
+}
+.page .chapter[data-form="stack"] .chapter-lines,
+.page .chapter[data-form="corner"] .chapter-lines,
+.page .chapter[data-form="subtitle"] .chapter-lines {
+  justify-items: start;
+}
+/* The chapter number is on the tab now, so the one in the body goes. */
+.page .chapter-number {
+  display: none;
+}
+.page .chapter-title {
+  color: #dce6f2;
+}
+.page .chapter-rule {
+  background: var(--sodium);
+}
+.page .chapter-drop {
+  color: var(--sodium);
+}
+.page .chapter-ghost {
+  color: #cbd6e20e;
+}
+/* Over a still the panel is the still: no ground of its own, only the rule. */
+.page[data-over="true"] {
+  background: none;
+  box-shadow: inset 0 0 0 1px #00000073;
+}
+.page[data-over="true"] .panel-key {
+  background: linear-gradient(101deg, #05070b73 0%, #0000 34% 66%, #05070ba6 100%);
+}
