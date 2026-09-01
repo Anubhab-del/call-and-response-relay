@@ -226,6 +226,20 @@ function App() {
               "aria-hidden": "true",
               children: (0, jsx.jsx)("span", {}),
             }),
+            // ── noir ──────────────────────────────────────────────────
+            // Light through a slatted blind, and the smoke that makes a beam
+            // visible. Both are pure CSS over the same frame everything else
+            // is in, both are behind every word, and both are off entirely
+            // when she has asked the house to be still.
+            (0, jsx.jsx)("div", {
+              className: "blinds",
+              "aria-hidden": "true",
+            }),
+            (0, jsx.jsxs)("div", {
+              className: "smoke",
+              "aria-hidden": "true",
+              children: [(0, jsx.jsx)("span", {}), (0, jsx.jsx)("span", {})],
+            }),
             (0, jsx.jsx)("div", {
               className: "vignette",
               "aria-hidden": "true",

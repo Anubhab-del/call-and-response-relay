@@ -66,7 +66,18 @@ npm install                 # esbuild, plus playwright for the checks
 npm run check               # the suite — 199 checks against dist/HER.html
 npm run audit               # fit, touch targets and contrast, at three widths
 npm run read                # every sentence the house can build, over 3 years
+npm run listen              # what the night's score does, counted not guessed
+npm run rehearse            # -> dist/HER-rehearsal.html (see below)
 ```
+
+### Watching the night before the night
+
+The Same Hour runs at nine on the second of September and at no other time,
+which means the one person who cannot check it is the person who wrote it.
+`npm run rehearse` builds a second file whose clock starts twenty seconds
+before nine and whose writes go to a bucket that is thrown away. It carries a
+band across the foot saying what it is. Watch it as many times as you like;
+it cannot seal the real one. It never goes on her phone.
 
 It opens the built file the way she will — `file://`, offline, 390×844, one
 thumb — and walks it on real calendar days with the clock shifted: a plain

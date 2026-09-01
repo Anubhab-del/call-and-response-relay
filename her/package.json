@@ -7,7 +7,9 @@
     "dev": "node build.mjs --dev",
     "check": "node tools/check.mjs",
     "audit": "node tools/audit.mjs",
-    "read": "node tools/plurals.mjs"
+    "read": "node tools/plurals.mjs",
+    "listen": "node tools/listen.mjs",
+    "rehearse": "node build.mjs --rehearse"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",

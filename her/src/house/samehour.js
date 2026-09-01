@@ -213,6 +213,19 @@ function SameHour({ startedAt: startedAt, together: together, onLeave: onLeave, 
     );
   }
 
+  // The night has a score of its own. It had none: the whole ceremony ran on
+  // the house's ambient cue, a note every twenty-seven seconds. Now the theme
+  // plays under it, and when he starts speaking it drops to a fifth of itself
+  // and lets the words have the room.
+  (0, React.useEffect)(() => {
+    score.setCue("hour");
+    return () => score.setCue("house");
+  }, []);
+  (0, React.useEffect)(() => {
+    if (beat?.kind === "still" || beat?.kind === "address") score.setCue("hour-address");
+    else if (beat?.kind === "close") score.setCue("hour-over");
+  }, [beat?.kind]);
+
   // From the moment the room turns down, there is nothing on the screen but
   // the lamp and what he has to say to her. The silence is not a gap before
   // the address — it is the first twenty seconds of it, and it was carrying

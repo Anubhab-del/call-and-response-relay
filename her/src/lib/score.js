@@ -254,6 +254,11 @@ var score = new (class {
           n.gain.linearRampToValueAtTime(BASE_GAIN * this.volume, t.currentTime + 2.4),
         this.ensureRain(0.026),
         await this.loadSong());
+      // Whatever was asked for while there was nothing to play it on.
+      if (this.wanted && this.wanted !== this.cue) {
+        let wanted = this.wanted;
+        ((this.cue = ""), await this.setCue(wanted));
+      }
     } catch {}
   }
   get isOn() {
@@ -393,6 +398,118 @@ var score = new (class {
     this.keyTimer = window.setTimeout(play, first ?? this.keyGap);
   }
 
+  // ── the theme ────────────────────────────────────────────────────────────
+  //
+  // Everything above this is a hand wandering: notes picked out of a key at
+  // uneven intervals, deliberately unlearnable. That is right for thirty-six
+  // minutes of picture and wrong for the eleven minutes that are the point of
+  // the whole file, which had no music of its own at all — the night ran on
+  // the house's ambient cue.
+  //
+  // So one written thing. A slow descent in A minor over a cold fifth, wide
+  // gaps, and an open ending that never resolves: the noir idiom, played on
+  // the same struck-string synth as the rest so it belongs to this house and
+  // not to another one. Twenty-eight seconds, then it comes round again.
+  //
+  // Offsets are semitones from A — the same units the keys above use.
+  THEME = [
+    // The fall.
+    { at: 0, n: 24, level: 0.92 },
+    { at: 1500, n: 22, level: 0.8 },
+    { at: 3100, n: 20, level: 0.84 },
+    { at: 4900, n: 19, level: 0.9 },
+    { at: 7400, n: 15, level: 0.72 },
+    { at: 9600, n: 12, level: 0.86 },
+    // The answer, which does not answer.
+    { at: 13800, n: 19, level: 0.6 },
+    { at: 15100, n: 20, level: 0.66 },
+    { at: 16700, n: 19, level: 0.58 },
+    { at: 18400, n: 17, level: 0.7 },
+    // An open fifth, left standing.
+    { at: 21000, n: 12, level: 0.78 },
+    { at: 21260, n: 7, level: 0.66 },
+  ];
+  THEME_LOOP = 28000;
+
+  themeTimers = [];
+  themeOn = false;
+  themeLevel = 1;
+  // While he is speaking the theme does not merely get quieter — it thins to
+  // almost nothing. Twelve notes in twenty-eight seconds under the most
+  // important thing he says all year is a busy room. Sparse keeps only the
+  // open fifth at the end of the phrase: two notes, over the drone, and then
+  // half a minute of floor.
+  themeSparse = false;
+
+  startTheme(level = 1, sparse = false) {
+    if (!this.ctx) return;
+    ((this.themeLevel = level), (this.themeSparse = sparse));
+    if (this.themeOn) return;
+    ((this.themeOn = true), this.stopKeys(), this.startDrone());
+    let round = () => {
+      if (!this.themeOn) return;
+      // Read at the top of each phrase, so a change lands on the next one
+      // rather than cutting a note off in the middle of the one playing.
+      let phrase = this.themeSparse ? this.THEME.filter((n) => n.at >= 21000) : this.THEME;
+      for (let note of phrase) {
+        this.themeTimers.push(
+          window.setTimeout(
+            () => this.strike(note.n, { level: note.level * this.themeLevel, hammer: 0.66 }),
+            note.at,
+          ),
+        );
+      }
+      this.themeTimers.push(window.setTimeout(round, this.THEME_LOOP));
+    };
+    round();
+  }
+
+  stopTheme() {
+    ((this.themeOn = false),
+      (this.themeSparse = false),
+      this.themeTimers.forEach((id) => window.clearTimeout(id)),
+      (this.themeTimers = []),
+      this.stopDrone());
+  }
+
+  // Under the theme: a low fifth, filtered nearly to nothing, so the room has
+  // a floor. It is felt rather than heard — take it away and the piano sounds
+  // like it is in an empty flat.
+  drone = null;
+  startDrone() {
+    if (!this.ctx || this.drone || isStill()) return;
+    try {
+      let ctx = this.ctx;
+      let gain = ctx.createGain();
+      gain.gain.value = 0;
+      let filter = ctx.createBiquadFilter();
+      ((filter.type = "lowpass"), (filter.frequency.value = 240), (filter.Q.value = 0.5));
+      let voices = [-24, -17].map((n, i) => {
+        let osc = ctx.createOscillator();
+        ((osc.type = "sine"), (osc.frequency.value = midiToHz(n)), osc.detune.setValueAtTime(i ? 4 : -4, ctx.currentTime));
+        let v = ctx.createGain();
+        ((v.gain.value = i ? 0.5 : 1), osc.connect(v), v.connect(filter), osc.start());
+        return osc;
+      });
+      (filter.connect(gain), this.send(gain));
+      gain.gain.setTargetAtTime(0.028, ctx.currentTime, 3.5);
+      this.drone = { gain, voices };
+    } catch {}
+  }
+  stopDrone() {
+    let d = this.drone;
+    if (!d || !this.ctx) return;
+    this.drone = null;
+    try {
+      d.gain.gain.setTargetAtTime(0, this.ctx.currentTime, 1.6);
+      window.setTimeout(() => {
+        try {
+          (d.voices.forEach((o) => o.stop()), d.gain.disconnect());
+        } catch {}
+      }, 6000);
+    } catch {}
+  }
+
   // A single note, deliberately, when a beat wants one.
   sound(offset = 0, level = 1) {
     let key = KEYS[this.keyIndex ?? 0] ?? KEYS[0];
@@ -414,8 +531,15 @@ var score = new (class {
   // — ten to twenty-five seconds — because the quiet is the point.
   async setCue(cue) {
     if (cue === this.cue) return;
-    this.cue = cue;
+    // The cue is remembered whether or not there is any audio yet, but it is
+    // only committed once there is. Committing it first meant a cue asked for
+    // before the first tap was swallowed for good: the call marked it as the
+    // current cue, returned for want of a context, and nothing ever asked
+    // again. The night is the one cue that is set once and never repeated, so
+    // it is the one that would have gone silent.
+    this.wanted = cue;
     if (!this.ctx) return;
+    this.cue = cue;
 
     if (cue.startsWith("/")) {
       let url = scoreUrl(cue);
@@ -424,6 +548,10 @@ var score = new (class {
         return;
       }
     }
+
+    // Any cue that is not the night puts the theme away. It belongs to eleven
+    // minutes a year and nowhere else.
+    if (!cue.startsWith("hour")) this.stopTheme();
 
     let part = cue.startsWith("part-") ? Number.parseInt(cue.slice(5), 10) : null;
     if (part !== null && Number.isFinite(part)) {
@@ -480,7 +608,20 @@ var score = new (class {
         return;
       case "letter":
         // While she is reading, silence. A note over a letter is an intrusion.
-        (this.stopKeys(), this.setRain(0.018));
+        (this.stopKeys(), this.stopTheme(), this.setRain(0.018));
+        return;
+      case "hour":
+        // The night. The theme, quietly, under the whole of it, and the rain
+        // pulled almost off so the piano is the only thing in the room.
+        (this.stopKeys(), this.startTheme(0.72), this.setRain(0.02));
+        return;
+      case "hour-address":
+        // He is speaking. The theme thins to the open fifth at the foot of the
+        // phrase and the drone holds the floor. The words are the room now.
+        (this.startTheme(0.34, true), this.setRain(0.008));
+        return;
+      case "hour-over":
+        (this.stopTheme(), this.setRain(0.024));
         return;
       default:
         ((this.keyGap = 15000), (this.keyLevel = 0.8), this.setRain(0.03));

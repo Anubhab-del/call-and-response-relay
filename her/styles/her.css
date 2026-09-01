@@ -3942,3 +3942,135 @@ html.is-still .dial-hand {
   animation: none;
   transition: none;
 }
+
+/* ── noir ────────────────────────────────────────────────────────────────
+   The film already had rain on glass, grain, a leak and a vignette. What it
+   did not have is the two things that actually make a frame read as noir: a
+   hard light cut into bars by something in the way, and enough in the air to
+   make the light itself visible.
+
+   Both sit behind everything, both are cheap (two composited layers, no
+   repaint), and both are off when she has asked the house to be still. */
+
+/* Light through a slatted blind, falling across the frame at an angle and
+   drifting a few pixels over half a minute, the way a blind moves when a
+   window is open somewhere. */
+.blinds {
+  pointer-events: none;
+  z-index: 6;
+  opacity: 0;
+  mix-blend-mode: soft-light;
+  /* The axis is near-vertical, so the bars fall near-horizontal with a slight
+     rake — light through a slatted blind. At ninety-nine degrees they came out
+     vertical, which is not a blind, it is a cell. */
+  background: repeating-linear-gradient(
+    7deg,
+    #0000 0 26px,
+    #0000006b 26px 33px,
+    #00000030 33px 37px,
+    #0000 37px 63px
+  );
+  transition: opacity 2.6s var(--ease);
+  animation: blind-drift 47s ease-in-out infinite alternate;
+  position: absolute;
+  inset: -12% -6%;
+}
+@keyframes blind-drift {
+  from {
+    transform: translate3d(0, -6px, 0) rotate(-0.22deg);
+  }
+  to {
+    transform: translate3d(3px, 8px, 0) rotate(0.22deg);
+  }
+}
+.letterbox .blinds {
+  opacity: 0.5;
+}
+/* Hardest during the night. That is the one part of this that is actually a
+   man alone in a room at nine o'clock. */
+.shell[data-mode="hour"] .blinds {
+  opacity: 0.62;
+}
+/* And gone the moment he starts speaking — nothing across her face. */
+.shell[data-address="true"] .blinds {
+  opacity: 0.14;
+}
+.house-frame .blinds {
+  opacity: 0.16;
+}
+
+/* What makes a beam a beam. Two very large, very slow, very faint masses —
+   not clouds, not fog: the reason you can see the light at all. */
+.smoke {
+  pointer-events: none;
+  z-index: 7;
+  mix-blend-mode: screen;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.smoke span {
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(42px);
+}
+.smoke span:first-child {
+  background: radial-gradient(circle, #f0dcba1a 0%, #f0dcba08 44%, #0000 72%);
+  width: 78%;
+  height: 62%;
+  top: -14%;
+  left: -18%;
+  animation: smoke-a 71s ease-in-out infinite alternate;
+}
+.smoke span:last-child {
+  background: radial-gradient(circle, #cbb9d117 0%, #cbb9d106 46%, #0000 74%);
+  width: 66%;
+  height: 54%;
+  bottom: -16%;
+  right: -14%;
+  animation: smoke-b 89s ease-in-out infinite alternate;
+}
+@keyframes smoke-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(16%, 9%, 0) scale(1.22);
+  }
+}
+@keyframes smoke-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.12);
+  }
+  to {
+    transform: translate3d(-13%, -8%, 0) scale(0.94);
+  }
+}
+.house-frame .smoke {
+  opacity: 0.5;
+}
+
+/* The frame closes harder than it did. A noir frame is mostly dark: the eye
+   should have one lit place to go and nowhere else. */
+.letterbox .vignette {
+  background:
+    radial-gradient(72% 62% at 50% 46%, #0000 34%, #000000b8 100%),
+    linear-gradient(96deg, #00000059 0%, #0000 26% 74%, #00000042 100%);
+}
+.shell[data-mode="hour"] .vignette {
+  background: radial-gradient(66% 56% at 50% 42%, #0000 28%, #000000cc 100%);
+}
+/* More silver in the film. Grain is the difference between a dark picture and
+   a picture of the dark. */
+.letterbox .grain {
+  opacity: 0.075;
+}
+
+html.is-still .blinds,
+html.is-still .smoke span {
+  animation: none;
+}
+html.is-still .smoke {
+  opacity: 0.4;
+}

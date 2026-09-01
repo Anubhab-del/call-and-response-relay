@@ -129,30 +129,42 @@ var SAME_HOUR_BEATS = [
   // every thread in this file at once: the hour, the distance, and the room.
   { at: 563, kind: "address", bloom: true, text: "Happy anniversary, miss wife." },
   {
-    at: 583,
+    at: 585,
     kind: "address",
     text: "Three years is not the size of this. It is the beginning of it.",
   },
   {
-    at: 601,
+    at: 603,
     kind: "address",
-    text: "I do not want only the good days. I want every single one — the dull ones, the bad ones, the ones where nothing whatsoever happens.",
+    text: "I have loved you across a distance that was built to make this impossible, and it has not once got harder to do.",
   },
   {
     at: 625,
     kind: "address",
+    text: "You are the only person I have ever managed to be completely unimpressive in front of. I do not think you know what that is worth.",
+  },
+  {
+    at: 650,
+    kind: "address",
+    text: "I do not want only the good days. I want every single one — the dull ones, the bad ones, the ones where nothing whatsoever happens.",
+  },
+  {
+    at: 675,
+    kind: "address",
     text: "Away from the crowd. Away from everybody's opinion of us, which we never needed and never once asked for.",
   },
   {
-    at: 647,
+    at: 696,
     kind: "address",
     text: "Just you and me, going through it, one ordinary day after the next, for as long as there are days.",
   },
-  // A breath, and then the last thing said on the third September.
-  { at: 673, kind: "address", bloom: true, text: "Same hour. Every year. Until it is the same room." },
-  // Held. Then the house comes back on its own, ordinary again, except it is
-  // not: after tonight it greets her differently for the rest of her life.
-  { at: 733, kind: "close" },
+  {
+    at: 718,
+    kind: "address",
+    text: "Whatever else we do with our lives — you are the good thing. You were always going to be the good thing.",
+  },
+  { at: 742, kind: "address", bloom: true, text: "Same hour. Every year. Until it is the same room." },
+  { at: 804, kind: "close" },
 ];
 
 var SAME_HOUR_NAME = {
